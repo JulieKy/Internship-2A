@@ -45,16 +45,18 @@ ydata2 = power; % used for linear regression
  fi2=fi.a2*exp(-((f-fi.b2)./fi.c2).^2);
  fi3=fi1+fi2;
  
- % Gaussian parameters JULIE
- fitMean=mean(fi3);
- fitVar=var(fi3);
-
-% Display figure
+ % Test paramètres Gaussienne
+ M1=mean(fi1);
+ M2=fi.b1;
+ 
+ V1=fi.c1^2/2:
+ 
+ 
 figure,
 plot(f,pxx);hold on
 plot(f,fi1)
 plot(f,fi2)
-plot(f,fi3); hold off
+plot(f,fi3)
 legend('periodogram','fi1','fi2','fi3')
 
 

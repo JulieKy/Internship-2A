@@ -52,7 +52,7 @@ for i = 1:lengthTot % loop to have all recording
     [x,Fs]= audioread([path,'\Samples\',tempName]); % read current file
     
     %% resampling to 4000 Hz
-    xs=resample(x,4000,Fs);
+      xs=resample(x,4000,Fs);
     fn=4000;
     %% filtering BP 100-1000Hz
     y = filterbp(xs,fn);
@@ -91,5 +91,3 @@ xlabel('Frequency (in Hz)');
 ylabel('Power Spectrum');
 title('Average Power Spectrum (all)');
 legend('Average Power Spectrum');
-
-
