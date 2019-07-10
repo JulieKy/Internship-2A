@@ -22,6 +22,7 @@ function [output_spectral_features,pxx,f,foct,spower,I,S] = spectral_features(x,
 
 %% PERIODOGRAM WELCH (MATHIEU)
 
+% -- Implementation
 wind = ones(1,floor(0.125*fn)); % 125 ms
 nover = floor(length(wind)/4); % 25% overlap
 nfft = 2^(nextpow2(length(wind))-1); % nfft
@@ -32,29 +33,50 @@ power = 1
 xdata2 = f; % used for linear regression
 ydata2 = power; % used for linear regression
 
-% % Display figure
-% figure,plot(f,pxx);
+% -- Numbers of peaks (JULIE)
+[pks,locs] = findpeaks(pxx);
+nbPeaks=length(pks);
+
+% % -- Display figure
+% figure,plot(f,pxx,f(locs),pks,'or');
 % xlabel('Frequency (0-800Hz)'),ylabel('PSD (dB/Hz)'), title('Periodogram Welch');
 
 
-
-%% Gaussian fit
-% fitting Gaussians to the spectrum, not using it for now, maybe later
+%% Gaussian fit (Julie)
+% -- Fitting Gaussians to the spectrum
  fi = fit(f,pxx,'gauss2');
  fi1=fi.a1*exp(-((f-fi.b1)./fi.c1).^2);
  fi2=fi.a2*exp(-((f-fi.b2)./fi.c2).^2);
  fi3=fi1+fi2;
  
- % Gaussian parameters JULIE
+ % -- Gaussian parameters
  fitMean=mean(fi3);
  fitVar=var(fi3);
+ 
+ % -- Maximum
+ [fitMax fitArgmax]=max(fi3);
+ fit_fmax=f(fitArgmax);
 
-% Display figure
+ % -- Second higher local maximum 
+ [fitPks,fitLocs,w,p] = findpeaks(fi3);
+ fitLocs=fitLocs(find(fitLocs~=fitArgmax)); % Removing the maximum location from fitLocs
+ fitPks=fitPks(find(fitPks~=fitMax)); % Removing the maximum from fitPks
+ [fitMax2 fitArgmax2]=max(fitPks); % Second higher local maximum 
+ fit_fmax2=f(fitLocs(fitArgmax2)); % Frequency of the second higher local maximum 
+
+  % -- Parameters
+  DifFreqFitPeaks=fit_fmax-fit_fmax2;
+  DifHighFitPeaks=fitMax-fitMax2;
+  if isempty(fitPks)==1
+        DifFreqFitPeaks=0;
+        DifHighFitPeaks=fitMax;
+  end
+  
+% % -- Display figure
 figure,
-plot(f,pxx);hold on
-plot(f,fi1)
-plot(f,fi2)
-plot(f,fi3); hold off
+plot(f,pxx); hold on
+plot(f,fi1); plot(f,fi2); plot(f,fi3); % Gaussian fit
+plot(fit_fmax,fitMax,'or'); plot(fit_fmax2,fitMax2,'or'); hold off % 2 higher peaks
 legend('periodogram','fi1','fi2','fi3')
 
 
@@ -105,7 +127,7 @@ r_square2=mdl.Rsquared.Adjusted;
 
 %combined final output
 
-output_spectral_features = [meanPSD;stdPSD;medPSD;bw;p25;p75;IQR;TP;p100_200;p200_400;p400_800;spectrum_slope2;r_square2];
+output_spectral_features = [meanPSD;stdPSD;medPSD;bw;p25;p75;IQR;TP;p100_200;p200_400;p400_800;spectrum_slope2;r_square2;nbPeaks;DifFreqFitPeaks;DifHighFitPeaks];
 
 end
 
