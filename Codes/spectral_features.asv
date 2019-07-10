@@ -53,42 +53,29 @@ nbPeaks=length(pks);
  fitMean=mean(fi3);
  fitVar=var(fi3);
  
- % -- Maximum
- [fitMax fitArgmax]=max(fi3);
- fit_fmax=f(fitArgmax);
-
- % -- Second higher local maximum 
- [fitPks,fitLocs,w,p] = findpeaks(fi3);
- fitLocs=fitLocs(find(fitLocs~=fitArgmax)); % Removing the maximum location from fitLocs
- fitPks=fitPks(find(fitPks~=fitMax)); % Removing the maximum from fitPks
- [fitMax2 fitArgmax2]=max(fitPks); % Second higher local maximum 
- fit_fmax2=f(fitLocs(fitArgmax2)); % Frequency of the second higher local maximum 
-
-  % -- Parameters
-  DifFreqFitPeaks=fit_fmax-fit_fmax2;
-  DifHighFitPeaks=fitMax-fitMax2;
-  if isempty(fitPks)==1
-        DifFreqFitPeaks=0;
-        DifHighFitPeaks=fitMax;
-  end
-  
-% Autre méthode
+% -- Peaks
  [fitPks,fitLocs] = findpeaks(fi3);
- [fitPksOrder,order] = sort(fitPks);
- fitNbMax=2;
- fitMax=[];
- fitArgmax=[];
- fitFmax=[];
- for i=0:nbMax-1
+ [fitPksOrder,fitOrder] = sort(fitPks); % Rank the peaks in ascending order
+ fitNbMax=min(length(fitPks),2); % Number of local maximims wanted: 2 or less if there are less(maybe more?)
+ fitMax=[]; % Local maximums
+ fitArgmax=[]; % Argmax of the local maximums
+ fitFmax=[]; % Frequency of the local maximums
+ for i=0:fitNbMax-1
      fitMax=[fitMax, fitPksOrder(end-i)];
-     fitArgmax=[max, fitPksOrder(end-i)];
+     fitArgmax=[fitFmax, fitOrder(end-i)];
+     fitFmax=[fitFmax, f(fitLocs(fitArgmax(i+1)))];
+ end
       
+  % -- Features '
+  DifFreqFitPeaks=fitFmax(1)-fitFmax(end); 
+  DifHighFitPeaks=fitMax(1)-fitMax(end); 
   
 % % -- Display figure
 figure,
 plot(f,pxx); hold on
 plot(f,fi1); plot(f,fi2); plot(f,fi3); % Gaussian fit
-plot(fit_fmax,fitMax,'or'); plot(fit_fmax2,fitMax2,'or'); hold off % 2 higher peaks
+% plot(fit_fmax,fitMax,'or'); plot(fit_fmax2,fitMax2,'or'); hold off % 2
+% higher peaks  % A REVOIR
 legend('periodogram','fi1','fi2','fi3')
 
 
