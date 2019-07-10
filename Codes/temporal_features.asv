@@ -1,0 +1,37 @@
+% This function computes temporal features 
+
+function [output_temporal_features] = temporal_features(x,fn)
+%% INPUT AND OUTPUT
+
+% -- INPUTS
+% x 'audio signal'
+% fn 'sampling frequency
+
+% -- OUTPUTS =  temporal features including
+
+%% VARIABLES
+N = length(x);
+time_axis = (1:N)/fn;
+
+%% ZERO CROSSING RATE
+
+
+%% AMPLITUDE
+% Maximum amplitude
+
+% Minimum amplitude
+
+%% POWER
+
+%% DISPLAY
+
+ figure,
+ plot(time_axis, x);
+ 
+  
+  
+  
+  output_temporal_features=x;
+
+end
+

@@ -18,7 +18,10 @@ function [output_spectral_features,pxx,f,foct,spower,I,S] = spectral_features(x,
 % p400_800: power ratio: 400-800 hz/TP
 % spectrum_slope2: spectrum slope
 % r_square2: R^2 statistics (linear regression for slope)
-% 
+% nbPeaks: Numbers of peaks in the Welch Periodogram (Julie)
+% DifFreqFitPeaks
+% DifHighFitPeaks
+
 
 %% PERIODOGRAM WELCH (MATHIEU)
 
@@ -66,7 +69,7 @@ nbPeaks=length(pks);
      fitFmax=[fitFmax, f(fitLocs(fitArgmax(i+1)))];
  end
       
-  % -- Features '
+  % -- Features 'WARNING: if there is only one peak, they will be 0'
   DifFreqFitPeaks=fitFmax(1)-fitFmax(end); 
   DifHighFitPeaks=fitMax(1)-fitMax(end); 
   

@@ -18,7 +18,10 @@ function [output_spectral_features,pxx,f,foct,spower,I,S] = spectral_features(x,
 % p400_800: power ratio: 400-800 hz/TP
 % spectrum_slope2: spectrum slope
 % r_square2: R^2 statistics (linear regression for slope)
-% 
+% nbPeaks: Numbers of peaks in the Welch Periodogram (Julie)
+% DifFreqFitPeaks: Frequency difference between the two higher peaks (Julie)
+% DifHighFitPeaks: Amplitude difference between the two higher peaks (Julie)
+
 
 %% PERIODOGRAM WELCH (MATHIEU)
 
