@@ -37,21 +37,14 @@ xdata2 = f; % used for linear regression
 ydata2 = power; % used for linear regression
 
 
-%% PERIODOGRAM WITH SMOOTH and FIT METHODS (Julie)
+%% PERIODOGRAM with MAF and GMM (Julie)
 
-%% Moving Average Filter
-% -- Numbers of peaks
+%% Moving Average Filter (MAF)
 pxx_smooth = smooth(pxx);
-[pks,locs] = findpeaks(pxx_smooth);
-nbPeaks_MAF=length(pks);
-
-% % -- Display figure
-% figure,plot(f,pxx); hold on
-% plot(f,pxx_smooth,f(locs),pks,'or'); hold off
-% xlabel('Frequency (0-1000Hz)','fontsize',11,'interpreter','latex'),ylabel('PSD (dB/Hz)','fontsize',11,'interpreter','latex'), title('Periodogram Welch','fontsize',14,'interpreter','latex'), legend('pxx', 'pxx\_smooth','interpreter','latex');
+[nb_pks_MAF, f_pks_MAF, dif_higherPks_MAF] = peaks_features(pxx, pxx_smooth,f);
 
 
-%% Gaussian Mixture Model
+%% Gaussian Mixture Model (GMM)
 % -- Fitting Gaussians to the spectrum
  fi = fit(f,pxx,'gauss4');
  fi1=fi.a1*exp(-((f-fi.b1)./fi.c1).^2);
@@ -64,32 +57,14 @@ nbPeaks_MAF=length(pks);
 a=[fi.a1, fi.a2, fi.a3, fi.a4];
 b=[fi.b1, fi.b2, fi.b3, fi.b4];
 c=[fi.c1, fi.c2, fi.c3, fi.c4];
- 
-% -- Number of peaks
- [pks_GMM,locs_GMM] = findpeaks(fi_tot);
- nbPeaks_GMM=length(pks_GMM);
- 
- % -- Frequency of peaks (in ascending order im term of PSD)
- [pksOrder_GMM,order_GMM] = sort(pks_GMM); % Rank the peaks in ascending order
- f_pks_GMM=f(locs_GMM(order_GMM)); 
- 
- % -- 2 higher peaks frequency differences
- nb_higher_pks=min(length(pks_GMM),2);
- higher_pks=[]; 
- argmax_higher_pks=[]; 
- f_higher_pks=[];
- for i=0:nb_higher_pks-1
-     higher_pks=[higher_pks, pksOrder_GMM(end-i)];
-     argmax_higher_pks=[f_higher_pks, order_GMM(end-i)];
-     f_higher_pks=[f_higher_pks, f(locs_GMM(argmax_higher_pks(i+1)))];
- end
- dif=f_higher_pks(1)-f_higher_pks(end); 
+
+[nb_pks_GMM, f_pks_GMM, dif_higherPks_GMM] = peaks_features(pxx, fi_tot,f)
   
 % % -- Display figure
 figure,
 plot(f,pxx); hold on
 plot(f,fi1); plot(f,fi2); plot(f,fi3); plot(f,fi4); plot(f,fi_tot); % Gaussian fit
-plot(fit_fmax,fitMax,'or'); plot(fit_fmax2,fitMax2,'or'); hold off 
+plot(f_higher_pks,higher_pks,'or'); hold off % 2 higher peaks
 xlabel('Frequency (0-1000Hz)','fontsize',11,'interpreter','latex'),ylabel('PSD (dB/Hz)','fontsize',11,'interpreter','latex'), title('Periodogram Welch and Gaussians fitting','fontsize',14,'interpreter','latex'), legend('periodogram','fi1','fi2','fi3','fi4','fi_tot','interpreter','latex');
 
 
