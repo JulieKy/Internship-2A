@@ -89,7 +89,7 @@ c=[fi.c1, fi.c2, fi.c3, fi.c4];
 figure,
 plot(f,pxx); hold on
 plot(f,fi1); plot(f,fi2); plot(f,fi3); plot(f,fi4); plot(f,fi_tot); % Gaussian fit
-plot(f_higher_pks,higher_pks,'or'); hold off % 2 higher peaks
+plot(fit_fmax,fitMax,'or'); plot(fit_fmax2,fitMax2,'or'); hold off 
 xlabel('Frequency (0-1000Hz)','fontsize',11,'interpreter','latex'),ylabel('PSD (dB/Hz)','fontsize',11,'interpreter','latex'), title('Periodogram Welch and Gaussians fitting','fontsize',14,'interpreter','latex'), legend('periodogram','fi1','fi2','fi3','fi4','fi_tot','interpreter','latex');
 
 
