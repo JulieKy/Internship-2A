@@ -16,24 +16,13 @@ time_axis = (1:N)/fn;
 %% ZERO CROSSING RATE
 ZCR=sum(abs(diff(sign(x))/2))/length(x);
 
-%% AMPLITUDE
-% Maximum amplitude
-ampli_max=max(x);
-
-% Minimum amplitude
-ampli_min=min(x);
-
-%% POWER
-
 %% DISPLAY
-
  figure,
  plot(time_axis, x);
+ title('Temporal representation');
  
-  
-  
-  
-  output_temporal_features=x;
+%% OUTPUTS   
+  output_temporal_features=ZCR;
 
 end
 

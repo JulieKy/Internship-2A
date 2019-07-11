@@ -22,7 +22,7 @@ data_dir=[path,'\Samples_Belle\'];
 
 %% Add the headers in the Excel file
 if (init == 0)
-    xlswrite([pathExcel excelFile], [{'file'}, {'meanPSD'},{'stdPSD'},{'medPSD'},{'bw'},{'p25'},{'p75'},{'IQR'},{'TP'},{'p100_200'},{'p200_400'},{'p400_800'},{'SL'},{'R2'},{'nbPeaks'},{'DifFreqFitPeaks'},{'DifHighFitPeaks'},{'MFCC1'}, {'MFCC2'}, {'MFCC3'}, {'MFCC4'}, {'MFCC5'}, {'MFCC6'}], 'Features 1', 'A1'); % longest segment
+    xlswrite([pathExcel excelFile], [{'file'}, {'ZCR'}, {'meanPSD'},{'stdPSD'},{'medPSD'},{'bw'},{'p25'},{'p75'},{'IQR'},{'TP'},{'p100_200'},{'p200_400'},{'p400_800'},{'SL'},{'R2'},{'nbPeaks'},{'DifFreqFitPeaks'},{'DifHighFitPeaks'},{'MFCC1'}, {'MFCC2'}, {'MFCC3'}, {'MFCC4'}, {'MFCC5'}, {'MFCC6'}], 'Features 1', 'A1'); % longest segment
       init = 1;
 end
 
@@ -54,13 +54,17 @@ for i = 1:lengthTot % loop to have all recording
     %% resampling to 4000 Hz
     xs=resample(x,4000,Fs);
     fn=4000;
+    
     %% filtering BP 100-1000Hz
     y = filterbp(xs,fn);
+    
     %% Computation of features
+    output_temporal_features = temporal_features(y,fn); % Temporal features
     output_mean_mfcc = mfcc_coeffs(y, fn); % MFCCs coefficient 
     [output_spectral_features(i,:),pxx(i,:),f(i,:),foct(i,:),spower(i,:),I(i,:),S(i,:)] = spectral_features(y,fn); % See Fae's comment         
-        % write on Excel file all the features
-        xlswrite([pathExcel excelFile], [i;output_spectral_features(i,:)' ; output_mean_mfcc']', 'Features 1', ['A',num2str(i+1)]); % Sheet 1
+    
+    % write on Excel file all the features
+    xlswrite([pathExcel excelFile], [i;output_temporal_features; output_spectral_features(i,:)' ; output_mean_mfcc']', 'Features 1', ['A',num2str(i+1)]); % Sheet 1
     xlswrite([pathExcel excelFile],{names_cell{i}}, 'Features 1',['A',num2str(i+1)]); 
     
     
