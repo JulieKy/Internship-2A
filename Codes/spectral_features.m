@@ -42,7 +42,7 @@ ydata2 = power; % used for linear regression
 %% Moving Average Filter (MAF)
 % -- Peaks features
 pxx_smooth = smooth(pxx);
-[nb_pks_MAF, f_pks_MAF, dif_higherPks_MAF] = peaks_features(pxx, pxx_smooth,f);
+[nb_pks_MAF,  f_higherPk_MAF, dif_higherPks_MAF] = peaks_features(pxx, pxx_smooth,f);
 
 
 %% Gaussian Mixture Model (GMM)
@@ -66,10 +66,10 @@ b=[fi.b1, fi.b2, fi.b3, fi.b4];
 c=[fi.c1, fi.c2, fi.c3, fi.c4];
 
 % -- Peaks features
-[nb_pks_GMM, f_pks_GMM, dif_higherPks_GMM] = peaks_features(pxx, fi_tot,f)
+[nb_pks_GMM,  f_higherPk_GMM, dif_higherPks_GMM] = peaks_features(pxx, fi_tot,f);
   
-% periodogram_pks_features=[nb_pks_MAF; f_pks_MAF'; dif_higherPks_MAF; nb_pks_GMM; f_pks_GMM'; dif_higherPks_GMM ];
-periodogram_pks_features=[nb_pks_MAF; dif_higherPks_MAF; nb_pks_GMM; dif_higherPks_GMM ];
+periodogram_pks_features=[nb_pks_MAF;  f_higherPk_MAF'; dif_higherPks_MAF; nb_pks_GMM;  f_higherPk_GMM'; dif_higherPks_GMM ];
+% periodogram_pks_features=[nb_pks_MAF; dif_higherPks_MAF; nb_pks_GMM; dif_higherPks_GMM ];
 
 %% PERIODOGRAM ANALYSIS (Notes by Fae)
 % Note that in the Peruvian paper it mentions: "the slope of the linear regression line, fit to

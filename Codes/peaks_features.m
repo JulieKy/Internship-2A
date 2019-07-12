@@ -1,4 +1,4 @@
-function [nb_pks, f_pks, dif_higherPks] = peaks_features(pxx, pxx_smooth, f)
+function [nb_pks,  f_higherPk, dif_higherPks] = peaks_features(pxx, pxx_smooth, f)
 %% INPUT AND OUTPUT
 % -- Inputs --
 % pxx: periodogram 
@@ -12,12 +12,12 @@ function [nb_pks, f_pks, dif_higherPks] = peaks_features(pxx, pxx_smooth, f)
 %% NUMBER OF PEAKS
  [pks,locs] = findpeaks(pxx_smooth);
  nb_pks=length(pks);
- 
+
  %% FREQUENCY OF PEAKS (in ascending order im term of PSD)
  [pksOrder,order] = sort(pks); % Rank the peaks in ascending order
  f_pks=f(locs(order)); 
  
- %%  2 HIGHER PEAKS FREQUENCY DIFFERENCES
+ %%  2 HIGHER PEAKS FREQUENCY 
  nb_higherPks=min(length(pks),2);
  higherPks=[]; 
  argmax_higherPks=[]; 
@@ -27,6 +27,7 @@ function [nb_pks, f_pks, dif_higherPks] = peaks_features(pxx, pxx_smooth, f)
      argmax_higherPks=[argmax_higherPks, order(end-i)];
      f_higherPks=[f_higherPks, f(locs(argmax_higherPks(i+1)))];
  end
+ f_higherPk=f_higherPks(1);
  dif_higherPks=f_higherPks(1)-f_higherPks(end); % 0 if there is only one peak
  
  
