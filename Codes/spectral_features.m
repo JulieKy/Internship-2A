@@ -65,10 +65,12 @@ a=[fi.a1, fi.a2, fi.a3, fi.a4];
 b=[fi.b1, fi.b2, fi.b3, fi.b4];
 c=[fi.c1, fi.c2, fi.c3, fi.c4];
 
+GMM_parameters=[a, b, c];
+
 % -- Peaks features
 [nb_pks_GMM,  f_higherPk_GMM, dif_higherPks_GMM] = peaks_features(pxx, fi_tot,f);
   
-periodogram_pks_features=[nb_pks_MAF;  f_higherPk_MAF'; dif_higherPks_MAF; nb_pks_GMM;  f_higherPk_GMM'; dif_higherPks_GMM ];
+periodogram_pks_features=[nb_pks_MAF;  f_higherPk_MAF; dif_higherPks_MAF; nb_pks_GMM;  f_higherPk_GMM; dif_higherPks_GMM; GMM_parameters'];
 % periodogram_pks_features=[nb_pks_MAF; dif_higherPks_MAF; nb_pks_GMM; dif_higherPks_GMM ];
 
 %% PERIODOGRAM ANALYSIS (Notes by Fae)
