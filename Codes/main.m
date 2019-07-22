@@ -69,9 +69,7 @@ for i = 1:lengthTot % loop to have all recording
     [output_lpc, output_lsf] = lpc_lsf_coeff(y, fn); % LPC and LFC coefficient
     
     
-    % write on Excel file all the features
-    %     xlswrite([pathExcel excelFile], [i;output_temporal_features; output_spectral_features(i,:)' ; output_mean_mfcc']', 'Features 1', ['A',num2str(i+1)]); % Sheet 1
-    %     xlswrite([pathExcel excelFile],{names_cell{i}}, 'Features 1',['A',num2str(i+1)]);
+    % -- Write on Excel file all the features
     
     % Sheet 1
     xlswrite([pathExcel excelFile], [i;output_temporal_features]', 'Temporal Features', ['A',num2str(i+1)]);
@@ -89,14 +87,13 @@ for i = 1:lengthTot % loop to have all recording
     xlswrite([pathExcel excelFile], [i;output_mean_mfcc'; output_lpc'; output_lsf']', 'Coefficients', ['A',num2str(i+1)]);
     xlswrite([pathExcel excelFile],{names_cell{i}}, 'Coefficients',['A',num2str(i+1)]);
     
-    
+    spectrogram(y, 'yaxis')
 end
 
 %% Plot Average figures
 
 
 %% FFT Representation
-
 
 % Median with inter-quartile range
 figure(),
