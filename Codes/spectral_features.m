@@ -1,6 +1,6 @@
 % This function computes spectral features 
 %
-function [output_spectral_features,pxx,f,foct,spower,I,S] = spectral_features(x,fn) % See Fae's comments
+function [output_spectral_features, periodogram_pks_features, pxx,f,foct,spower,I,S] = spectral_features(x,fn) % See Fae's comments
 %% INPUT AND OUTPUT
 % -- Inputs --
 % x 'audio signal'
@@ -126,7 +126,7 @@ r_square2=mdl.Rsquared.Adjusted;
 
 %combined final output
 
-output_spectral_features = [meanPSD;stdPSD;medPSD;bw;p25;p75;IQR;TP;p100_200;p200_400;p400_800;spectrum_slope2;r_square2;periodogram_pks_features];
+output_spectral_features = [meanPSD;stdPSD;medPSD;bw;p25;p75;IQR;TP;p100_200;p200_400;p400_800;spectrum_slope2;r_square2];
 
 end
 
