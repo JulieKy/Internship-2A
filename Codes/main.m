@@ -61,6 +61,7 @@ for i = 1:lengthTot % loop to have all recording
     %% Computation of features
     output_temporal_features = temporal_features(y,fn); % Temporal features
     output_mean_mfcc = mfcc_coeffs(y, fn); % MFCCs coefficient 
+    [output_lpc, output_lsf] = lpc_lsf_coeff(y, fn); % LPC and LFC coefficient 
     [output_spectral_features(i,:),pxx(i,:),f(i,:),foct(i,:),spower(i,:),I(i,:),S(i,:)] = spectral_features(y,fn); % See Fae's comment         
     
     % write on Excel file all the features

@@ -11,11 +11,6 @@ function [nb_pks,  f_higherPk, dif_higherPks] = peaks_features(y, f, nb_higherPk
 % f_pks: frequency of these peaks
 % dif_higherPks: 2 higher peaks frequency differences
 
-% if tag=='periodogram'
-%     vbgn
-% elseif tag=='spectrogram'
-%     fghj
-% end
 
 %% NUMBER OF PEAKS
  [pks,locs] = findpeaks(y);

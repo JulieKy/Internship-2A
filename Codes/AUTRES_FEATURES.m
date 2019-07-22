@@ -46,15 +46,15 @@ centroid = spectralCentroid(y,fn, ...
  % Quoi d'autre? La hauteur? 
 
 %% Tonality
-
-%% Spectrogram
-[s,f,t] = spectrogram(y); % Quoi faire avec le spectrogramme? Récuperer les zones avec le plus d'intensités en foncyion du temps et de la fréquence? 
-spectrogram(y)
-threshold=max(s)-max(s)/5;
-s_binary=s>threshold;
-figure,
-imshow(s_binary);
-[s_BW, num]=bwlabel(s_binary);
+% 
+% %% Spectrogram
+% [s,f,t] = spectrogram(y); % Quoi faire avec le spectrogramme? Récuperer les zones avec le plus d'intensités en foncyion du temps et de la fréquence? 
+% spectrogram(y)
+% threshold=max(s)-max(s)/5;
+% s_binary=s>threshold;
+% figure,
+% imshow(s_binary);
+% [s_BW, num]=bwlabel(s_binary);
 
 
 
