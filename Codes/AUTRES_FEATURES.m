@@ -10,8 +10,18 @@ xs=resample(x,4000,Fs);
 fn=4000;
 y = filterbp(xs,fn);
 
+% Autre
+N = length(xs);
+time_axis = (1:N)/fn;
+
 %% Linear Predictive Coding (LPC)
-[lpc_coeff, var_error] = lpc(y,8);
+[lpc_coeff, var_error] = lpc(y,3);
+est_x = filter([0 -lpc_coeff(2:end)],1,xs);
+
+figure,
+plot(time_axis,xs); hold on
+plot(time_axis,est_x,'--'); hold off
+xlabel('Time (s)'); ylabel('Amplitude'); title('LPC?'); legend('Original signal','LPC estimate');
 
 %% Line Spectral Frequencies (LSF)
 lsf_coeff = poly2lsf(lpc_coeff); 
@@ -24,9 +34,9 @@ centroid = spectralCentroid(y,fn, ...
                             'Range',[100,1000]); % verifier le range
 
 t = linspace(0,size(y,1)/fn,size(centroid,1));
-plot(t,centroid)
-xlabel('Time (s)')
-ylabel('Centroid (Hz)')
+figure,
+plot(t,centroid);
+xlabel('Time (s)'); ylabel('Centroid (Hz)'); title('Spectral centroïd');
 
 % Trouver les picks, les écarts moyens de temps qui les séparent
  [pks,locs] = findpeaks(centroid);
