@@ -33,10 +33,10 @@ centroid = spectralCentroid(y,fn, ...
                             'OverlapLength',round(0.025*fn), ...
                             'Range',[100,1000]); % verifier le range
 
-t = linspace(0,size(y,1)/fn,size(centroid,1));
-figure,
-plot(t,centroid);
-xlabel('Time (s)'); ylabel('Centroid (Hz)'); title('Spectral centroïd');
+ t = linspace(0,size(y,1)/fn,size(centroid,1));
+% figure,
+% plot(t,centroid);
+% xlabel('Time (s)'); ylabel('Centroid (Hz)'); title('Spectral centroïd');
 
 % Trouver les picks, les écarts moyens de temps qui les séparent
  [pks,locs] = findpeaks(centroid);
@@ -49,3 +49,18 @@ xlabel('Time (s)'); ylabel('Centroid (Hz)'); title('Spectral centroïd');
 
 %% Spectrogram
 [s,f,t] = spectrogram(y); % Quoi faire avec le spectrogramme? Récuperer les zones avec le plus d'intensités en foncyion du temps et de la fréquence? 
+spectrogram(y)
+threshold=max(s)-max(s)/5;
+s_binary=s>threshold;
+figure,
+imshow(s_binary);
+[s_BW, num]=bwlabel(s_binary);
+
+
+
+
+
+
+
+
+

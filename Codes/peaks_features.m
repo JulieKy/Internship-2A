@@ -1,9 +1,11 @@
 function [nb_pks,  f_higherPk, dif_higherPks] = peaks_features(y, f, nb_higherPks_method, tag, t)
 %% INPUT AND OUTPUT
 % -- Inputs --
-% pxx: periodogram 
-% pxx_smooth: smoothed or fitted
+% y: periodogram or spectrogram
 % f: frequency
+% nb_higherPks_method: number of higher peaks wanted 
+% tag: Type of periodogram or spectrogram
+% t: time (useful for the spectrogram)
 % -- Outputs --
 % nb_pks: number of peaks
 % f_pks: frequency of these peaks
