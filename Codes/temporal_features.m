@@ -8,6 +8,7 @@ function [output_temporal_features] = temporal_features(x,fn)
 % fn 'sampling frequency
 
 % -- OUTPUTS =  temporal features including
+% ZRC: Zero Crossing Rate
 
 %% VARIABLES
 N = length(x);

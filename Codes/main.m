@@ -22,7 +22,7 @@ data_dir=[path,'\Samples_Belle\'];
 
 %% Add the headers in the Excel file
 if (init == 0)
-    xlswrite([pathExcel excelFile], [{'file'}, {'ZCR'}, {'meanPSD'},{'stdPSD'},{'medPSD'},{'bw'},{'p25'},{'p75'},{'IQR'},{'TP'},{'p100_200'},{'p200_400'},{'p400_800'},{'SL'},{'R2'},{'nb_pks_MAF'}, {'dif_higherPks_MAF'},{'nb_pks_GMM'}, {'dif_higherPks_GMM'},{'MFCC1'}, {'MFCC2'}, {'MFCC3'}, {'MFCC4'}, {'MFCC5'}, {'MFCC6'}], 'Features 1', 'A1'); % longest segment
+    xlswrite([pathExcel excelFile], [{'file'}, {'ZCR'}, {'meanPSD'},{'stdPSD'},{'medPSD'},{'bw'},{'p25'},{'p75'},{'IQR'},{'TP'},{'p100_200'},{'p200_400'},{'p400_800'},{'SL'},{'R2'},{'nb_pks_MAF'}, {'f_higherPk_MAF'}, {'dif_higherPks_MAF'},{'nb_pks_GMM'}, {'f_higherPk_GMM'}, {'dif_higherPks_GMM'}, {'fi.a1'}, {'fi.a2'}, {'fi.a3'}, {'fi.a4'}, {'fi.b1'}, {'fi.b2'}, {'fi.b3'}, {'fi.b4'}, {'fi.c1'}, {'fi.c2'}, {'fi.c3'}, {'fi.c4'}, {'MFCC1'}, {'MFCC2'}, {'MFCC3'}, {'MFCC4'}, {'MFCC5'}, {'MFCC6'}], 'Features 1', 'A1'); % longest segment
       init = 1;
 end
 
