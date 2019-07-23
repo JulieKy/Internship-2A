@@ -1,6 +1,6 @@
-% This function computes temporal features 
+% This function computes temporal features
 
-function [output_temporal_features] = temporal_features(x,fn)
+function [output_temporal_features] = temporal_features(x,fn, tempName)
 %% INPUT AND OUTPUT
 
 % -- INPUTS
@@ -18,14 +18,33 @@ time_axis = (1:N)/fn;
 ZCR=sum(abs(diff(sign(x))/2))/length(x);
 
 %% DISPLAY
- figure,
- plot(time_axis, x);
- title('Temporal representation','fontsize',14,'interpreter','latex');
- xlabel('Time (s)'),ylabel('Amplitude');
+fig=figure;
+plot(time_axis, x);
 
- 
-%% OUTPUTS   
-  output_temporal_features=ZCR;
+% Get the number of the recording by removing the '.mp3'
+strMP3 = sprintf('%s',tempName);
+ind=strfind(strMP3,'.');
+strNum = strMP3(1:ind-1);
+
+% Title and legend
+strTitle=sprintf('Recording %s',strNum);
+title(strTitle,'fontsize',14,'interpreter','latex');
+xlabel('Time (s)'),ylabel('Amplitude');
+
+%% SAVE 
+% Create a folder 
+path = pwd;
+pathFigTemporal = strcat(path, '\Time_figures');
+if ~(exist(pathFigTemporal)) % test to create excel file or no
+    disp('Creation temporal representation folder')
+    mkdir Time_figures
+end
+
+% Save the figure
+saveas(fig, fullfile(pathFigTemporal, strNum), 'png');
+
+%% OUTPUTS
+output_temporal_features=ZCR;
 
 end
 

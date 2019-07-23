@@ -63,7 +63,7 @@ for i = 1:lengthTot % loop to have all recording
     y = filterbp(xs,fn);
     
     %% Computation of features
-    output_temporal_features = temporal_features(y,fn); % Temporal features
+    output_temporal_features = temporal_features(xs,fn, tempName); % Temporal features
     [output_spectral_features(i,:),periodogram_pks_features(i,:),pxx(i,:),f(i,:),foct(i,:),spower(i,:),I(i,:),S(i,:)] = spectral_features(y,fn); % See Fae's comment
     output_mean_mfcc = mfcc_coeffs(y, fn); % MFCCs coefficient
     [output_lpc, output_lsf] = lpc_lsf_coeff(y, fn); % LPC and LFC coefficient
@@ -87,7 +87,7 @@ for i = 1:lengthTot % loop to have all recording
     xlswrite([pathExcel excelFile], [i;output_mean_mfcc'; output_lpc'; output_lsf']', 'Coefficients', ['A',num2str(i+1)]);
     xlswrite([pathExcel excelFile],{names_cell{i}}, 'Coefficients',['A',num2str(i+1)]);
     
-    spectrogram(y, 'yaxis')
+%     spectrogram(y, 'yaxis')
 end
 
 %% Plot Average figures
