@@ -82,7 +82,12 @@ while start<end_sample-window+window*overlap
         label_section=file_label{l}; % The label during a section CS or NCS (colon 3 in the text file)
         
         % -- Filing Label_w with a number of 1(CS) or 0(NCS) corresponding to the section duration
-        delta_t=round((time_end-time_start)*100); % The duration of a section rounded to 10^-2, *100
+        delta_t=round((time_end-start)*100); % The duration of a section rounded to 10^-2, *100
+        
+        
+        strdt1=sprintf('delta t window: %d', delta_t);
+        disp(strdt1)
+        
         if strcmp(label_section, 'CS')==1 % Crying Section: 1
             label_window=[label_window ones(1, delta_t)];
         elseif strcmp(label_section, 'NCS')==1 % Non Crying Section: 0
@@ -117,6 +122,9 @@ while start<end_sample-window+window*overlap
     else
         delta_t=round((end_w-start)*100);
     end
+    
+    strdt2=sprintf('delta t fin: %d', delta_t);
+    disp(strdt2)
     
     if strcmp(label_section, 'CS')==1
         label_window=[label_window ones(1, delta_t)];
