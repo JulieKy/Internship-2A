@@ -1,5 +1,5 @@
 % Labels the recordings and give a matrix with the 3 observators (dire mean
-% et tout ca)
+% et tout ca): output=labels & input=window et overlap samples, observators
 
 %% INITIALISATION
 
@@ -16,8 +16,9 @@ end_sample=60; % End of the signal (hypotesis: length of the signal=60s)
 
 
 %% LABELLING THE BANK OF SAMPLES
-for obs=1:observators % Number of observators
-    for samp=1:samples % Number of samples
+for samp=1:samples % Number of samples
+    for obs=1:observators % Number of observators
+        
         
         start=0; % Departure of the section
         end_w=start+window; % End of the window section
@@ -74,17 +75,17 @@ for obs=1:observators % Number of observators
                 end
                 
                 % -- Next section
-                l=l+1; 
-                time_end=file_time_e(l);  
+                l=l+1;
+                time_end=file_time_e(l);
             end
             
             % -- Ending the window (when end_w<time_end but end_w>start)
             label_section=file_label{l};
             
             % Different (flag=1) or no different (flag=0) section types in one window
-            if flag==1 
+            if flag==1
                 delta_t=round((end_w-file_time_e(l-1))*100);
-            else 
+            else
                 delta_t=round((end_w-start)*100);
             end
             
@@ -106,6 +107,23 @@ for obs=1:observators % Number of observators
         end
         
         % -- Resulting labels of the bank of signals
-        labels(samp, :, obs)=label_signal      
+        labels(obs, :, samp)=label_signal;
     end
 end
+
+
+%% KAPPA CALCULATION
+% Deuxieme fonction: met sous la bonne forme et appelle fleiss
+% Input:labels, samples, observators
+
+
+% Need to be done for each sample
+coef_KAPPA=zeros(1, samples);
+for samp=1:samples % Number of samples
+    x=labels(:, :, samp); % Matrix shape: (labels of one sample, observators)
+    nb_CS=sum(x);
+    nb_NCS=observators-nb_CS;
+    y=[nb_CS', nb_NCS'];
+    coef_KAPPA(1,samp)=fleiss(y); % VOIR SI CA MARCHE QUAND LABELS BELLE !!!
+end
+
