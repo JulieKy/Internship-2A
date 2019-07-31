@@ -16,7 +16,7 @@ if ~(exist(pathExcel)) % test to create excel file or no
 end
 
 excelTemp = strcat([pathExcel excelFile], '.xls'); % add the .xls to have complete name
-data_dir=[path,'\Samples_Belle\'];
+data_dir=[path,'\Data\Samples_Belle\'];
 
 %% SPECTRAL FEATURES
 
@@ -53,7 +53,7 @@ for i = 1:lengthTot % loop to have all recording
     disp('READ');
     disp(tempName);
     
-    [x,Fs]= audioread([path,'\Samples_Belle\',tempName]); % read current file
+    [x,Fs]= audioread([path,'\Data\Samples_Belle\',tempName]); % read current file
     
     %% resampling to 4000 Hz
     xs=resample(x,4000,Fs);
