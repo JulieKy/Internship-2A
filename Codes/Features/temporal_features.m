@@ -34,7 +34,7 @@ xlabel('Time (s)'),ylabel('Amplitude');
 %% SAVE 
 % Create a folder 
 path = pwd;
-pathFigTemporal = strcat(path, '\Time_figures');
+pathFigTemporal = strcat(path, '\Figures\Time_figures');
 if ~(exist(pathFigTemporal)) % test to create excel file or no
     disp('Creation temporal representation folder')
     mkdir Time_figures
