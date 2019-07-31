@@ -4,7 +4,7 @@
 %% INITIALISATION
 
 clear all, close all, clc;
-addpath(genpath('../')); % to have access to sample folder
+addpath(genpath('..\..\')); % to have access to sample folder
 init = 0; % optional, to generate a new Excel File
 excelFile = 'NewFeaturesAnalysis_f'; % name of the Excel file to store features
 path = pwd; % current path
@@ -16,7 +16,7 @@ if ~(exist(pathExcel)) % test to create excel file or no
 end
 
 excelTemp = strcat([pathExcel excelFile], '.xls'); % add the .xls to have complete name
-data_dir=[path,'\Data\Samples\'];
+data_dir=[path,'\..\Data\Samples\'];
 
 %% SPECTRAL FEATURES
 
@@ -49,7 +49,7 @@ for i = 1:lengthTot % loop to have all recording
     disp('READ');
     disp(tempName);
     
-    [x,Fs]= audioread([path,'\Data\Samples\',tempName]); % read current file
+    [x,Fs]= audioread([path,'\..\Data\Samples\',tempName]); % read current file
     
     %% resampling to 4000 Hz
       xs=resample(x,4000,Fs);
