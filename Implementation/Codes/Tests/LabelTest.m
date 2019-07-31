@@ -1,5 +1,37 @@
 % Labels the recordings and give a matrix with the 3 observators (dire mean
 % et tout ca): output=labels & input=window et overlap samples, observators
+clear all, close all, clc, dbstop if error;
+addpath(genpath('..\..\')); % to have access to sample folder
+path = pwd; % current path
+data_dir=[path,'\..\..\Data\Samples_Belle\'];
+dinfo = dir(data_dir);
+names_cell1 = {dinfo.name};
+% choose a valid file name
+j=0;
+for i=1:size(names_cell1,2)
+    if length(names_cell1{i})>2
+        j=j+1;
+        names_cell{j}=names_cell1{i};
+    end
+end
+
+close all; % to close previous figures opened in computation of spectral features
+tempName=names_cell{1};
+% to follow which file is red
+disp('READ');
+disp(tempName);
+
+[x,Fs]= audioread([path,'\..\..\Data\Samples_Belle\',tempName]); % read current file
+
+%% resampling to 4000 Hz
+xs=resample(x,4000,Fs);
+fn=4000;
+
+%% ------------------- Shorten the signals to 60s A METTRE DANS LE CODE ---------------------
+time_sample=60;
+xss=xs(1:time_sample*fn,1);
+
+%% -------------------------------------
 
 %% INITIALISATION
 
@@ -8,8 +40,8 @@ observators=2;
 samples=37;
 
 % -- Parameters
-window=3;
-overlap=25/100;   % A METTRE DANS APPEL DE FONCTION
+window=1;
+overlap=0;   % A METTRE DANS APPEL DE FONCTION
 
 % -- Variables
 end_sample=60; % End of the signal (hypotesis: length of the signal=60s)
@@ -31,7 +63,7 @@ for samp=1:samples % Number of samples
         % -- Openning the file
         file_name=sprintf('Labels\\%d_%d.txt', obs, samp);
         fid=fopen(file_name);
-
+        
         % -- Extract the data
         fmt=['%n', '%n', '%s'];
         file=textscan(fid,fmt);
@@ -108,7 +140,7 @@ for samp=1:samples % Number of samples
         labels(obs, :, samp)=label_signal;
     end
 end
- 
+
 %% KAPPA CALCULATION
 %  -- Initialisation
 coef_KAPPA=zeros(1, samples);
@@ -131,3 +163,63 @@ for samp=1:samples % Number of samples
     threshold_agreement=2/3;
     label_final=[label_final; (nb_CS/observators)>threshold_agreement];
 end
+
+%% POWER RATIO
+
+i=1; % NUMERO DE SAMPLE A DONNER!!
+
+N = length(xss);
+time_axis = (1:N)/fn;
+
+
+% PEUT ETRE A METTRE DANS FONCTION
+% -- Finding the location of 'CS' and 'NCS'
+CS_locs=find(label_final(i,:)==1);
+NCS_locs=find(label_final(i,:)==0);
+
+% -- Start time of the labels (for each window)
+time_CS_start=CS_locs*(window-overlap);
+time_NCS_start=NCS_locs*(window-overlap);
+
+% -- Start sample of the labels (for each window)
+sample_CS_start=time_CS_start*fn;
+sample_NCS_start=time_NCS_start*fn;
+label_duration=window*fn; % Number of samples in a window
+
+pass_band=[0:1000]; % PAS ICI
+f_band=100; 
+% -- Periodogram for each CS sections
+pr_CS=zeros(length(CS_locs),floor(pass_band(end)/f_band)); % Power ratio
+for j=1:length(CS_locs)
+    CS_section=xss(sample_CS_start(j):sample_CS_start(j)+label_duration);
+    % FAIRE UN PLOT
+    [pxx,f] = Welch_periodogram(CS_section, fn, pass_band);  % A MIEUX FAIRE
+    pxx_sum=sum(pxx);
+    for h = pass_band(1)+1 : floor(pass_band(end)/f_band) % A MIEUX FAIRE
+        a=1; i=1;
+        while f(i)<100*h
+            i=i+1;
+        end
+        pr_CS(j,h)=mean(pxx(a:i-1))/pxx_sum;
+        a=i;
+    end
+end 
+
+pr_CS_mean=mean(pr_CS);
+
+% -- Periodogram for each NCS sections
+pr_NCS=zeros(length(NCS_locs),floor(pass_band(end)/f_band)); % Power ratio
+for j=1:length(NCS_locs)
+    NCS_section=xss(sample_NCS_start:sample_NCS_start+label_duration);
+     [pxx,f] = Welch_periodogram(NCS_section, fn, pass_band);  % A MIEUX FAIRE
+    pxx_sum=sum(pxx);
+    for h = pass_band(1)+1 : floor(pass_band(end)/f_band) % A MIEUX FAIRE
+        a=1; i=1;
+        while f(i)<100*h
+            i=i+1;
+        end
+        pr_NCS(j,h)=mean(pxx(a:i-1))/pxx_sum;
+        a=i;
+    end
+end 
+pr_NCS_mean=mean(pr_NCS);
