@@ -108,20 +108,26 @@ for samp=1:samples % Number of samples
         labels(obs, :, samp)=label_signal;
     end
 end
-
-
-%% KAPPA CALCULATION
-% Deuxieme fonction: met sous la bonne forme et appelle fleiss
-% Input:labels, samples, observators
-
  
-% Need to be done for each sample
+%% KAPPA CALCULATION
+%  -- Initialisation
 coef_KAPPA=zeros(1, samples);
-for samp=1:samples % Number of samples
-    x=labels(:, :, samp); % Matrix shape: (labels of one sample, observators)
-    nb_CS=sum(x);
-    nb_NCS=observators-nb_CS;
-    y=[nb_CS', nb_NCS'];
-    coef_KAPPA(1,samp)=fleiss(y); % VOIR SI CA MARCHE QUAND LABELS BELLE !!!
-end
 
+label_final=[]; % A METTRE EN HAUT!!
+
+for samp=1:samples % Number of samples
+    
+    %  -- Counting the number of raters who agreed on a category (CS and NCS)
+    x=labels(:, :, samp); % Matrix shape: (labels of one sample, observators)
+    nb_CS=sum(x); % Number of raters who agreed on CS (vector)
+    nb_NCS=observators-nb_CS; % Number of raters who agreed on NCS (vector)
+    y=[nb_CS', nb_NCS'];
+    
+    % -- Calculation for each sample
+    coef_KAPPA(1,samp)=fleiss(y);
+    
+    %% LABELLING BY FINDING A CONCENSUS WHEN RATERS DON'T AGREE
+    % -- Determining one label per window, putting the 'CS' label when there are at least 2/3 of agreement
+    threshold_agreement=2/3;
+    label_final=[label_final; (nb_CS/observators)>threshold_agreement];
+end

@@ -1,5 +1,5 @@
-function [labels,coef_KAPPA] = labelling(observators,samples, end_sample, window, overlap)
-%LABELLING: Labels the recordings using Audacity text files, thank to a moving average amd give the Fleiss'es KAPPA coefficients. 
+function [labels_final,coef_KAPPA] = labelling(observators,samples, end_sample, window, overlap)
+%LABELLING: Labels the recordings using Audacity text files, thank to a moving average amd give the Fleiss'es KAPPA coefficients.
 
 %% INPUTS AND OUTPUTS
 %  -- Inputs --
@@ -14,6 +14,8 @@ function [labels,coef_KAPPA] = labelling(observators,samples, end_sample, window
 
 
 %% LABELLING THE BANK OF SAMPLES
+labels_final=[]; % Matrix with the final label of each window, in each sample shaped like this:(samples, labels)
+
 for samp=1:samples % Number of samples
     for obs=1:observators % Number of observators
         
@@ -29,7 +31,7 @@ for samp=1:samples % Number of samples
         % -- Openning the file
         file_name=sprintf('..\\Data\\Labels\\%d_%d.txt', obs, samp);
         fid=fopen(file_name);
-
+        
         % -- Extract the data
         fmt=['%n', '%n', '%s'];
         file=textscan(fid,fmt);
@@ -111,19 +113,21 @@ end
 %  -- Initialisation
 coef_KAPPA=zeros(1, samples);
 
-
 for samp=1:samples % Number of samples
     
     %  -- Counting the number of raters who agreed on a category (CS and NCS)
     x=labels(:, :, samp); % Matrix shape: (labels of one sample, observators)
-    nb_CS=sum(x); % Number of raters who agreed on CS
-    nb_NCS=observators-nb_CS; % Number of raters who agreed on NCS
+    nb_CS=sum(x); % Number of raters who agreed on CS (vector)
+    nb_NCS=observators-nb_CS; % Number of raters who agreed on NCS (vector)
     y=[nb_CS', nb_NCS'];
     
     % -- Calculation for each sample
     coef_KAPPA(1,samp)=fleiss(y);
-end
-
-
+    
+    %% LABELLING BY FINDING A CONCENSUS WHEN RATERS DON'T AGREE
+    % -- Determining one label per window, putting the 'CS' label when there are at least 2/3 of agreement
+    threshold_agreement=2/3;
+    labels_final=[labels_final; (nb_CS/observators)>threshold_agreement];
+    
 end
 
