@@ -1,4 +1,4 @@
-function [z] = fleiss(x,varargin)
+function [k] = fleiss(x,varargin)
 % FLEISS: compute the Fleiss'es kappa
 % Fleiss'es kappa is a generalisation of Scott's pi statistic, a statistical measure of inter-rater reliability. It is also related to Cohen's kappa statistic. Whereas Scott's pi and Cohen's kappa work for
 % only two raters, Fleiss'es kappa works for any number of raters giving categorical ratings (see nominal data), to a fixed number of items. It can be interpreted as expressing the extent to which the observed amount
@@ -48,6 +48,9 @@ sekj=realsqrt(2/c); %kj standar error
 zkj=kj./sekj;
 pkj=(1-0.5*erfc(-abs(zkj)/realsqrt(2)))*2;
 k=sum(b.*kj)/d; %Fleiss'es (overall) kappa
+if isnan(k)==1
+    k=1;
+end
 sek=realsqrt(2*(d^2-sum(b.*(1-2.*pj))))/sum(b.*realsqrt(c)); %kappa standard error
 ci=k+([-1 1].*(abs(0.5*erfc(-alpha/2/realsqrt(2)))*sek)); %k confidence interval
 z=k/sek; %normalized kappa

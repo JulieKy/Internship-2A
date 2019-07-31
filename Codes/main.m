@@ -59,6 +59,19 @@ for i = 1:lengthTot % loop to have all recording
     xs=resample(x,4000,Fs);
     fn=4000;
     
+    %% Removing crying sections
+    % -- Data
+    observators=2;
+    samples=37;
+    end_sample=60; % End of the signal (hypotesis: length of the signal=60s)
+    
+    % -- Parameters
+    window=3;
+    overlap=25/100;
+    
+    % -- Function
+    [labels, coef_KAPPA]=labelling(observators,samples, end_sample, window, overlap);
+    
     %% filtering BP 100-1000Hz
     y = filterbp(xs,fn);
     
@@ -87,7 +100,7 @@ for i = 1:lengthTot % loop to have all recording
     xlswrite([pathExcel excelFile], [i;output_mean_mfcc'; output_lpc'; output_lsf']', 'Coefficients', ['A',num2str(i+1)]);
     xlswrite([pathExcel excelFile],{names_cell{i}}, 'Coefficients',['A',num2str(i+1)]);
     
-%     spectrogram(y, 'yaxis')
+    %     spectrogram(y, 'yaxis')
 end
 
 %% Plot Average figures

@@ -1,25 +1,23 @@
-% Labels the recordings and give a matrix with the 3 observators (dire mean
-% et tout ca): output=labels & input=window et overlap samples, observators
+function [labels,coef_KAPPA] = labelling(observators,samples, end_sample, window, overlap)
+%LABELLING: Labels the recordings using Audacity text files, thank to a moving average amd give the Fleiss'es KAPPA coefficients. 
 
-%% INITIALISATION
-
-% -- Data
-observators=2;
-samples=37;
-
-% -- Parameters
-window=3;
-overlap=25/100;   % A METTRE DANS APPEL DE FONCTION
-
-% -- Variables
-end_sample=60; % End of the signal (hypotesis: length of the signal=60s)
+%% INPUTS AND OUTPUTS
+%  -- Inputs --
+% observators: number of raters that labelled the samples
+% samples: number of samples
+% end_sample: end of samples (in second)
+% window: window (in second) for the moving average
+% overlap: overlap for the moving average\
+% -- Outputs --
+% labels: resulting labels of the bank of signals in this matrix shape (observators, labels, samples)
+% coef_KAPPA:  Fleiss'es KAPPA coefficient for each sample
 
 
 %% LABELLING THE BANK OF SAMPLES
 for samp=1:samples % Number of samples
     for obs=1:observators % Number of observators
         
-        
+        % -- Initialisation
         start=0; % Departure of the section
         end_w=start+window; % End of the window section
         label_signal=[]; % Labels of one signal
@@ -111,17 +109,22 @@ end
 
 
 %% KAPPA CALCULATION
-% Deuxieme fonction: met sous la bonne forme et appelle fleiss
-% Input:labels, samples, observators
-
- 
-% Need to be done for each sample
+%  -- Initialisation
 coef_KAPPA=zeros(1, samples);
+
+
 for samp=1:samples % Number of samples
+    
+    %  -- Counting the number of raters who agreed on a category (CS and NCS)
     x=labels(:, :, samp); % Matrix shape: (labels of one sample, observators)
-    nb_CS=sum(x);
-    nb_NCS=observators-nb_CS;
+    nb_CS=sum(x); % Number of raters who agreed on CS
+    nb_NCS=observators-nb_CS; % Number of raters who agreed on NCS
     y=[nb_CS', nb_NCS'];
-    coef_KAPPA(1,samp)=fleiss(y); % VOIR SI CA MARCHE QUAND LABELS BELLE !!!
+    
+    % -- Calculation for each sample
+    coef_KAPPA(1,samp)=fleiss(y);
+end
+
+
 end
 
