@@ -7,11 +7,11 @@ data_dir=[path,'\..\..\Data\Samples_Belle\'];
 dinfo = dir(data_dir);
 names_cell1 = {dinfo.name};
 % choose a valid file name
-j=0;
+n_section=0;
 for i=1:size(names_cell1,2)
     if length(names_cell1{i})>2
-        j=j+1;
-        names_cell{j}=names_cell1{i};
+        n_section=n_section+1;
+        names_cell{n_section}=names_cell1{i};
     end
 end
 
@@ -187,39 +187,42 @@ sample_NCS_start=time_NCS_start*fn;
 label_duration=window*fn; % Number of samples in a window
 
 pass_band=[0:1000]; % PAS ICI
-f_band=100; 
+f_band_width=100;  % Width of frequency bands
 % -- Periodogram for each CS sections
-pr_CS=zeros(length(CS_locs),floor(pass_band(end)/f_band)); % Power ratio
-for j=1:length(CS_locs)
-    CS_section=xss(sample_CS_start(j):sample_CS_start(j)+label_duration);
+pr_CS=zeros(length(CS_locs),floor(pass_band(end)/f_band_width)); % Power ratio
+for n_section=1:length(CS_locs)
+    CS_section=xss(sample_CS_start(n_section):sample_CS_start(n_section)+label_duration);
     % FAIRE UN PLOT
     [pxx,f] = Welch_periodogram(CS_section, fn, pass_band);  % A MIEUX FAIRE
     pxx_sum=sum(pxx);
-    for h = pass_band(1)+1 : floor(pass_band(end)/f_band) % A MIEUX FAIRE
+    for h = pass_band(1)+1 : floor(pass_band(end)/f_band_width) % A MIEUX FAIRE
         a=1; i=1;
         while f(i)<100*h
             i=i+1;
         end
-        pr_CS(j,h)=mean(pxx(a:i-1))/pxx_sum;
+        pr_CS(n_section,h)=mean(pxx(a:i-1))/pxx_sum;
         a=i;
     end
-end 
+end
 
 pr_CS_mean=mean(pr_CS);
 
 % -- Periodogram for each NCS sections
-pr_NCS=zeros(length(NCS_locs),floor(pass_band(end)/f_band)); % Power ratio
-for j=1:length(NCS_locs)
-    NCS_section=xss(sample_NCS_start:sample_NCS_start+label_duration);
-     [pxx,f] = Welch_periodogram(NCS_section, fn, pass_band);  % A MIEUX FAIRE
-    pxx_sum=sum(pxx);
-    for h = pass_band(1)+1 : floor(pass_band(end)/f_band) % A MIEUX FAIRE
-        a=1; i=1;
-        while f(i)<100*h
-            i=i+1;
-        end
-        pr_NCS(j,h)=mean(pxx(a:i-1))/pxx_sum;
-        a=i;
-    end
-end 
-pr_NCS_mean=mean(pr_NCS);
+pr_NCS=zeros(length(NCS_locs),floor(pass_band(end)/f_band_width)); % Power ratio
+
+% For each NCS section
+for n_section=1:length(NCS_locs)
+    NCS_section=xss(sample_NCS_start:sample_NCS_start+label_duration); % Section NCS
+    [pxx,f] = Welch_periodogram(NCS_section, fn, pass_band);  % Welch Periodogram of the section
+    f_interval=pass_band(end)/length(f); % Frequency interval in the f vector
+    band_interval=round(f_band_width/f_interval)+1; % Index interval for a frequency band in the f vector
+    pxx_sum=sum(pxx); % Sum of the pxx
+    
+    % For each frequency band
+    for n_band = pass_band(1) : floor(pass_band(end)/f_band_width)-1
+        % pr_NCS(n_section,n_band+1)=mean(pxx(band_interval*n_band+1:band_interval*(n_band+1)))/pxx_sum; % Power ratio
+        % A VOIR !!
+    end  
+end
+
+pr_NCS_mean=mean(pr_NCS); % Mean of the power ratio for all NCS section of a sample
