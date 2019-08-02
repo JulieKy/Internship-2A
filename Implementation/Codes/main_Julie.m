@@ -59,11 +59,17 @@ for i = 1:lengthTot % loop to have all recording
     xs=resample(x,4000,Fs);
     fn=4000;
     
+    %% Shorten the signals to 60s 
+    time_sample=60;
+    xss=xs(1:time_sample*fn,1);
+    
     %% Removing crying sections
-    xsc=crying_removing(xs); 
+    % Regarder si appris, si non le faire, si oui lire dans le fichier et
+    % remove the CS
+    xsc=crying_removing(xss, fn);
     
     %% filtering BP 100-1000Hz
-    y = filterbp(xsc,fn); 
+    y = filterbp(xsc,fn);
     
     %% Computation of features
     output_temporal_features = temporal_features(xs,fn, tempName); % Temporal features

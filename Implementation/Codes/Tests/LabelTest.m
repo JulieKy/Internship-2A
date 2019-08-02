@@ -186,6 +186,7 @@ sample_CS_start=time_CS_start*fn;
 sample_NCS_start=time_NCS_start*fn;
 label_duration=window*fn; % Number of samples in a window
 
+
 % -- Periodogram for each CS sections A FAIRE
 
 % -- Periodogram for each NCS sections
@@ -193,26 +194,63 @@ pass_band=[0:1000];
 band_width=100;
 PR=[];
 
+figure,
+plot(time_axis, xss); hold on % The entire signal
+
 % For each NCS section
 for n_section=1:length(NCS_locs)
-    NCS_section=xss(sample_NCS_start:sample_NCS_start+label_duration); % Section NCS
+    NCS_start=sample_NCS_start(n_section);
+    NCS_end=NCS_start+label_duration;
+    
+    % Section on the signal
+    NCS_section=xss(NCS_start:NCS_end);
+    time_axis_section=time_axis(NCS_start:NCS_end);
+%     plot(time_axis_section, NCS_section, 'Color', 'r');
+     
+    % Welch Periodogram of the section
     [pxx,f] = Welch_periodogram(NCS_section, fn, pass_band);  % Welch Periodogram of the section
+    
+    % Parameters
     f_interval=length(f)*band_width/(pass_band(end)-pass_band(1));
     new_band_width=f(floor(f_interval)+1);
     pxx_sum=sum(pxx); % Sum of the pxx
-    %     figure,
-    %     plot(f, pxx);
     band_end=length(f);
     PR_section=[];
     
-    % For each frequency band 
+    % Display
+    figure,
+    hax=axes;
+    plot(f, pxx,'LineWidth',2);
+    hold on
+    
+    
+    % For each frequency band
     for n_band = 1 : length(f)/f_interval
-        band_start=band_end-(floor(f_interval))*n_band;
+        
+        
+        band_start=band_end-(floor(f_interval));
         band_pxx=pxx(band_start:band_end);
         PR_section=[mean(band_pxx)/pxx_sum, PR_section];
+        
+        % Display lines
+        line([f(band_start) f(band_start)],get(hax,'YLim'), 'Color',[0 0 0]); % Vertical lines differentiating the frequency bands
+        line([f(band_start) f(band_end)], [mean(band_pxx) mean(band_pxx)], 'LineWidth',2, 'Color',[1 0 0]);
+        
+        band_end=band_start;
+        
     end
+    
+    legend('Periodogram', 'Frequency bands', 'Mean')
+    title('Welch Periodogram for a NCS')
+    hold off
+    
     PR(n_section,:)=PR_section;
     
 end
+
+hold off
+legend('Signal', 'NCS sections')
+title('Theorical NCS sections')
+
 
 PR_NCS_mean=mean(PR); % Mean of the power ratio for all NCS section of a sample
