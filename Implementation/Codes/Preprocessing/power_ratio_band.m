@@ -1,4 +1,4 @@
-function [pxx_mean, band_mean, PR_mean]=power_ratio_band(xss, fn, window, overlap, label_final, pass_band, band_width, flag_section)
+function [pxx_mean, band_mean, PR_mean, f]=power_ratio_band(xss, fn, window, overlap, label_final, pass_band, band_width, flag_section)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 

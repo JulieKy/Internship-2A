@@ -8,27 +8,27 @@ addpath(genpath('..\..\')); % to have access to sample folder
 init = 0; % optional, to generate a new Excel File
 excelFile = 'NewFeaturesAnalysis_f'; % name of the Excel file to store features
 path = pwd; % current path
-pathExcel = strcat(path, '\'); % path of the Excel file
+% pathExcel = strcat(path, '\'); % path of the Excel file
 
-if ~(exist(pathExcel)) % test to create excel file or no
-    disp('creation Excel folder')
-    mkdir(pathExcel);
-end
+% if ~(exist(pathExcel)) % test to create excel file or no
+%     disp('creation Excel folder')
+%     mkdir(pathExcel);
+% end
 
-excelTemp = strcat([pathExcel excelFile], '.xls'); % add the .xls to have complete name
+% excelTemp = strcat([pathExcel excelFile], '.xls'); % add the .xls to have complete name
 data_dir=[path,'\..\Data\Samples_Belle\'];
 
 %% SPECTRAL FEATURES
 
-%% Add the headers in the Excel file
-if (init == 0)
-    %     xlswrite([pathExcel excelFile], [{'file'}, {'ZCR'}, {'meanPSD'},{'stdPSD'},{'medPSD'},{'bw'},{'p25'},{'p75'},{'IQR'},{'TP'},{'p100_200'},{'p200_400'},{'p400_800'},{'SL'},{'R2'},{'nb_pks_MAF'}, {'f_higherPk_MAF'}, {'dif_higherPks_MAF'},{'nb_pks_GMM'}, {'f_higherPk_GMM'}, {'dif_higherPks_GMM'}, {'fi.a1'}, {'fi.a2'}, {'fi.a3'}, {'fi.a4'}, {'fi.b1'}, {'fi.b2'}, {'fi.b3'}, {'fi.b4'}, {'fi.c1'}, {'fi.c2'}, {'fi.c3'}, {'fi.c4'}, {'MFCC1'}, {'MFCC2'}, {'MFCC3'}, {'MFCC4'}, {'MFCC5'}, {'MFCC6'}], 'Features 1', 'A1'); % longest segment
-    xlswrite([pathExcel excelFile], [{'file'}, {'ZCR'}], 'Temporal Features', 'A1'); % Sheet 1
-    xlswrite([pathExcel excelFile], [{'file'}, {'meanPSD'},{'stdPSD'},{'medPSD'},{'bw'},{'p25'},{'p75'},{'IQR'},{'TP'},{'p100_200'},{'p200_400'},{'p400_800'},{'SL'},{'R2'}], 'Spectral Features 1', 'A1'); % Sheet 2
-    xlswrite([pathExcel excelFile], [{'file'}, {'nb_pks_MAF'}, {'f_higherPk_MAF'}, {'dif_higherPks_MAF'},{'nb_pks_GMM'}, {'f_higherPk_GMM'}, {'dif_higherPks_GMM'}, {'fi.a1'}, {'fi.a2'}, {'fi.a3'}, {'fi.a4'}, {'fi.b1'}, {'fi.b2'}, {'fi.b3'}, {'fi.b4'}, {'fi.c1'}, {'fi.c2'}, {'fi.c3'}, {'fi.c4'}], 'Spectral Features 2', 'A1'); % Sheet 3
-    xlswrite([pathExcel excelFile], [{'file'}, {'MFCC1'}, {'MFCC2'}, {'MFCC3'}, {'MFCC4'}, {'MFCC5'}, {'MFCC6'}, {'LPC2'}, {'LPC3'}, {'LPC4'}, {'LPC5'}, {'LPC6'}, {'LSF1'}, {'LSF2'}, {'LSF3'}, {'LSF4'}, {'LSF5'}, {'LSF6'} ], 'Coefficients', 'A1'); % Sheet 4
-    init = 1;
-end
+% %% Add the headers in the Excel file
+% if (init == 0)
+%     %     xlswrite([pathExcel excelFile], [{'file'}, {'ZCR'}, {'meanPSD'},{'stdPSD'},{'medPSD'},{'bw'},{'p25'},{'p75'},{'IQR'},{'TP'},{'p100_200'},{'p200_400'},{'p400_800'},{'SL'},{'R2'},{'nb_pks_MAF'}, {'f_higherPk_MAF'}, {'dif_higherPks_MAF'},{'nb_pks_GMM'}, {'f_higherPk_GMM'}, {'dif_higherPks_GMM'}, {'fi.a1'}, {'fi.a2'}, {'fi.a3'}, {'fi.a4'}, {'fi.b1'}, {'fi.b2'}, {'fi.b3'}, {'fi.b4'}, {'fi.c1'}, {'fi.c2'}, {'fi.c3'}, {'fi.c4'}, {'MFCC1'}, {'MFCC2'}, {'MFCC3'}, {'MFCC4'}, {'MFCC5'}, {'MFCC6'}], 'Features 1', 'A1'); % longest segment
+%     xlswrite([pathExcel excelFile], [{'file'}, {'ZCR'}], 'Temporal Features', 'A1'); % Sheet 1
+%     xlswrite([pathExcel excelFile], [{'file'}, {'meanPSD'},{'stdPSD'},{'medPSD'},{'bw'},{'p25'},{'p75'},{'IQR'},{'TP'},{'p100_200'},{'p200_400'},{'p400_800'},{'SL'},{'R2'}], 'Spectral Features 1', 'A1'); % Sheet 2
+%     xlswrite([pathExcel excelFile], [{'file'}, {'nb_pks_MAF'}, {'f_higherPk_MAF'}, {'dif_higherPks_MAF'},{'nb_pks_GMM'}, {'f_higherPk_GMM'}, {'dif_higherPks_GMM'}, {'fi.a1'}, {'fi.a2'}, {'fi.a3'}, {'fi.a4'}, {'fi.b1'}, {'fi.b2'}, {'fi.b3'}, {'fi.b4'}, {'fi.c1'}, {'fi.c2'}, {'fi.c3'}, {'fi.c4'}], 'Spectral Features 2', 'A1'); % Sheet 3
+%     xlswrite([pathExcel excelFile], [{'file'}, {'MFCC1'}, {'MFCC2'}, {'MFCC3'}, {'MFCC4'}, {'MFCC5'}, {'MFCC6'}, {'LPC2'}, {'LPC3'}, {'LPC4'}, {'LPC5'}, {'LPC6'}, {'LSF1'}, {'LSF2'}, {'LSF3'}, {'LSF4'}, {'LSF5'}, {'LSF6'} ], 'Coefficients', 'A1'); % Sheet 4
+%     init = 1;
+% end
 
 
 %% Add the spectral features
@@ -64,6 +64,7 @@ for i = 1:lengthTot % loop to have all recording
     xss=xs(1:time_sample*fn,1);
     
     %% Removing crying sections
+    truc=crying_learning(names_cell);
     % Regarder si appris, si non le faire, si oui lire dans le fichier et
     % remove the CS
     xsc=crying_removing(xss, fn);
