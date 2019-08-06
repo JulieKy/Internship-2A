@@ -78,6 +78,11 @@ pxx_CS_mean=mean(pxx_CS);
 band_CS_mean=mean(band_CS);
 PR_CS_mean=mean(PR_CS);
 
+% figure, 
+% plot(PR_CS_mean); hold on 
+% plot(PR_NCS_mean); hold off
+% legend('CS', 'NCS')
+% title('Power ratio')
 
 %% DISPLAY
 
@@ -130,5 +135,13 @@ legend('Periodogram', 'Frequency bands', 'Mean')
 title('Welch Periodogram mean for CS')
 
 truc=1;
+
+
+figure, 
+plot(f, pxx_NCS_mean,'LineWidth',2);
+hold on
+plot(f, pxx_CS_mean,'LineWidth',2);hold off
+legend('NCS', 'CS')
+
 end
 
