@@ -35,13 +35,12 @@ pxx_CS=[];
 band_CS=[];
 PR_CS=[];
 
-
 path = pwd;
 
 % For every signal
 for i = 1:length(names_cell)
     
-    % -- Reading the signals
+    % -- Re ding the signals
     tempName=names_cell{i};
     [x,Fs]= audioread([path,'\..\Data\Samples_Belle\',tempName]);
     
@@ -91,19 +90,44 @@ plot(f, pxx_NCS_mean,'LineWidth',2);
 hold on
 
 band_end=length(f);
-f_interval=length(f)*band_width/(pass_band(end)-pass_band(1))
+f_interval=length(f)*band_width/(pass_band(end)-pass_band(1));
 
 % Display lines
 for n_band = 1 : length(f)/f_interval
     band_start=band_end-(floor(f_interval));
     line([f(band_start) f(band_start)],get(hax,'YLim'), 'Color',[0 0 0]); % Vertical lines differentiating the frequency bands
-    line([f(band_start) f(band_end)], [band_NCS_mean(n_band) band_NCS_mean(n_band)], 'LineWidth',2, 'Color',[1 0 0]);
+    line([f(band_start) f(band_end)], [band_NCS_mean(n_band) band_NCS_mean(n_band)], 'LineWidth',2, 'Color',[1 0 0]); % Horizontal lines representing the periodogram mean of each frequency band
     band_end=band_start;
 end
 
 hold off
 legend('Periodogram', 'Frequency bands', 'Mean')
 title('Welch Periodogram mean for NCS')
+
+
+% -- CS periodogram with means
+figure,
+hax=axes;
+
+band_end=length(f);
+f_interval=length(f)*band_width/(pass_band(end)-pass_band(1));
+
+
+% Display periodogram
+plot(f, pxx_CS_mean,'LineWidth',2);
+hold on
+
+% Display lines
+for n_band = 1 : length(f)/f_interval
+    band_start=band_end-(floor(f_interval));
+    line([f(band_start) f(band_start)],get(hax,'YLim'), 'Color',[0 0 0]); % Vertical lines differentiating the frequency bands
+    line([f(band_start) f(band_end)], [band_CS_mean(n_band) band_CS_mean(n_band)], 'LineWidth',2, 'Color',[1 0 0]); % Horizontal lines representing the periodogram mean of each frequency band
+    band_end=band_start;
+end
+
+hold off
+legend('Periodogram', 'Frequency bands', 'Mean')
+title('Welch Periodogram mean for CS')
 
 truc=1;
 end

@@ -40,10 +40,10 @@ for n_section=1:length(locs)
     % Section on the signal (NCS/CS)
     section=xss(start_section:end_section);
     time_axis_section=time_axis(start_section:end_section);
-     
+    
     % Welch Periodogram of the section
     [pxx,f] = Welch_periodogram(section, fn, pass_band); % Welch Periodogram of the section
-    pxx_signal=[pxx, pxx_signal]; 
+    pxx_signal=[pxx, pxx_signal];
     
     % Parameters
     f_interval=length(f)*band_width/(pass_band(end)-pass_band(1)); % Interval of frequencies in the vector f
@@ -51,22 +51,52 @@ for n_section=1:length(locs)
     band_mean_section=[]; % Means of the periodogram in the frequency bands
     
     % For each frequency band
-    for n_band = 1 : length(f)/f_interval 
+    for n_band = 1 : length(f)/f_interval
         start_band=end_band-(floor(f_interval)); % Beginning of the band
         pxx_band=pxx(start_band:end_band); % Periodogram in the band
-        band_mean_section=[mean(pxx_band), band_mean_section]; % Mean of this periodogram
-        end_band=start_band; % End of the band     
+        band_mean_section=[ band_mean_section, mean(pxx_band)]; % Mean of this periodogram
+        end_band=start_band; % End of the band
     end
     
     band_mean_signal(n_section,:)=band_mean_section; % Periodogram means in each frequency bands, for each section NCS/CS of a signal. Matrix shaped like this: (section, frequency bands)
     PR=band_mean_signal/sum(pxx); % Power ratio in each frequency bands, for each section NCS/CS of a signal
+    
+%     %% DISPLAY FOR ONE SIGNAL, EACH SECTION NCS/CS
+%     % -- NCS periodogram with means
+%     figure,
+%     hax=axes;
+%     
+%     band_end=length(f);
+%     f_interval=length(f)*band_width/(pass_band(end)-pass_band(1))
+%     
+%     
+%     % Display periodogram
+%     plot(f, pxx,'LineWidth',2);
+%     hold on
+%     
+%     % Display lines
+%     for n_band = 1 : length(f)/f_interval
+%         band_start=band_end-(floor(f_interval));
+%         line([f(band_start) f(band_start)],get(hax,'YLim'), 'Color',[0 0 0]); % Vertical lines differentiating the frequency bands
+%         line([f(band_start) f(band_end)], [band_mean_signal(n_section,n_band) band_mean_signal(n_section,n_band)], 'LineWidth',2, 'Color',[1 0 0]);
+%         band_end=band_start;
+%     end
+%     
+%     hold off
+%     legend('Periodogram', 'Frequency bands', 'Mean')
+%     title('Welch Periodogram for a signal')  
+%     
 end
+
+
+
 
 %% OUTPUTS
 band_mean=mean(band_mean_signal); % For a signal, mean of the means of frequency bands periodogram, for all NCS/CS sections
 pxx_mean=mean(pxx_signal'); % For a signal, mean of the periodograms of all NCS/CS sections
 PR_mean=mean(PR); % For a signal, mean of power ratios of all NCS/CS sections
 
-
+figure, 
+plot(f,pxx_mean)
 end
 

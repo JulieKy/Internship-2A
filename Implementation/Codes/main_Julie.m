@@ -69,7 +69,7 @@ for i = 1:lengthTot % loop to have all recording
     % remove the CS
     xsc=crying_removing(xss, fn);
     
-    %% filtering BP 100-1000Hz
+    %% filtering BP 100-1000Hz                                                                                                                    
     y = filterbp(xsc,fn);
     
     %% Computation of features
