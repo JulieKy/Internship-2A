@@ -9,7 +9,7 @@ function [threshold] = crying_learning(names_cell)
 
 %% INITIALISATION
 % -- Data
-observators=2;
+observators=3;
 samples=37;
 end_sample=60; % End of the signal (hypotesis: length of the signal=60s)
 
@@ -135,29 +135,19 @@ PR_CS_mean=mean(PR_CS);
 % title('Welch Periodogram mean for CS')
 
 % Median with inter-quartile range
-
 figure(),
 plot(f(f~=0) , median(pxx_NCS(:,(f~=0))), 'Color', [1 0 0]); hold on
-plot(f(f~=0) , prctile(pxx_NCS(:,(f~=0)),25), 'LineStyle', '--', 'Color', [1 0.7 0.7]); 
-plot(f(f~=0) , prctile(pxx_NCS(:,(f~=0)),75), 'LineStyle', '--', 'Color', [1 0.7 0.7]); 
 plot(f(f~=0) , median(pxx_CS(:,(f~=0))), 'Color', [0 0 1]);
-plot(f(f~=0) , prctile(pxx_CS(:,(f~=0)),25), 'LineStyle', '--', 'Color', [0.7 0.7 1]); 
-plot(f(f~=0) , prctile(pxx_CS(:,(f~=0)),75), 'LineStyle', '--', 'Color', [0.7 0.7 1]); 
+plot(f(f~=0) , prctile(pxx_NCS(:,(f~=0)),25), 'LineStyle', '--', 'Color', [1 0.4 0.4]); 
+plot(f(f~=0) , prctile(pxx_CS(:,(f~=0)),25), 'LineStyle', '--', 'Color', [0.4 0.4 1]); 
+plot(f(f~=0) , prctile(pxx_NCS(:,(f~=0)),75), 'LineStyle', '--', 'Color', [1 0.4 0.4]); 
+plot(f(f~=0) , prctile(pxx_CS(:,(f~=0)),75), 'LineStyle', '--', 'Color', [0.4 0.4 1]); 
 
 xlabel('Frequency (in Hz)');
 ylabel('Power Spectrum');
-title('Average Power Spectrum');
-legend('Average power spectrum', 'Interquartile range');
+title('Average Power Spectrum for NCS and CS');
+legend('Average power spectrum NCS',  'Average power spectrum CS', 'Interquartile range NCS','Interquartile range CS');
 hold off
-
-% figure,
-% plot(f, pxx_NCS_mean,'LineWidth',2);
-% hold on
-% plot(f, pxx_CS_mean,'LineWidth',2);hold off
-% legend('NCS', 'CS')
-
-
-
 
 
 threshold=1;
