@@ -1,10 +1,10 @@
-function [truc] = crying_learning(names_cell)
+function [] = crying_learning(names_cell)
 %CRYING_LEARNING:  Label the crying section, and learn where are the CS by using the Power Ratio Tool
 
 %% INPUTS AND OUTPUTS
-
-
-
+%  -- Inputs --
+% names_cell:
+% -- Outputs --
 
 
 %% INITIALISATION
@@ -21,6 +21,9 @@ overlap=25/100;
 pass_band=[0:1000];
 band_width=100;
 
+
+path = pwd;
+
 %% LABELLING
 [label_final, coef_KAPPA]=labelling(observators,samples, end_sample, window, overlap);
 
@@ -35,12 +38,10 @@ pxx_CS=[];
 band_CS=[];
 PR_CS=[];
 
-path = pwd;
-
 % For every signal
 for i = 1:length(names_cell)
     
-    % -- Re ding the signals
+    % -- Reading the signals
     tempName=names_cell{i};
     [x,Fs]= audioread([path,'\..\Data\Samples_Belle\',tempName]);
     
@@ -54,35 +55,34 @@ for i = 1:length(names_cell)
     
     % -- NCS power ratio
     flag_section=0; % 0 for NCS
-    [pxx_NCS_signal, band_NCS_signal, PR_NCS_signal, f]=power_ratio_band(xss, fn, window, overlap, label_final, pass_band, band_width, flag_section);
+    [pxx_NCS_signal, band_NCS_signal, PR_NCS_signal, freq]=power_ratio_band(xss, i, fn, window, overlap, label_final, pass_band, band_width, flag_section);
     pxx_NCS=[pxx_NCS_signal; pxx_NCS];
     band_NCS=[band_NCS_signal; band_NCS];
     PR_NCS=[PR_NCS_signal; PR_NCS];
+    f=freq;
     
     % -- CS power ratio
     flag_section=1; % 1 for CS
-    [pxx_CS_signal, band_CS_signal, PR_CS_signal, f]=power_ratio_band(xss, fn, window, overlap, label_final, pass_band, band_width, flag_section);
-    pxx_CS=[pxx_CS_signal; pxx_CS];
-    band_CS=[band_CS_signal; band_CS];
-    PR_CS=[PR_CS_signal; PR_CS];
+    [pxx_CS_signal, band_CS_signal, PR_CS_signal, freq]=power_ratio_band(xss, i, fn, window, overlap, label_final, pass_band, band_width, flag_section);
+    if (pxx_CS_signal~=0) % CS present in the signal
+        pxx_CS=[pxx_CS_signal; pxx_CS];
+        band_CS=[band_CS_signal; band_CS];
+        PR_CS=[PR_CS_signal; PR_CS];
+    end
     
 end
 
-% NCS
+% NCS: average on all signals
 pxx_NCS_mean=mean(pxx_NCS);
 band_NCS_mean=mean(band_NCS);
 PR_NCS_mean=mean(PR_NCS);
 
-% CS
+% CS: average on all signals
 pxx_CS_mean=mean(pxx_CS);
 band_CS_mean=mean(band_CS);
 PR_CS_mean=mean(PR_CS);
 
-% figure, 
-% plot(PR_CS_mean); hold on 
-% plot(PR_NCS_mean); hold off
-% legend('CS', 'NCS')
-% title('Power ratio')
+
 
 %% DISPLAY
 
@@ -134,14 +134,11 @@ hold off
 legend('Periodogram', 'Frequency bands', 'Mean')
 title('Welch Periodogram mean for CS')
 
-truc=1;
 
-
-figure, 
+figure,
 plot(f, pxx_NCS_mean,'LineWidth',2);
 hold on
 plot(f, pxx_CS_mean,'LineWidth',2);hold off
 legend('NCS', 'CS')
 
 end
-

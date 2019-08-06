@@ -55,7 +55,7 @@ for i = 1:lengthTot % loop to have all recording
     
     [x,Fs]= audioread([path,'\..\Data\Samples_Belle\',tempName]); % read current file
     
-    %% resampling to 4000 Hz
+    %% Resampling to 4000 Hz
     xs=resample(x,4000,Fs);
     fn=4000;
     
@@ -64,12 +64,12 @@ for i = 1:lengthTot % loop to have all recording
     xss=xs(1:time_sample*fn,1);
     
     %% Removing crying sections
-    truc=crying_learning(names_cell);
+    crying_learning(names_cell);
     % Regarder si appris, si non le faire, si oui lire dans le fichier et
     % remove the CS
     xsc=crying_removing(xss, fn);
     
-    %% filtering BP 100-1000Hz                                                                                                                    
+    %% Filtering BP 100-1000Hz                                                                                                                    
     y = filterbp(xsc,fn);
     
     %% Computation of features
