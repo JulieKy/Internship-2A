@@ -1,4 +1,4 @@
-function [] = crying_learning(names_cell)
+function [threshold] = crying_learning(names_cell)
 %CRYING_LEARNING:  Label the crying section, and learn where are the CS by using the Power Ratio Tool
 
 %% INPUTS AND OUTPUTS
@@ -18,7 +18,7 @@ window=3;
 overlap=25/100;
 
 % -- Parameters for the power ratio
-pass_band=[0:1000];
+pass_band=[0:2000];
 band_width=100;
 
 
@@ -86,59 +86,79 @@ PR_CS_mean=mean(PR_CS);
 
 %% DISPLAY
 
-% -- NCS periodogram with means
-figure,
-hax=axes;
+% % -- NCS periodogram with means
+% figure,
+% hax=axes;
+% 
+% % Display periodogram
+% plot(f, pxx_NCS_mean,'LineWidth',2);
+% hold on
+% 
+% band_end=length(f);
+% f_interval=length(f)*band_width/(pass_band(end)-pass_band(1));
+% 
+% % Display lines
+% for n_band = 1 : length(f)/f_interval
+%     band_start=band_end-(floor(f_interval));
+%     line([f(band_start) f(band_start)],get(hax,'YLim'), 'Color',[0 0 0]); % Vertical lines differentiating the frequency bands
+%     line([f(band_start) f(band_end)], [band_NCS_mean(n_band) band_NCS_mean(n_band)], 'LineWidth',2, 'Color',[1 0 0]); % Horizontal lines representing the periodogram mean of each frequency band
+%     band_end=band_start;
+% end
+% 
+% hold off
+% legend('Periodogram', 'Frequency bands', 'Mean')
+% title('Welch Periodogram mean for NCS')
+% 
+% 
+% % -- CS periodogram with means
+% figure,
+% hax=axes;
+% 
+% band_end=length(f);
+% f_interval=length(f)*band_width/(pass_band(end)-pass_band(1));
+% 
+% 
+% % Display periodogram
+% plot(f, pxx_CS_mean,'LineWidth',2);
+% hold on
+% 
+% % Display lines
+% for n_band = 1 : length(f)/f_interval
+%     band_start=band_end-(floor(f_interval));
+%     line([f(band_start) f(band_start)],get(hax,'YLim'), 'Color',[0 0 0]); % Vertical lines differentiating the frequency bands
+%     line([f(band_start) f(band_end)], [band_CS_mean(n_band) band_CS_mean(n_band)], 'LineWidth',2, 'Color',[1 0 0]); % Horizontal lines representing the periodogram mean of each frequency band
+%     band_end=band_start;
+% end
+% 
+% hold off
+% legend('Periodogram', 'Frequency bands', 'Mean')
+% title('Welch Periodogram mean for CS')
 
-% Display periodogram
-plot(f, pxx_NCS_mean,'LineWidth',2);
-hold on
+% Median with inter-quartile range
 
-band_end=length(f);
-f_interval=length(f)*band_width/(pass_band(end)-pass_band(1));
+figure(),
+plot(f(f~=0) , median(pxx_NCS(:,(f~=0))), 'Color', [1 0 0]); hold on
+plot(f(f~=0) , prctile(pxx_NCS(:,(f~=0)),25), 'LineStyle', '--', 'Color', [1 0.7 0.7]); 
+plot(f(f~=0) , prctile(pxx_NCS(:,(f~=0)),75), 'LineStyle', '--', 'Color', [1 0.7 0.7]); 
+plot(f(f~=0) , median(pxx_CS(:,(f~=0))), 'Color', [0 0 1]);
+plot(f(f~=0) , prctile(pxx_CS(:,(f~=0)),25), 'LineStyle', '--', 'Color', [0.7 0.7 1]); 
+plot(f(f~=0) , prctile(pxx_CS(:,(f~=0)),75), 'LineStyle', '--', 'Color', [0.7 0.7 1]); 
 
-% Display lines
-for n_band = 1 : length(f)/f_interval
-    band_start=band_end-(floor(f_interval));
-    line([f(band_start) f(band_start)],get(hax,'YLim'), 'Color',[0 0 0]); % Vertical lines differentiating the frequency bands
-    line([f(band_start) f(band_end)], [band_NCS_mean(n_band) band_NCS_mean(n_band)], 'LineWidth',2, 'Color',[1 0 0]); % Horizontal lines representing the periodogram mean of each frequency band
-    band_end=band_start;
-end
-
+xlabel('Frequency (in Hz)');
+ylabel('Power Spectrum');
+title('Average Power Spectrum');
+legend('Average power spectrum', 'Interquartile range');
 hold off
-legend('Periodogram', 'Frequency bands', 'Mean')
-title('Welch Periodogram mean for NCS')
+
+% figure,
+% plot(f, pxx_NCS_mean,'LineWidth',2);
+% hold on
+% plot(f, pxx_CS_mean,'LineWidth',2);hold off
+% legend('NCS', 'CS')
 
 
-% -- CS periodogram with means
-figure,
-hax=axes;
-
-band_end=length(f);
-f_interval=length(f)*band_width/(pass_band(end)-pass_band(1));
 
 
-% Display periodogram
-plot(f, pxx_CS_mean,'LineWidth',2);
-hold on
 
-% Display lines
-for n_band = 1 : length(f)/f_interval
-    band_start=band_end-(floor(f_interval));
-    line([f(band_start) f(band_start)],get(hax,'YLim'), 'Color',[0 0 0]); % Vertical lines differentiating the frequency bands
-    line([f(band_start) f(band_end)], [band_CS_mean(n_band) band_CS_mean(n_band)], 'LineWidth',2, 'Color',[1 0 0]); % Horizontal lines representing the periodogram mean of each frequency band
-    band_end=band_start;
-end
-
-hold off
-legend('Periodogram', 'Frequency bands', 'Mean')
-title('Welch Periodogram mean for CS')
-
-
-figure,
-plot(f, pxx_NCS_mean,'LineWidth',2);
-hold on
-plot(f, pxx_CS_mean,'LineWidth',2);hold off
-legend('NCS', 'CS')
-
+threshold=1;
 end

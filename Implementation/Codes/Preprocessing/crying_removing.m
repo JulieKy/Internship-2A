@@ -1,4 +1,4 @@
-function [xsc] = crying_removing(xss, fn)
+function [xsc] = crying_removing(xss, fn, threshold)
 %CRYING_REMOVING:  Label the crying section, detect them and remove them
 
 %% INPUTS AND OUTPUTS

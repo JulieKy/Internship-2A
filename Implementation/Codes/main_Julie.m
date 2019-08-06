@@ -59,45 +59,46 @@ for i = 1:lengthTot % loop to have all recording
     xs=resample(x,4000,Fs);
     fn=4000;
     
-    %% Shorten the signals to 60s 
+    %% Shorten the signals to 60s
     time_sample=60;
     xss=xs(1:time_sample*fn,1);
     
     %% Removing crying sections
-    crying_learning(names_cell);
-    % Regarder si appris, si non le faire, si oui lire dans le fichier et
-    % remove the CS
-    xsc=crying_removing(xss, fn);
+       threshold= crying_learning(names_cell);
+    %     % Regarder si appris, si non le faire, si oui lire dans le fichier et
+    %     % remove the CS
+    %     xsc=crying_removing(xss, fn, threshold);
+    xsc=xss;
     
-    %% Filtering BP 100-1000Hz                                                                                                                    
+    %% Filtering BP 100-1000Hz
     y = filterbp(xsc,fn);
     
-    %% Computation of features
-    output_temporal_features = temporal_features(xs,fn, tempName); % Temporal features
+    %     %% Computation of features
+    %     output_temporal_features = temporal_features(xs,fn, tempName); % Temporal features
     [output_spectral_features(i,:),periodogram_pks_features(i,:),pxx(i,:),f(i,:),foct(i,:),spower(i,:),I(i,:),S(i,:)] = spectral_features(y,fn); % See Fae's comment
-    output_mean_mfcc = mfcc_coeffs(y, fn); % MFCCs coefficient
-    [output_lpc, output_lsf] = lpc_lsf_coeff(y, fn); % LPC and LFC coefficient
-    
+    %     output_mean_mfcc = mfcc_coeffs(y, fn); % MFCCs coefficient
+    %     [output_lpc, output_lsf] = lpc_lsf_coeff(y, fn); % LPC and LFC coefficient
+    %
     
     % -- Write on Excel file all the features
     
-    % Sheet 1
-    xlswrite([pathExcel excelFile], [i;output_temporal_features]', 'Temporal Features', ['A',num2str(i+1)]);
-    xlswrite([pathExcel excelFile],{names_cell{i}}, 'Temporal Features',['A',num2str(i+1)]);
-    
-    % Sheet 2
-    xlswrite([pathExcel excelFile], [i;output_spectral_features(i,:)']', 'Spectral Features 1', ['A',num2str(i+1)]);
-    xlswrite([pathExcel excelFile],{names_cell{i}}, 'Spectral Features 1',['A',num2str(i+1)]);
-    
-    % Sheet 3
-    xlswrite([pathExcel excelFile], [i;periodogram_pks_features(i,:)']', 'Spectral Features 2', ['A',num2str(i+1)]);
-    xlswrite([pathExcel excelFile],{names_cell{i}}, 'Spectral Features 2',['A',num2str(i+1)]);
-    
-    % Sheet 4
-    xlswrite([pathExcel excelFile], [i;output_mean_mfcc'; output_lpc'; output_lsf']', 'Coefficients', ['A',num2str(i+1)]);
-    xlswrite([pathExcel excelFile],{names_cell{i}}, 'Coefficients',['A',num2str(i+1)]);
-    
-    %     spectrogram(y, 'yaxis')
+    %     % Sheet 1
+    %     xlswrite([pathExcel excelFile], [i;output_temporal_features]', 'Temporal Features', ['A',num2str(i+1)]);
+    %     xlswrite([pathExcel excelFile],{names_cell{i}}, 'Temporal Features',['A',num2str(i+1)]);
+    %
+    %     % Sheet 2
+    %     xlswrite([pathExcel excelFile], [i;output_spectral_features(i,:)']', 'Spectral Features 1', ['A',num2str(i+1)]);
+    %     xlswrite([pathExcel excelFile],{names_cell{i}}, 'Spectral Features 1',['A',num2str(i+1)]);
+    %
+    %     % Sheet 3
+    %     xlswrite([pathExcel excelFile], [i;periodogram_pks_features(i,:)']', 'Spectral Features 2', ['A',num2str(i+1)]);
+    %     xlswrite([pathExcel excelFile],{names_cell{i}}, 'Spectral Features 2',['A',num2str(i+1)]);
+    %
+    %     % Sheet 4
+    %     xlswrite([pathExcel excelFile], [i;output_mean_mfcc'; output_lpc'; output_lsf']', 'Coefficients', ['A',num2str(i+1)]);
+    %     xlswrite([pathExcel excelFile],{names_cell{i}}, 'Coefficients',['A',num2str(i+1)]);
+    %
+    %     %     spectrogram(y, 'yaxis')
 end
 
 %% Plot Average figures
