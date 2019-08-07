@@ -36,7 +36,7 @@ for samp=1:samples % Number of samples
         fmt=['%n', '%n', '%s'];
         file=textscan(fid,fmt);
         
-        % -- Close the file
+        % -- Close the file descriptor
         fclose(fid);
         
         % -- Reading the data
@@ -130,4 +130,3 @@ for samp=1:samples % Number of samples
     labels_final=[labels_final; (nb_CS/observators)>threshold_agreement];
     
 end
-
