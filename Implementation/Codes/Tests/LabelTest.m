@@ -36,7 +36,7 @@ xss=xs(1:time_sample*fn,1);
 %% INITIALISATION
 
 % -- Data
-observators=2;
+observators=3;
 samples=37;
 
 % -- Parameters
@@ -68,7 +68,7 @@ for samp=1:samples % Number of samples
         fmt=['%n', '%n', '%s'];
         file=textscan(fid,fmt);
         
-        % -- Close the file
+        % -- Close the file descriptor
         fclose(fid);
         
         % -- Reading the data
@@ -162,6 +162,9 @@ for samp=1:samples % Number of samples
     % -- Determining one label per window, putting the 'CS' label when there are at least 2/3 of agreement
     threshold_agreement=2/3;
     label_final=[label_final; (nb_CS/observators)>threshold_agreement];
+    
+    
+    
 end
 
 %% POWER RATIO
@@ -205,8 +208,8 @@ for n_section=1:length(NCS_locs)
     % Section on the signal
     NCS_section=xss(NCS_start:NCS_end);
     time_axis_section=time_axis(NCS_start:NCS_end);
-%     plot(time_axis_section, NCS_section, 'Color', 'r');
-     
+    %     plot(time_axis_section, NCS_section, 'Color', 'r');
+    
     % Welch Periodogram of the section
     [pxx,f] = Welch_periodogram(NCS_section, fn, pass_band);  % Welch Periodogram of the section
     
@@ -217,11 +220,11 @@ for n_section=1:length(NCS_locs)
     band_end=length(f);
     PR_section=[];
     
-    % Display
-    figure,
-    hax=axes;
-    plot(f, pxx,'LineWidth',2);
-    hold on
+    %     % Display
+    %     figure,
+    %     hax=axes;
+    %     plot(f, pxx,'LineWidth',2);
+    %     hold on
     
     
     % For each frequency band
@@ -232,25 +235,31 @@ for n_section=1:length(NCS_locs)
         band_pxx=pxx(band_start:band_end);
         PR_section=[mean(band_pxx)/pxx_sum, PR_section];
         
-        % Display lines
-        line([f(band_start) f(band_start)],get(hax,'YLim'), 'Color',[0 0 0]); % Vertical lines differentiating the frequency bands
-        line([f(band_start) f(band_end)], [mean(band_pxx) mean(band_pxx)], 'LineWidth',2, 'Color',[1 0 0]);
-        
+        %         % Display lines
+        %         line([f(band_start) f(band_start)],get(hax,'YLim'), 'Color',[0 0 0]); % Vertical lines differentiating the frequency bands
+        %         line([f(band_start) f(band_end)], [mean(band_pxx) mean(band_pxx)], 'LineWidth',2, 'Color',[1 0 0]);
+        %
         band_end=band_start;
         
     end
-    
-    legend('Periodogram', 'Frequency bands', 'Mean')
-    title('Welch Periodogram for a NCS')
-    hold off
-    
+    %
+    %     legend('Periodogram', 'Frequency bands', 'Mean')
+    %     title('Welch Periodogram for a NCS')
+    %     hold off
+    %
     PR(n_section,:)=PR_section;
     
 end
-
-hold off
-legend('Signal', 'NCS sections')
-title('Theorical NCS sections')
-
+%
+% hold off
+% legend('Signal', 'NCS sections')
+% title('Theorical NCS sections')
+%
 
 PR_NCS_mean=mean(PR); % Mean of the power ratio for all NCS section of a sample
+
+%% DISPLAY annoted labels NCS and CS
+signal_n=22;
+display_NCS_CS_annotations(signal_n,label_final, window, overlap)
+
+
