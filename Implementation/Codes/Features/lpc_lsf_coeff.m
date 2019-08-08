@@ -24,11 +24,11 @@ lpc_coeffs = lpc(y,numberCoeffs);
 % Estimatiom of the signal from LPC coefficients
 est_x = filter([0 -lpc_coeffs(2:end)],1,y);
 
-% Display
-figure,
-plot(time_axis,y); hold on
-plot(time_axis,est_x,'--'); hold off
-xlabel('Time (s)'); ylabel('Amplitude'); title('LPC?'); legend('Original signal','LPC estimate');
+% % Display
+% figure,
+% plot(time_axis,y); hold on
+% plot(time_axis,est_x,'--'); hold off
+% xlabel('Time (s)'); ylabel('Amplitude'); title('LPC?'); legend('Original signal','LPC estimate');
 
 
 %% COMPUTATION OF LSF COEFFICIENTS

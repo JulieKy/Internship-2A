@@ -32,7 +32,7 @@ nfft = 2^(nextpow2(length(wind))-1); % nfft
 [pxx,f] = pwelch(x,wind,nover,nfft,fn); % Welch
 f = f(f<=1000); % [0-800Hz] band of interest % Fae changed it to 1000Hz
 pxx=pxx(1:length(f));
-power = 1                  
+power = 1;                  
 xdata2 = f; % used for linear regression
 ydata2 = power; % used for linear regression
 
@@ -44,7 +44,7 @@ ydata2 = power; % used for linear regression
 pxx_smooth = smooth(pxx);
 nb_higherPks_MAF=2;
 
-figure,plot(f,pxx);
+% figure,plot(f,pxx);
 
 [nb_pks_MAF,  f_higherPk_MAF, dif_higherPks_MAF] = peaks_features(pxx_smooth,f, nb_higherPks_MAF, 'periodogram_MAF', 0);
 
@@ -73,7 +73,7 @@ GMM_parameters=[a, b, c];
 
 % -- Peaks features
 nb_higherPks_GMM=2;
-figure,plot(f,pxx);
+% figure,plot(f,pxx);
 [nb_pks_GMM,  f_higherPk_GMM, dif_higherPks_GMM] = peaks_features(fi_tot,f, nb_higherPks_GMM, 'periodogram_GMM', 0);
 
 periodogram_pks_features=[nb_pks_MAF;  f_higherPk_MAF; dif_higherPks_MAF; nb_pks_GMM;  f_higherPk_GMM; dif_higherPks_GMM; GMM_parameters'];
