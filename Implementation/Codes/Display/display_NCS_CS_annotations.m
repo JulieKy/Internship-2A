@@ -10,7 +10,7 @@ function [] = display_NCS_CS_annotations(signal_n,label_final, window, overlap)
 %% Reading the signal
 signal_name=sprintf('%d.mp3',signal_n);
 path=pwd;
-[x1,Fs]= audioread([path,'\..\Data\Samples_Belle\',signal_name]); % read current file
+[x1,Fs]= audioread([path,'\..\..\Data\Samples_Belle\',signal_name]); % read current file
 
 %% Resampling to 4000 Hz
 xs1=resample(x1,4000,Fs);
@@ -40,55 +40,36 @@ ylabel('Amplitude');
 
 % -- Temporal representation of the signal with NCS and CS
 subplot(2,1,2)
-plot(time_axis, xss1, 'Color', NCS_color); hold on % The entire signal %
+plot(time_axis, xss1, 'Color', NCS_color); hold on % The entire signal % ATTENTION COULEUR FAUSSE
 
 % Finding the location of 'CS' and 'NCS'
 CS_locs=find(label_final(signal_n,:)==1);
 NCS_locs=find(label_final(signal_n,:)==0);
 
 % Start time of the labels (for each window)
-time_CS_start=CS_locs*(window-overlap);
-time_NCS_start=NCS_locs*(window-overlap);
+time_CS_start=CS_locs*(window-overlap)-1;
+time_NCS_start=NCS_locs*(window-overlap)-1;
 
 % Start sample of the labels (for each window)
-sample_CS_start=time_CS_start*fn;
-sample_NCS_start=time_NCS_start*fn;
+sample_CS_start=time_CS_start*fn+1;
+sample_NCS_start=time_NCS_start*fn+1;
 label_duration=window*fn; % Number of samples in a window
 
-% For each NCS section
+% Sections NCS on the signal
 for n_section=1:length(NCS_locs)
-    NCS_start=sample_NCS_start(n_section);
-    NCS_end=NCS_start+label_duration;
-    
-    % Edge effects
-    if NCS_end>length(xss1) % For the last section, if the window and overlap or not adjusted to xss length
-        NCS_end=length(xss1);
-    end
-    
-    % Section on the signal
-    NCS_section=xss1(NCS_start:NCS_end);
-    time_axis_section=time_axis(NCS_start:NCS_end);
-    plot(time_axis_section, NCS_section, 'Color', NCS_color);
+    [NCS_section,time_axis_section] = label2signal(xss1, n_section, sample_NCS_start, label_duration, time_axis);
+    p1=plot(time_axis_section, NCS_section, 'Color', NCS_color);
 end
 
-% For each CS section
+% Sections CS on the signal
 for n_section=1:length(CS_locs)
-    CS_start=sample_CS_start(n_section);
-    CS_end=CS_start+label_duration;
-    
-    % Edge effects
-    if CS_end>length(xss1) % For the last section, if the window and overlap or not adjusted to xss length
-        CS_end=length(xss1);
-    end
-    
-    % Section on the signal
-    CS_section=xss1(CS_start:CS_end);
-    time_axis_section=time_axis(CS_start:CS_end);
-    plot(time_axis_section, CS_section, 'Color', CS_color);
+    [CS_section,time_axis_section] = label2signal(xss1, n_section, sample_CS_start, label_duration, time_axis);
+    p2=plot(time_axis_section, CS_section, 'Color', CS_color);
 end
 
+
+legend([p1 p2],'NCS', 'CS')
 hold off
-legend('CS','NCS')
 str2=sprintf('CS and NCS after Annotations on Signal %d',signal_n);
 title(str2)
 xlabel('Time [s]');

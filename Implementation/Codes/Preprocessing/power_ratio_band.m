@@ -17,18 +17,18 @@ time_axis = (1:N)/fn;
 locs=find(label_final(i,:)==flag_section); % Locations of NCS/CS
 
 if isempty(locs)==1 % There isn't NCS/CS on the signal
-    band_mean=0; 
-    pxx_mean=0; 
+    band_mean=0;
+    pxx_mean=0;
     PR_mean=0;
-    f=0; 
+    f=0;
     
 else % There are NCS/CS on the signal
     
     % -- Start time of the labels (for each window)
-    start_time=locs*(window-window*overlap);
+    start_time=locs*(window-window*overlap)-1;
     
     % -- Start sample of the labels (for each window)
-    start_sample=start_time*fn;
+    start_sample=start_time*fn+1;
     label_duration=window*fn; % Number of samples in a window
     
     
@@ -39,18 +39,8 @@ else % There are NCS/CS on the signal
     % -- For each section (NCS/CS)
     for n_section=1:length(locs)
         
-        % Beginning and end samples of a section
-        start_section=start_sample(n_section);
-        end_section=start_section+label_duration;
-        
-        % Edge effects
-        if end_section>length(xss) % For the last section, if the window and overlap or not adjusted to xss length
-            end_section=length(xss);
-        end
-        
         % Section on the signal (NCS/CS)
-        section=xss(start_section:end_section);
-        time_axis_section=time_axis(start_section:end_section);
+        [section,time_axis_section] = label2signal(xss, n_section, start_sample, label_duration, time_axis);
         
         % Welch Periodogram of the section
         [pxx,f] = Welch_periodogram(section, fn, pass_band); % Welch Periodogram of the section

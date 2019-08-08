@@ -114,6 +114,7 @@ end
 coef_KAPPA=zeros(1, samples);
 
 for samp=1:samples % Number of samples
+% samp=15;
     
     %  -- Counting the number of raters who agreed on a category (CS and NCS)
     x=labels(:, :, samp); % Matrix shape: (labels of one sample, observators)
@@ -127,6 +128,6 @@ for samp=1:samples % Number of samples
     %% LABELLING BY FINDING A CONCENSUS WHEN RATERS DON'T AGREE
     % -- Determining one label per window, putting the 'CS' label when there are at least 2/3 of agreement
     threshold_agreement=2/3;
-    labels_final=[labels_final; (nb_CS/observators)>threshold_agreement];
+    labels_final=[labels_final; (nb_CS/observators)>=threshold_agreement];
     
 end
