@@ -44,6 +44,13 @@ for i = 1:length(names_cell)
     % -- Reading the signals
     tempName=names_cell{i};
     [x,Fs]= audioread([path,'\..\Data\Samples_Belle\',tempName]);
+    disp('READ');
+    disp(tempName);
+    
+    % Get the number of the recording by removing the '.mp3'
+    strMP3 = sprintf('%s',tempName);
+    ind=strfind(strMP3,'.');
+    signal_n = str2num(strMP3(1:ind-1));
     
     % -- Resampling to 4000 Hz
     xs=resample(x,4000,Fs);
@@ -55,7 +62,7 @@ for i = 1:length(names_cell)
     
     % -- NCS power ratio
     flag_section=0; % 0 for NCS
-    [pxx_NCS_signal, band_NCS_signal, PR_NCS_signal, freq]=power_ratio_band(xss, i, fn, window, overlap, label_final, pass_band, band_width, flag_section);
+    [pxx_NCS_signal, band_NCS_signal, PR_NCS_signal, freq]=power_ratio_band(xss, signal_n, fn, window, overlap, label_final, pass_band, band_width, flag_section);
     pxx_NCS=[pxx_NCS_signal; pxx_NCS];
     band_NCS=[band_NCS_signal; band_NCS];
     PR_NCS=[PR_NCS_signal; PR_NCS];
@@ -63,7 +70,7 @@ for i = 1:length(names_cell)
     
     % -- CS power ratio
     flag_section=1; % 1 for CS
-    [pxx_CS_signal, band_CS_signal, PR_CS_signal, freq]=power_ratio_band(xss, i, fn, window, overlap, label_final, pass_band, band_width, flag_section);
+    [pxx_CS_signal, band_CS_signal, PR_CS_signal, freq]=power_ratio_band(xss, signal_n, fn, window, overlap, label_final, pass_band, band_width, flag_section);
     if (pxx_CS_signal~=0) % CS present in the signal
         pxx_CS=[pxx_CS_signal; pxx_CS];
         band_CS=[band_CS_signal; band_CS];
@@ -89,12 +96,13 @@ PR_CS_mean=mean(PR_CS);
 %% DISPLAY
 
 % Display annoted labels NCS and CS
-signal_n=7;
-display_NCS_CS_annotations(signal_n,label_final, window, overlap)
+signal_n=1;
+% display_NCS_CS_annotations(signal_n,label_final, window, overlap)
 
-% %  Display the periodograms of annotated NCS and CS
-% display_PR_NCS_CS_interquartiles(f,pxx_NCS, pxx_CS, pxx_NCS_mean, pxx_CS_mean, band_width, pass_band, band_NCS_mean, band_CS_mean);
+%  Display the periodograms of annotated NCS and CS
+display_PR_NCS_CS_interquartiles(f,pxx_NCS, pxx_CS, pxx_NCS_mean, pxx_CS_mean, band_width, pass_band, band_NCS_mean, band_CS_mean);
 
 
 threshold=1;
+
 end

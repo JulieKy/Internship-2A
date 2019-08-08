@@ -1,4 +1,4 @@
-function [pxx_mean, band_mean, PR_mean, f]=power_ratio_band(xss, i, fn, window, overlap, label_final, pass_band, band_width, flag_section)
+function [pxx_mean, band_mean, PR_mean, f]=power_ratio_band(xss, signal_n, fn, window, overlap, label_final, pass_band, band_width, flag_section)
 %POWER RATIO:  Calculate the power ratio of NCS/CS (depending on flag_section) of a signal
 
 %% INPUTS AND OUTPUTS
@@ -14,7 +14,7 @@ N = length(xss);
 time_axis = (1:N)/fn;
 
 % -- Finding the location of 'CS' or 'NCS'
-locs=find(label_final(i,:)==flag_section); % Locations of NCS/CS
+locs=find(label_final(signal_n,:)==flag_section); % Locations of NCS/CS
 
 if isempty(locs)==1 % There isn't NCS/CS on the signal
     band_mean=0;
@@ -66,10 +66,15 @@ else % There are NCS/CS on the signal
     
     
     %% OUTPUTS
-    band_mean=mean(band_mean_signal); % For a signal, mean of the means of frequency bands periodogram, for all NCS/CS sections
-    pxx_mean=mean(pxx_signal'); % For a signal, mean of the periodograms of all NCS/CS sections
-    PR_mean=mean(PR); % For a signal, mean of power ratios of all NCS/CS sections
-    
+    if length(locs)>1 % More than one section
+        band_mean=mean(band_mean_signal); % For a signal, mean of the means of frequency bands periodogram, for all NCS/CS sections
+        pxx_mean=mean(pxx_signal'); % For a signal, mean of the periodograms of all NCS/CS sections
+        PR_mean=mean(PR); % For a signal, mean of power ratios of all NCS/CS sections
+    else
+        band_mean=band_mean_signal; % For a signal, mean of the means of frequency bands periodogram, for all NCS/CS sections
+        pxx_mean=pxx_signal'; % For a signal, mean of the periodograms of all NCS/CS sections
+        PR_mean=PR; % For a signal, mean of power ratios of all NCS/CS sections
+    end
 end
 
 end
