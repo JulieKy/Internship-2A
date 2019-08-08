@@ -8,7 +8,9 @@ excelFile = 'NewFeaturesAnalysis_f'; % name of the Excel file to store features
 path = pwd; % current path
 data_dir=[path,'\..\..\Data\Samples_Belle\'];
 tempName='15.mp3';
+
 signal_n=15;
+
 str=sprintf(' -- READ: %s --\n', tempName);
 disp(str)
 
@@ -40,67 +42,67 @@ overlap=0;
 N = length(xss);
 time_axis = (1:N)/fn;
 
-% -- Finding the location of 'CS'
-flag_section=1; %CS
-locs=find(label_final(signal_n,:)==flag_section); % Locations of NCS/CS
-
-if isempty(locs)==0 % There are NCS/CS on the signal
-    
-    % -- Start time of the labels (for each window)
-    start_time=locs*(window-window*overlap);
-    
-    % -- Start sample of the labels (for each window)
-    start_sample=start_time*fn;
-    label_duration=window*fn; % Number of samples in a window
-    
-    figure,
-    % for n_section=1:length(locs)
-    n_section=1
-    [xss_section,time_axis_section] = label2signal(xss, n_section, start_sample, label_duration, time_axis);
-    %         subplot(1,length(locs),n_section)
-    spectrogram(xss_section,  'yaxis')
-    str=sprintf('Spectrogram CS %d of 15.mp3',n_section);
-    title(str);
-    figure,
-    plot(time_axis, xss); hold on
-    plot(time_axis_section,xss_section); hold off
-    str=sprintf('CS %d',n_section)
-    title(str);
-end
+% % -- Finding the location of 'CS'
+% flag_section=1; %CS
+% locs=find(label_final(signal_n,:)==flag_section); % Locations of NCS/CS
+% 
+% if isempty(locs)==0 % There are NCS/CS on the signal
+%     
+%     % -- Start time of the labels (for each window)
+%     start_time=locs*(window-window*overlap);
+%     
+%     % -- Start sample of the labels (for each window)
+%     start_sample=start_time*fn;
+%     label_duration=window*fn; % Number of samples in a window
+%     
+%     figure,
+%     % for n_section=1:length(locs)
+%     n_section=1
+%     [xss_section,time_axis_section] = label2signal(xss, n_section, start_sample, label_duration, time_axis);
+%     %         subplot(1,length(locs),n_section)
+%     spectrogram(xss_section,  'yaxis')
+%     str=sprintf('Spectrogram CS %d of 15.mp3',n_section);
+%     title(str);
+%     figure,
+%     plot(time_axis, xss); hold on
+%     plot(time_axis_section,xss_section); hold off
+%     str=sprintf('CS %d',n_section);
+%     title(str);
 % end
-
-% -- Finding the location of 'NCS'
-flag_section=0; %NCS
-locs=find(label_final(signal_n,:)==flag_section); % Locations of NCS/CS
-
-if isempty(locs)==0 % There are NCS/CS on the signal
-    
-    % -- Start time of the labels (for each window)
-    start_time=locs*(window-window*overlap);
-    
-    % -- Start sample of the labels (for each window)
-    start_sample=start_time*fn;
-    label_duration=window*fn; % Number of samples in a window
-    
-    figure,
-    %     for n_section=1:length(locs)
-    [xss_section,time_axis_section] = label2signal(xss, n_section, start_sample, label_duration, time_axis);
-    %         subplot(1,length(locs),n_section)
-    spectrogram(xss_section,  'yaxis')
-    str=sprintf('Spectrogram NCS %d of 15.mp3',n_section);
-    title(str);
-    figure,
-    plot(time_axis, xss); hold on
-    plot(time_axis_section,xss_section); hold off
-    str=sprintf('NCS %d',n_section)
-    title(str);
-    %     end
-end
-
-
-figure,
-spectrogram(xss,  'yaxis')
-title('Spectrogram of the entire signal 15.mp3')
+% % end
+% 
+% % -- Finding the location of 'NCS'
+% flag_section=0; %NCS
+% locs=find(label_final(signal_n,:)==flag_section); % Locations of NCS/CS
+% 
+% if isempty(locs)==0 % There are NCS/CS on the signal
+%     
+%     % -- Start time of the labels (for each window)
+%     start_time=locs*(window-window*overlap);
+%     
+%     % -- Start sample of the labels (for each window)
+%     start_sample=start_time*fn;
+%     label_duration=window*fn; % Number of samples in a window
+%     
+%     figure,
+%     %     for n_section=1:length(locs)
+%     [xss_section,time_axis_section] = label2signal(xss, n_section, start_sample, label_duration, time_axis);
+%     %         subplot(1,length(locs),n_section)
+%     spectrogram(xss_section,  'yaxis')
+%     str=sprintf('Spectrogram NCS %d of 15.mp3',n_section);
+%     title(str);
+%     figure,
+%     plot(time_axis, xss); hold on
+%     plot(time_axis_section,xss_section); hold off
+%     str=sprintf('NCS %d',n_section);
+%     title(str);
+%     %     end
+% end
+% 
+% 
+% figure,
+% spectrogram(xss,  'yaxis')
+% title('Spectrogram of the entire signal 15.mp3')
 
 
 display_NCS_CS_annotations(signal_n,label_final, window, overlap)
