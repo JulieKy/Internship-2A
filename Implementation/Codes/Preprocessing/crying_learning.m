@@ -89,11 +89,11 @@ PR_CS_mean=mean(PR_CS);
 %% DISPLAY
 
 % Display annoted labels NCS and CS
-signal_n=22;
+signal_n=7;
 display_NCS_CS_annotations(signal_n,label_final, window, overlap)
 
-%  Display the periodograms of annotated NCS and CS
-display_PR_NCS_CS_interquartiles(f,pxx_NCS, pxx_CS, pxx_NCS_mean, pxx_CS_mean, band_width, pass_band, band_NCS_mean, band_CS_mean);
+% %  Display the periodograms of annotated NCS and CS
+% display_PR_NCS_CS_interquartiles(f,pxx_NCS, pxx_CS, pxx_NCS_mean, pxx_CS_mean, band_width, pass_band, band_NCS_mean, band_CS_mean);
 
 
 threshold=1;

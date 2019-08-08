@@ -33,13 +33,14 @@ figure,
 % -- Temporal representation of the signal
 subplot(2,1,1);
 plot(time_axis, xss1);
-title('Temporal Representation of Signal 22')
+str1=sprintf('Temporal Representation of Signal %d',signal_n);
+title(str1)
 xlabel('Time [s]');
 ylabel('Amplitude');
 
 % -- Temporal representation of the signal with NCS and CS
 subplot(2,1,2)
-plot(time_axis, xss1, 'Color', CS_color); hold on % The entire signal %
+plot(time_axis, xss1, 'Color', NCS_color); hold on % The entire signal %
 
 % Finding the location of 'CS' and 'NCS'
 CS_locs=find(label_final(signal_n,:)==1);
@@ -87,8 +88,9 @@ for n_section=1:length(CS_locs)
 end
 
 hold off
-legend('NCS', 'CS')
-title('CS and NCS after Annotations on Signal 22')
+legend('CS','NCS')
+str2=sprintf('CS and NCS after Annotations on Signal %d',signal_n);
+title(str2)
 xlabel('Time [s]');
 ylabel('Amplitude');
 
