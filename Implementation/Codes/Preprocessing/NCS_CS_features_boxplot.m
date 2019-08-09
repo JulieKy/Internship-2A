@@ -1,12 +1,14 @@
-% Boxplot NCS/CS features
+function [zrc_CS, output_spectral_features_CS, periodogram_pks_features_CS, output_mean_mfcc_CS, output_lpc_CS, output_lsf_CS, zrc_NCS, output_spectral_features_NCS, periodogram_pks_features_NCS, output_mean_mfcc_NCS, output_lpc_NCS, output_lsf_NCS] = NCS_CS_features_boxplot()
+%UNTITLED2 Summary of this function goes here
+%   Detailed explanation goes here
+
 
 %% INITIALISATION PATH
-clear all, close all, clc, dbstop if error;
 addpath(genpath('..\..\')); % to have access to sample folder
 init = 0; % optional, to generate a new Excel File
 excelFile = 'NewFeaturesAnalysis_f'; % name of the Excel file to store features
 path = pwd; % current path
-data_dir=[path,'\..\..\Data\Samples_Belle\'];
+data_dir=[path,'\..\Data\Samples_Belle\'];
 
 
 %% READY TO READ FILES
@@ -55,7 +57,7 @@ for i = 1:lengthTot
     str=sprintf(' -- tempname: %s & signal_n: %d --\n', tempName, signal_n);
     disp(str)
     
-    [x,Fs]= audioread([path,'\..\..\Data\Samples_Belle\',tempName]); % read current file
+    [x,Fs]= audioread([path,'\..\Data\Samples_Belle\',tempName]); % read current file
     
     %% -- Resampling to 4000 Hz
     xs=resample(x,4000,Fs);
@@ -307,3 +309,6 @@ subplot(h, w,3); boxplot(lpc3, lpc3_label,'Labels',{'lpc3_label_CS', 'lpc3_label
 subplot(h, w,4); boxplot(lpc4, lpc4_label,'Labels',{'lpc4_label_CS', 'lpc4_label_NCS'}); title('LPC 4');
 subplot(h, w,5); boxplot(lpc5, lpc5_label,'Labels',{'lpc5_label_CS', 'lpc5_label_NCS'}); title('LPC 5');
 suptitle('Boxplots of LPCs for NCS and CS');
+
+end
+

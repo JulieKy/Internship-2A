@@ -1,28 +1,30 @@
-% Spectrogram of NCS and CS
+function [s, f, t] = spectrogram_CS(signal_n, wind_time_spec, overlap_spec, start_time, end_time)
+%display_spectrogram_CS: Display the spectrogram and the time
+%representation with CS and NCS of a part of a signal AND return its
+%spectrogram
 
+%% INPUTS AND OUTPUTS
+%  -- Inputs --
+% signal_n: Signal number
+% wind_time_spec: Duration of the spectrogram window
+% overlap_spec: Spectrogram overlap
+% start_time: Beginning of the part wanted (s)
+% end_time: End of the part wanted (s)
+%  -- Outputs --
+% [s, f, t]: Spectrogram of the signal part wanted
 
 %% INITIALISATION PATH
-clear all, close all, clc, dbstop if error;
 addpath(genpath('..\..\')); % to have access to sample folder
 init = 0; % optional, to generate a new Excel File
 excelFile = 'NewFeaturesAnalysis_f'; % name of the Excel file to store features
 path = pwd; % current path
-data_dir=[path,'\..\..\Data\Samples_Belle\'];
-
-% % A ;ettre dans function
-signal_n=15;
-% -- Parameters A METTRE DANS APPEL FONCTION
-wind_time_spec=1; % Window of 1 second
-overlap_spec=0.25; % 25% overlap
-start_time=0;
-end_time=15;
-
+data_dir=[path,'\..\Data\Samples_Belle\'];
 
 %% READING SIGNAL 15
 tempName=sprintf('%d.mp3', signal_n);
 str=sprintf(' -- READ: %s --\n', tempName);
 disp(str)
-[y,Fs]= audioread([path,'\..\..\Data\Samples_Belle\',tempName]); % read current file
+[y,Fs]= audioread([path,'\..\Data\Samples_Belle\',tempName]); % read current file
 
 %% PREPROCESSING
 % -- Resampling to 4000 Hz
@@ -79,6 +81,8 @@ if isempty(CS_locs)==0 % There are CS on the signal
     label_duration=window*fn; % Number of samples in a window
 end
 
+[s, f, t]= spectrogram(y,wind_sample_spec,overlap_sample_spec, 128, fn, 'yaxis');
+
 %% DISPLAY
 
 figure,
@@ -107,3 +111,6 @@ str=sprintf('Spectrogram of the fisrt %ds of %d.mp3', end_time-start_time, signa
 title(str)
 str2=sprintf('Vizualisation of CS Frequency Changes in Signal %d.mp3',signal_n);
 suptitle(str2);
+
+end
+
