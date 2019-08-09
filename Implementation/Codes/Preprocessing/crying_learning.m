@@ -90,8 +90,16 @@ band_CS_mean=mean(band_CS);
 PR_CS_mean=mean(PR_CS);
 
 
-%% CROSS VALIDATION
+%% SPECTROGRAM
+signal_n=15; % Signal wanted
+wind_time_spec=1; % Window of 1 second
+overlap_spec=0.25; % 25% overlap
+start_time=0; end_time=15; % Part of the signal wanted
+[s, f, t] = spectrogram_CS(signal_n, wind_time_spec, overlap_spec, start_time, end_time);
 
+
+%% NCS&CS FEATURES EXTRACTION
+[zrc_CS, output_spectral_features_CS, periodogram_pks_features_CS, output_mean_mfcc_CS, output_lpc_CS, output_lsf_CS, zrc_NCS, output_spectral_features_NCS, periodogram_pks_features_NCS, output_mean_mfcc_NCS, output_lpc_NCS, output_lsf_NCS,] = NCS_CS_features_boxplot();
 
 %% DISPLAY
 
