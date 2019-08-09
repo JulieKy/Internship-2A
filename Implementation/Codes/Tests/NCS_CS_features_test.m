@@ -102,6 +102,8 @@ for i = 1:lengthTot
             output_lsf_CS=[output_lsf; output_lsf_CS];
         end
     end
+    
+    % -- Spectral features
     meanPSD_CS=output_spectral_features_CS(:,1);
     stdPSD_CS=output_spectral_features_CS(:,2);
     medPSD_CS=output_spectral_features_CS(:,3);
@@ -116,6 +118,20 @@ for i = 1:lengthTot
     spectrum_slope2_CS=output_spectral_features_CS(:,12);
     r_square2_CS=output_spectral_features_CS(:,13);
     
+    % -- MFCC
+    mfcc1_CS=output_mean_mfcc_CS(:,1);
+    mfcc2_CS=output_mean_mfcc_CS(:,2);
+    mfcc3_CS=output_mean_mfcc_CS(:,3);
+    mfcc4_CS=output_mean_mfcc_CS(:,4);
+    mfcc5_CS=output_mean_mfcc_CS(:,5);
+    mfcc6_CS=output_mean_mfcc_CS(:,6);
+    
+    % -- LPC
+    lpc1_CS=output_lpc_CS(:,1);
+    lpc2_CS=output_lpc_CS(:,2);
+    lpc3_CS=output_lpc_CS(:,3);
+    lpc4_CS=output_lpc_CS(:,4);
+    lpc5_CS=output_lpc_CS(:,5);
     
     %% -- Finding NCS on the signal
     flag_section=0; % NCS
@@ -151,63 +167,143 @@ for i = 1:lengthTot
     end
 end
 
-    meanPSD_NCS=output_spectral_features_NCS(:,1);
-    stdPSD_NCS=output_spectral_features_NCS(:,2);
-    medPSD_NCS=output_spectral_features_NCS(:,3);
-    bw_NCS=output_spectral_features_NCS(:,4);
-    p25_NCS=output_spectral_features_NCS(:,5);
-    p75_NCS=output_spectral_features_NCS(:,6);
-    IQR_NCS=output_spectral_features_NCS(:,7);
-    TP_NCS=output_spectral_features_NCS(:,8);
-    p100_200_NCS=output_spectral_features_NCS(:,9);
-    p200_400_NCS=output_spectral_features_NCS(:,10);
-    p400_800_NCS=output_spectral_features_NCS(:,11);
-    spectrum_slope2_NCS=output_spectral_features_NCS(:,12);
-    r_square2_NCS=output_spectral_features_NCS(:,13);
-    
-    %% DISPLAY
-    w=2;
-    h=7;
-    
-    meanPSD=[meanPSD_CS;meanPSD_NCS]'
-    stdPSD=[stdPSD_CS;stdPSD_NCS];
-    medPSD=[medPSD_CS;medPSD_NCS];
-    bw=[bw_CS;bw_NCS];
-    p25=[p25_CS;p25_NCS];
-    p75=[p75_CS;p75_NCS];
-    IQR=[IQR_CS;IQR_NCS];
-    TP=[TP_CS;TP_NCS];
-    p100_200=[p100_200_CS;p100_200_NCS];
-    p200_400=[p200_400_CS;p200_400_NCS];
-    p400_800=[p400_800_CS;p400_800_NCS];
-    spectrum_slope2=[spectrum_slope2_CS;spectrum_slope2_NCS];
-    r_square2=[r_square2_CS;r_square2_NCS];
-    
-    meanPSD_label=[repmat(' meanPSD_CS', length(meanPSD_CS),1); repmat('meanPSD_NCS', length(meanPSD_NCS),1)];
-    stdPSD_label=[repmat(' stdPSD_CS', length(stdPSD_CS),1); repmat('stdPSD_NCS', length(stdPSD_NCS),1)];
-    medPSD_label=[repmat(' medPSD_CS', length(medPSD_CS),1); repmat('medPSD_NCS', length(medPSD_NCS),1)];
-    bw_label=[repmat(' bw_CS', length(bw_CS),1); repmat('bw_NCS', length(bw_NCS),1)];
-    p25_label=[repmat('p25_CS', length(p25_CS),1); repmat('p25NCS', length(p25_NCS),1)];
-    p75_label=[repmat(' p75_CS', length(p75_CS),1); repmat('p75_NCS', length(p75_NCS),1)];
-    IQR_label=[repmat(' IQR_CS', length(IQR_CS),1); repmat('IQR_NCS', length(IQR_NCS),1)];
-    TP_label=[repmat(' TP_CS', length(TP_CS),1); repmat('TP_NCS', length(TP_NCS),1)];
-    p100_200_label=[repmat(' p100_200_CS', length(p100_200_CS),1); repmat('p100_200_NCS', length(p100_200_NCS),1)];
-    p200_400_label=[repmat(' p200_400_CS', length(p200_400_CS),1); repmat('p200_400_NCS', length(p200_400_NCS),1)];
-    p400_800_label=[repmat(' p400_800_CS', length(p400_800_CS),1); repmat('p400_800_NCS', length(p400_800_NCS),1)];
-    spectrum_slope2_label=[repmat(' spectrum_slope2_CS', length(spectrum_slope2_CS),1); repmat('spectrum_slope2_NCS', length(spectrum_slope2_NCS),1)];
-    r_square2_label=[repmat(' r_square2_CS', length(r_square2_CS),1); repmat('r_square2_NCS', length(r_square2_NCS),1)];
-    
-    figure,
-    subplot(w, h,1); boxplot(meanPSD, meanPSD_label,'Labels',{'meanPSD_CS', 'meanPSD_NCS'}); title('meanPSD');
-    subplot(w, h,2); boxplot(stdPSD, stdPSD_label,'Labels',{'stdPSD_CS', 'stdPSD_NCS'}); title('stdPSD');
-    subplot(w, h,3); boxplot(medPSD, medPSD_label,'Labels',{'medPSD_CS', 'meanPSD_NCS'}); title('medPSD');
-    subplot(w, h,4); boxplot(bw,bw_label,'Labels',{'bw_CS', 'bw_NCS'}); title('bw');
-    subplot(w, h,5); boxplot( p25,  p25_label,'Labels',{'p25_CS', 'p25_NCS'});title('p25');
-    subplot(w, h,6); boxplot(p75, p75_label,'Labels',{'p75_CS', 'p75_NCS'});title('p75');
-    subplot(w, h,7); boxplot(IQR, IQR_label,'Labels',{'IQR_CS', 'IQR_NCS'});title('IQR');
-    subplot(w, h,8); boxplot(TP, TP_label,'Labels',{'TP_CS', 'TP_NCS'});title('TP');
-    subplot(w, h,9); boxplot(p100_200, p100_200_label,'Labels',{'p100_200_CS', 'p100_200_NCS'});title('p100\_200');
-    subplot(w, h,10); boxplot(p200_400, p200_400_label,'Labels',{'p200_400_CS', 'p200_400_NCS'});title('p200\_400');
-    subplot(w, h,11); boxplot(p400_800, p400_800_label,'Labels',{'p400_800_CS', 'p400_800_NCS'});title('p400\_800');
-    subplot(w, h,12); boxplot(spectrum_slope2, spectrum_slope2_label,'Labels',{'spectrum_slope2_CS', 'spectrum_slope2_NCS'});title('spectrum\_slope2');
-    subplot(w, h,13); boxplot(r_square2, r_square2_label,'Labels',{'r_square2_CS', 'r_square2_NCS'});title('r\_square2');
+% -- Spectral features
+meanPSD_NCS=output_spectral_features_NCS(:,1);
+stdPSD_NCS=output_spectral_features_NCS(:,2);
+medPSD_NCS=output_spectral_features_NCS(:,3);
+bw_NCS=output_spectral_features_NCS(:,4);
+p25_NCS=output_spectral_features_NCS(:,5);
+p75_NCS=output_spectral_features_NCS(:,6);
+IQR_NCS=output_spectral_features_NCS(:,7);
+TP_NCS=output_spectral_features_NCS(:,8);
+p100_200_NCS=output_spectral_features_NCS(:,9);
+p200_400_NCS=output_spectral_features_NCS(:,10);
+p400_800_NCS=output_spectral_features_NCS(:,11);
+spectrum_slope2_NCS=output_spectral_features_NCS(:,12);
+r_square2_NCS=output_spectral_features_NCS(:,13);
+
+% -- MFCC
+mfcc1_NCS=output_mean_mfcc_NCS(:,1);
+mfcc2_NCS=output_mean_mfcc_NCS(:,2);
+mfcc3_NCS=output_mean_mfcc_NCS(:,3);
+mfcc4_NCS=output_mean_mfcc_NCS(:,4);
+mfcc5_NCS=output_mean_mfcc_NCS(:,5);
+mfcc6_NCS=output_mean_mfcc_NCS(:,6);
+
+% -- LPC
+lpc1_NCS=output_lpc_NCS(:,1);
+lpc2_NCS=output_lpc_NCS(:,2);
+lpc3_NCS=output_lpc_NCS(:,3);
+lpc4_NCS=output_lpc_NCS(:,4);
+lpc5_NCS=output_lpc_NCS(:,5);
+
+%% DISPLAY
+
+%% Parameters of subplot
+% -- Spectral features
+h_sp=2;
+w_sp=7;
+
+% -- MFCC
+h_mfcc=2;
+w_mfcc=3;
+
+%% Rearrangement of vectors for boxplot
+
+% -- Spectral features
+meanPSD=[meanPSD_CS;meanPSD_NCS];
+stdPSD=[stdPSD_CS;stdPSD_NCS];
+medPSD=[medPSD_CS;medPSD_NCS];
+bw=[bw_CS;bw_NCS];
+p25=[p25_CS;p25_NCS];
+p75=[p75_CS;p75_NCS];
+IQR=[IQR_CS;IQR_NCS];
+TP=[TP_CS;TP_NCS];
+p100_200=[p100_200_CS;p100_200_NCS];
+p200_400=[p200_400_CS;p200_400_NCS];
+p400_800=[p400_800_CS;p400_800_NCS];
+spectrum_slope2=[spectrum_slope2_CS;spectrum_slope2_NCS];
+r_square2=[r_square2_CS;r_square2_NCS];
+
+meanPSD_label=[repmat(' meanPSD_CS', length(meanPSD_CS),1); repmat('meanPSD_NCS', length(meanPSD_NCS),1)];
+stdPSD_label=[repmat(' stdPSD_CS', length(stdPSD_CS),1); repmat('stdPSD_NCS', length(stdPSD_NCS),1)];
+medPSD_label=[repmat(' medPSD_CS', length(medPSD_CS),1); repmat('medPSD_NCS', length(medPSD_NCS),1)];
+bw_label=[repmat(' bw_CS', length(bw_CS),1); repmat('bw_NCS', length(bw_NCS),1)];
+p25_label=[repmat('p25_CS', length(p25_CS),1); repmat('p25NCS', length(p25_NCS),1)];
+p75_label=[repmat(' p75_CS', length(p75_CS),1); repmat('p75_NCS', length(p75_NCS),1)];
+IQR_label=[repmat(' IQR_CS', length(IQR_CS),1); repmat('IQR_NCS', length(IQR_NCS),1)];
+TP_label=[repmat(' TP_CS', length(TP_CS),1); repmat('TP_NCS', length(TP_NCS),1)];
+p100_200_label=[repmat(' p100_200_CS', length(p100_200_CS),1); repmat('p100_200_NCS', length(p100_200_NCS),1)];
+p200_400_label=[repmat(' p200_400_CS', length(p200_400_CS),1); repmat('p200_400_NCS', length(p200_400_NCS),1)];
+p400_800_label=[repmat(' p400_800_CS', length(p400_800_CS),1); repmat('p400_800_NCS', length(p400_800_NCS),1)];
+spectrum_slope2_label=[repmat(' spectrum_slope2_CS', length(spectrum_slope2_CS),1); repmat('spectrum_slope2_NCS', length(spectrum_slope2_NCS),1)];
+r_square2_label=[repmat(' r_square2_CS', length(r_square2_CS),1); repmat('r_square2_NCS', length(r_square2_NCS),1)];
+
+
+% -- MFCC
+mfcc1=[mfcc1_CS;mfcc1_NCS];
+mfcc2=[mfcc2_CS;mfcc2_NCS];
+mfcc3=[mfcc3_CS;mfcc3_NCS];
+mfcc4=[mfcc4_CS;mfcc4_NCS];
+mfcc5=[mfcc5_CS;mfcc5_NCS];
+mfcc6=[mfcc6_CS;mfcc6_NCS];
+
+mfcc1_label=[repmat(' mfcc1_CS', length(mfcc1_CS),1); repmat('mfcc1_NCS', length(mfcc1_NCS),1)];
+mfcc2_label=[repmat(' mfcc2_CS', length(mfcc2_CS),1); repmat('mfcc2_NCS', length(mfcc2_NCS),1)];
+mfcc3_label=[repmat(' mfcc3_CS', length(mfcc3_CS),1); repmat('mfcc3_NCS', length(mfcc3_NCS),1)];
+mfcc4_label=[repmat(' mfcc4_CS', length(mfcc4_CS),1); repmat('mfcc4_NCS', length(mfcc4_NCS),1)];
+mfcc5_label=[repmat(' mfcc5_CS', length(mfcc5_CS),1); repmat('mfcc5_NCS', length(mfcc5_NCS),1)];
+mfcc6_label=[repmat(' mfcc6_CS', length(mfcc6_CS),1); repmat('mfcc6_NCS', length(mfcc6_NCS),1)];
+
+% -- LPC
+lpc1=[lpc1_CS;lpc1_NCS];
+lpc2=[lpc2_CS;lpc2_NCS];
+lpc3=[lpc3_CS;lpc3_NCS];
+lpc4=[lpc4_CS;lpc4_NCS];
+lpc5=[lpc5_CS;lpc5_NCS];
+
+lpc1_label=[repmat(' lpc1_CS', length(lpc1_CS),1); repmat('lpc1_NCS', length(lpc1_NCS),1)];
+lpc2_label=[repmat(' lpc2_CS', length(lpc2_CS),1); repmat('lpc2_NCS', length(lpc2_NCS),1)];
+lpc3_label=[repmat(' lpc3_CS', length(lpc3_CS),1); repmat('lpc3_NCS', length(lpc3_NCS),1)];
+lpc4_label=[repmat(' lpc4_CS', length(lpc4_CS),1); repmat('lpc4_NCS', length(lpc4_NCS),1)];
+lpc5_label=[repmat(' lpc5_CS', length(lpc5_CS),1); repmat('lpc5_NCS', length(lpc5_NCS),1)];
+
+
+%% Boxplot
+% -- Spectral features
+figure,
+subplot(h_sp, w_sp,1); boxplot(meanPSD, meanPSD_label,'Labels',{'meanPSD_CS', 'meanPSD_NCS'}); title('meanPSD');
+subplot(h_sp, w_sp,2); boxplot(stdPSD, stdPSD_label,'Labels',{'stdPSD_CS', 'stdPSD_NCS'}); title('stdPSD');
+subplot(h_sp, w_sp,3); boxplot(medPSD, medPSD_label,'Labels',{'medPSD_CS', 'meanPSD_NCS'}); title('medPSD');
+subplot(h_sp, w_sp,4); boxplot(bw,bw_label,'Labels',{'bw_CS', 'bw_NCS'}); title('bw');
+subplot(h_sp, w_sp,5); boxplot( p25,  p25_label,'Labels',{'p25_CS', 'p25_NCS'});title('p25');
+subplot(h_sp, w_sp,6); boxplot(p75, p75_label,'Labels',{'p75_CS', 'p75_NCS'});title('p75');
+subplot(h_sp, w_sp,7); boxplot(IQR, IQR_label,'Labels',{'IQR_CS', 'IQR_NCS'});title('IQR');
+subplot(h_sp, w_sp,8); boxplot(TP, TP_label,'Labels',{'TP_CS', 'TP_NCS'});title('TP');
+subplot(h_sp, w_sp,9); boxplot(p100_200, p100_200_label,'Labels',{'p100_200_CS', 'p100_200_NCS'});title('p100\_200');
+subplot(h_sp, w_sp,10); boxplot(p200_400, p200_400_label,'Labels',{'p200_400_CS', 'p200_400_NCS'});title('p200\_400');
+subplot(h_sp, w_sp,11); boxplot(p400_800, p400_800_label,'Labels',{'p400_800_CS', 'p400_800_NCS'});title('p400\_800');
+subplot(h_sp, w_sp,12); boxplot(spectrum_slope2, spectrum_slope2_label,'Labels',{'slope_CS', 'slope_NCS'});title('spectrum\_slope2');
+subplot(h_sp, w_sp,13); boxplot(r_square2, r_square2_label,'Labels',{'r_square2_CS', 'r_square2_NCS'});title('r\_square2');
+% suptitle('Boxplots of Spectral Features for NCS and CS');
+
+% -- MFCC
+figure,
+h=h_mfcc;
+w=w_mfcc;
+subplot(h, w,1); boxplot(mfcc1, mfcc1_label,'Labels',{'mfcc1_label_CS', 'mfcc1_label_NCS'}); title('MFCC 1');
+subplot(h, w,2); boxplot(mfcc2, mfcc2_label,'Labels',{'mfcc2_label_CS', 'mfcc2_label_NCS'}); title('MFCC 2');
+subplot(h, w,3); boxplot(mfcc3, mfcc3_label,'Labels',{'mfcc3_label_CS', 'mfcc3_label_NCS'}); title('MFCC 3');
+subplot(h, w,4); boxplot(mfcc4, mfcc4_label,'Labels',{'mfcc4_label_CS', 'mfcc4_label_NCS'}); title('MFCC 4');
+subplot(h, w,5); boxplot(mfcc5, mfcc5_label,'Labels',{'mfcc5_label_CS', 'mfcc5_label_NCS'}); title('MFCC 5');
+subplot(h, w,6); boxplot(mfcc6, mfcc6_label,'Labels',{'mfcc6_label_CS', 'mfcc6_label_NCS'}); title('MFCC 6');
+suptitle('Boxplots of MFCCs for NCS and CS');
+
+% -- MFCC
+figure,
+subplot(h, w,1); boxplot(lpc1, lpc1_label,'Labels',{'lpc1_label_CS', 'lpc1_label_NCS'}); title('LPC 1');
+subplot(h, w,2); boxplot(lpc2, lpc2_label,'Labels',{'lpc2_label_CS', 'lpc2_label_NCS'}); title('LPC 2');
+subplot(h, w,3); boxplot(lpc3, lpc3_label,'Labels',{'lpc3_label_CS', 'lpc3_label_NCS'}); title('LPC 3');
+subplot(h, w,4); boxplot(lpc4, lpc4_label,'Labels',{'lpc4_label_CS', 'lpc4_label_NCS'}); title('LPC 4');
+subplot(h, w,5); boxplot(lpc5, lpc5_label,'Labels',{'lpc5_label_CS', 'lpc5_label_NCS'}); title('LPC 5');
+suptitle('Boxplots of LPCs for NCS and CS');
