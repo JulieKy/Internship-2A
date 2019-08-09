@@ -24,8 +24,8 @@ xss1=xs1(1:time_sample*fn,1);
 N = length(xss1);
 time_axis = (1:N)/fn;
 
-NCS_color=[0.4 1 0.4];
-CS_color=[1 0.2 0.3];
+NCS_color=[0 0.6 0];
+CS_color=[0.8 0 0];
 
 %% Display
 figure,
