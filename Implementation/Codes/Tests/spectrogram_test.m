@@ -10,7 +10,7 @@ path = pwd; % current path
 data_dir=[path,'\..\..\Data\Samples_Belle\'];
 
 % % A ;ettre dans function
-signal_n=15;
+signal_n=22;
 % -- Parameters A METTRE DANS APPEL FONCTION
 wind_time_spec=1; % Window of 1 second
 overlap_spec=0.25; % 25% overlap
@@ -107,3 +107,6 @@ str=sprintf('Spectrogram of the fisrt %ds of %d.mp3', end_time-start_time, signa
 title(str)
 str2=sprintf('Vizualisation of CS Frequency Changes in Signal %d.mp3',signal_n);
 suptitle(str2);
+
+signal_n=12;
+display_NCS_CS_annotations(signal_n,label_final, window, overlap)
