@@ -1,5 +1,5 @@
 function [output_lpc,  output_lsf] = lpc_lsf_coeff(y, fn)
-%%Gives the mean of LPC and LSF coefficients from the first 6 coefficients
+%%Gives the first 6 coefficients of LPC and LSF
 
 
 %% INPUT AND OUTPUT

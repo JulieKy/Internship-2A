@@ -1,7 +1,20 @@
 function [zrc_CS, output_spectral_features_CS, periodogram_pks_features_CS, output_mean_mfcc_CS, output_lpc_CS, output_lsf_CS, zrc_NCS, output_spectral_features_NCS, periodogram_pks_features_NCS, output_mean_mfcc_NCS, output_lpc_NCS, output_lsf_NCS] = NCS_CS_features_boxplot()
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%NCS_CS_features_boxplot: Extract some features of CS and NCS, return them and do their boxplots.
 
+%% INPUTS AND OUTPUTS
+%  -- Outputs --
+% zrc_CS: Zero crossing rate of CS
+% output_spectral_features_CS: Spectral features of CS
+% periodogram_pks_features_CS: Peaks features of the CS spectrogram
+% output_mean_mfcc_CS: MFCCs means of CS
+% output_lpc_CS: LPCs of CS
+% output_lsf_CS: LSFs of CS
+% zrc_NCS: Zero crossing rate of CS
+% output_spectral_features_NCS: Spectral features of CS
+% periodogram_pks_features_NCS: Peaks features of the CS spectrogram
+% output_mean_mfcc_NCS: MFCCs means of CS
+% output_lpc_NCS: LPCs of CS
+% output_lsf_NCS: LSFs of CS
 
 %% INITIALISATION PATH
 addpath(genpath('..\..\')); % to have access to sample folder
