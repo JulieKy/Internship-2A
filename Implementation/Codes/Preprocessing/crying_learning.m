@@ -14,8 +14,8 @@ samples=37;
 end_sample=60; % End of the signal (hypotesis: length of the signal=60s)
 
 % -- Parameters for labelling
-window=3;
-overlap=25/100;
+window=1;
+overlap=0;
 
 % -- Parameters for the power ratio
 pass_band=[0:2000];
@@ -99,7 +99,7 @@ start_time=0; end_time=15; % Part of the signal wanted
 
 
 %% NCS&CS FEATURES EXTRACTION
-[zrc_CS, output_spectral_features_CS, periodogram_pks_features_CS, output_mean_mfcc_CS, output_lpc_CS, output_lsf_CS, zrc_NCS, output_spectral_features_NCS, periodogram_pks_features_NCS, output_mean_mfcc_NCS, output_lpc_NCS, output_lsf_NCS,] = NCS_CS_features_boxplot();
+% [zrc_CS, output_spectral_features_CS, periodogram_pks_features_CS, output_mean_mfcc_CS, output_lpc_CS, output_lsf_CS, zrc_NCS, output_spectral_features_NCS, periodogram_pks_features_NCS, output_mean_mfcc_NCS, output_lpc_NCS, output_lsf_NCS,] = NCS_CS_features_boxplot();
 
 %% DISPLAY
 

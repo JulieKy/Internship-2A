@@ -3,8 +3,9 @@ close all
 clc
 F1=randn(40,4);
 F2=randn(40,4).*2;
+%F3=randn(40,4).*2;
 
-position1=1:1:size(F1,2);
+position1=1:size(F1,2);
 position2=position1+0.15;
 
 figure;

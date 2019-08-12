@@ -69,7 +69,7 @@ plot(f(f~=0) , prctile(pxx_CS(:,(f~=0)),75), 'LineStyle', '--', 'Color', [0.4 0.
 
 xlabel('Frequency (in Hz)');
 ylabel('Power Spectrum');
-title('Average Power Spectrum for NCS and CS (window=3s, overlap=25%)', 'FontSize', 14);
+title('Average Power Spectrum for NCS and CS (labelling: window=1s)', 'FontSize', 14);
 legend('Average power spectrum NCS',  'Average power spectrum CS', 'Interquartile range NCS','Interquartile range CS');
 hold off
 

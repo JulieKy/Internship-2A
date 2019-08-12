@@ -89,7 +89,7 @@ for i = 1:lengthTot
             %% -- Features extraction
             zrc = temporal_features(xss_section,fn, tempName); % Temporal features
             [output_spectral_features, periodogram_pks_features, pxx, f, foct, spower, I, S] = spectral_features(xss_section,fn); % See Fae's comment
-            output_mean_mfcc = mfcc_coeffs(xss_section, fn); % MFCCs coefficient
+            %output_mean_mfcc = mfcc_coeffs(xss_section, fn); % MFCCs coefficient
             [output_lpc, output_lsf] = lpc_lsf_coeff(xss_section, fn); % LPC and LFC coefficient
             
             %% -- Storage of features
@@ -97,7 +97,7 @@ for i = 1:lengthTot
             zrc_CS=[zrc; zrc_CS];
             output_spectral_features_CS=[output_spectral_features'; output_spectral_features_CS];
             periodogram_pks_features_CS=[periodogram_pks_features'; periodogram_pks_features_CS];
-            output_mean_mfcc_CS=[output_mean_mfcc; output_mean_mfcc_CS];
+            %output_mean_mfcc_CS=[output_mean_mfcc; output_mean_mfcc_CS];
             output_lpc_CS=[output_lpc; output_lpc_CS];
             output_lsf_CS=[output_lsf; output_lsf_CS];
         end
@@ -118,13 +118,13 @@ for i = 1:lengthTot
     spectrum_slope2_CS=output_spectral_features_CS(:,12);
     r_square2_CS=output_spectral_features_CS(:,13);
     
-    % -- MFCC
-    mfcc1_CS=output_mean_mfcc_CS(:,1);
-    mfcc2_CS=output_mean_mfcc_CS(:,2);
-    mfcc3_CS=output_mean_mfcc_CS(:,3);
-    mfcc4_CS=output_mean_mfcc_CS(:,4);
-    mfcc5_CS=output_mean_mfcc_CS(:,5);
-    mfcc6_CS=output_mean_mfcc_CS(:,6);
+%     % -- MFCC
+%     mfcc1_CS=output_mean_mfcc_CS(:,1);
+%     mfcc2_CS=output_mean_mfcc_CS(:,2);
+%     mfcc3_CS=output_mean_mfcc_CS(:,3);
+%     mfcc4_CS=output_mean_mfcc_CS(:,4);
+%     mfcc5_CS=output_mean_mfcc_CS(:,5);
+%     mfcc6_CS=output_mean_mfcc_CS(:,6);
     
     % -- LPC
     lpc1_CS=output_lpc_CS(:,1);
@@ -152,7 +152,7 @@ for i = 1:lengthTot
             %% -- Features extraction
             zrc = temporal_features(xss_section,fn, tempName); % Temporal features
             [output_spectral_features, periodogram_pks_features, pxx, f, foct, spower, I, S] = spectral_features(xss_section,fn); % See Fae's comment
-            output_mean_mfcc = mfcc_coeffs(xss_section, fn); % MFCCs coefficient
+           % output_mean_mfcc = mfcc_coeffs(xss_section, fn); % MFCCs coefficient
             [output_lpc, output_lsf] = lpc_lsf_coeff(xss_section, fn); % LPC and LFC coefficient
             
             %% -- Storage of features
@@ -160,7 +160,7 @@ for i = 1:lengthTot
             zrc_NCS=[zrc; zrc_NCS];
             output_spectral_features_NCS=[output_spectral_features'; output_spectral_features_NCS];
             periodogram_pks_features_NCS=[periodogram_pks_features'; periodogram_pks_features_NCS];
-            output_mean_mfcc_NCS=[output_mean_mfcc; output_mean_mfcc_NCS];
+            %output_mean_mfcc_NCS=[output_mean_mfcc; output_mean_mfcc_NCS];
             output_lpc_NCS=[output_lpc; output_lpc_NCS];
             output_lsf_NCS=[output_lsf; output_lsf_NCS];
         end
@@ -182,13 +182,13 @@ p400_800_NCS=output_spectral_features_NCS(:,11);
 spectrum_slope2_NCS=output_spectral_features_NCS(:,12);
 r_square2_NCS=output_spectral_features_NCS(:,13);
 
-% -- MFCC
-mfcc1_NCS=output_mean_mfcc_NCS(:,1);
-mfcc2_NCS=output_mean_mfcc_NCS(:,2);
-mfcc3_NCS=output_mean_mfcc_NCS(:,3);
-mfcc4_NCS=output_mean_mfcc_NCS(:,4);
-mfcc5_NCS=output_mean_mfcc_NCS(:,5);
-mfcc6_NCS=output_mean_mfcc_NCS(:,6);
+% % -- MFCC
+% mfcc1_NCS=output_mean_mfcc_NCS(:,1);
+% mfcc2_NCS=output_mean_mfcc_NCS(:,2);
+% mfcc3_NCS=output_mean_mfcc_NCS(:,3);
+% mfcc4_NCS=output_mean_mfcc_NCS(:,4);
+% mfcc5_NCS=output_mean_mfcc_NCS(:,5);
+% mfcc6_NCS=output_mean_mfcc_NCS(:,6);
 
 % -- LPC
 lpc1_NCS=output_lpc_NCS(:,1);
@@ -240,20 +240,20 @@ spectrum_slope2_label=[repmat(' spectrum_slope2_CS', length(spectrum_slope2_CS),
 r_square2_label=[repmat(' r_square2_CS', length(r_square2_CS),1); repmat('r_square2_NCS', length(r_square2_NCS),1)];
 
 
-% -- MFCC
-mfcc1=[mfcc1_CS;mfcc1_NCS];
-mfcc2=[mfcc2_CS;mfcc2_NCS];
-mfcc3=[mfcc3_CS;mfcc3_NCS];
-mfcc4=[mfcc4_CS;mfcc4_NCS];
-mfcc5=[mfcc5_CS;mfcc5_NCS];
-mfcc6=[mfcc6_CS;mfcc6_NCS];
-
-mfcc1_label=[repmat(' mfcc1_CS', length(mfcc1_CS),1); repmat('mfcc1_NCS', length(mfcc1_NCS),1)];
-mfcc2_label=[repmat(' mfcc2_CS', length(mfcc2_CS),1); repmat('mfcc2_NCS', length(mfcc2_NCS),1)];
-mfcc3_label=[repmat(' mfcc3_CS', length(mfcc3_CS),1); repmat('mfcc3_NCS', length(mfcc3_NCS),1)];
-mfcc4_label=[repmat(' mfcc4_CS', length(mfcc4_CS),1); repmat('mfcc4_NCS', length(mfcc4_NCS),1)];
-mfcc5_label=[repmat(' mfcc5_CS', length(mfcc5_CS),1); repmat('mfcc5_NCS', length(mfcc5_NCS),1)];
-mfcc6_label=[repmat(' mfcc6_CS', length(mfcc6_CS),1); repmat('mfcc6_NCS', length(mfcc6_NCS),1)];
+% % -- MFCC
+% mfcc1=[mfcc1_CS;mfcc1_NCS];
+% mfcc2=[mfcc2_CS;mfcc2_NCS];
+% mfcc3=[mfcc3_CS;mfcc3_NCS];
+% mfcc4=[mfcc4_CS;mfcc4_NCS];
+% mfcc5=[mfcc5_CS;mfcc5_NCS];
+% mfcc6=[mfcc6_CS;mfcc6_NCS];
+% 
+% mfcc1_label=[repmat(' mfcc1_CS', length(mfcc1_CS),1); repmat('mfcc1_NCS', length(mfcc1_NCS),1)];
+% mfcc2_label=[repmat(' mfcc2_CS', length(mfcc2_CS),1); repmat('mfcc2_NCS', length(mfcc2_NCS),1)];
+% mfcc3_label=[repmat(' mfcc3_CS', length(mfcc3_CS),1); repmat('mfcc3_NCS', length(mfcc3_NCS),1)];
+% mfcc4_label=[repmat(' mfcc4_CS', length(mfcc4_CS),1); repmat('mfcc4_NCS', length(mfcc4_NCS),1)];
+% mfcc5_label=[repmat(' mfcc5_CS', length(mfcc5_CS),1); repmat('mfcc5_NCS', length(mfcc5_NCS),1)];
+% mfcc6_label=[repmat(' mfcc6_CS', length(mfcc6_CS),1); repmat('mfcc6_NCS', length(mfcc6_NCS),1)];
 
 % -- LPC
 lpc1=[lpc1_CS;lpc1_NCS];
@@ -287,19 +287,19 @@ subplot(h_sp, w_sp,12); boxplot(spectrum_slope2, spectrum_slope2_label,'Labels',
 subplot(h_sp, w_sp,13); boxplot(r_square2, r_square2_label,'Labels',{'r_square2_CS', 'r_square2_NCS'});title('r\_square2');
 % suptitle('Boxplots of Spectral Features for NCS and CS');
 
-% -- MFCC
-figure,
+% % -- MFCC
+% figure,
 h=h_mfcc;
 w=w_mfcc;
-subplot(h, w,1); boxplot(mfcc1, mfcc1_label,'Labels',{'mfcc1_label_CS', 'mfcc1_label_NCS'}); title('MFCC 1');
-subplot(h, w,2); boxplot(mfcc2, mfcc2_label,'Labels',{'mfcc2_label_CS', 'mfcc2_label_NCS'}); title('MFCC 2');
-subplot(h, w,3); boxplot(mfcc3, mfcc3_label,'Labels',{'mfcc3_label_CS', 'mfcc3_label_NCS'}); title('MFCC 3');
-subplot(h, w,4); boxplot(mfcc4, mfcc4_label,'Labels',{'mfcc4_label_CS', 'mfcc4_label_NCS'}); title('MFCC 4');
-subplot(h, w,5); boxplot(mfcc5, mfcc5_label,'Labels',{'mfcc5_label_CS', 'mfcc5_label_NCS'}); title('MFCC 5');
-subplot(h, w,6); boxplot(mfcc6, mfcc6_label,'Labels',{'mfcc6_label_CS', 'mfcc6_label_NCS'}); title('MFCC 6');
-suptitle('Boxplots of MFCCs for NCS and CS');
+% subplot(h, w,1); boxplot(mfcc1, mfcc1_label,'Labels',{'mfcc1_label_CS', 'mfcc1_label_NCS'}); title('MFCC 1');
+% subplot(h, w,2); boxplot(mfcc2, mfcc2_label,'Labels',{'mfcc2_label_CS', 'mfcc2_label_NCS'}); title('MFCC 2');
+% subplot(h, w,3); boxplot(mfcc3, mfcc3_label,'Labels',{'mfcc3_label_CS', 'mfcc3_label_NCS'}); title('MFCC 3');
+% subplot(h, w,4); boxplot(mfcc4, mfcc4_label,'Labels',{'mfcc4_label_CS', 'mfcc4_label_NCS'}); title('MFCC 4');
+% subplot(h, w,5); boxplot(mfcc5, mfcc5_label,'Labels',{'mfcc5_label_CS', 'mfcc5_label_NCS'}); title('MFCC 5');
+% subplot(h, w,6); boxplot(mfcc6, mfcc6_label,'Labels',{'mfcc6_label_CS', 'mfcc6_label_NCS'}); title('MFCC 6');
+% suptitle('Boxplots of MFCCs for NCS and CS');
 
-% -- MFCC
+% -- LPC
 figure,
 subplot(h, w,1); boxplot(lpc1, lpc1_label,'Labels',{'lpc1_label_CS', 'lpc1_label_NCS'}); title('LPC 1');
 subplot(h, w,2); boxplot(lpc2, lpc2_label,'Labels',{'lpc2_label_CS', 'lpc2_label_NCS'}); title('LPC 2');
@@ -307,3 +307,59 @@ subplot(h, w,3); boxplot(lpc3, lpc3_label,'Labels',{'lpc3_label_CS', 'lpc3_label
 subplot(h, w,4); boxplot(lpc4, lpc4_label,'Labels',{'lpc4_label_CS', 'lpc4_label_NCS'}); title('LPC 4');
 subplot(h, w,5); boxplot(lpc5, lpc5_label,'Labels',{'lpc5_label_CS', 'lpc5_label_NCS'}); title('LPC 5');
 suptitle('Boxplots of LPCs for NCS and CS');
+
+
+
+%% DISPLAY IN THE SAME PLOT
+NCS_color=[0 0.6 0];
+CS_color=[0.8 0 0];
+width=0.12;
+
+% -- Spectral features 
+NCS_sp=[meanPSD_NCS, stdPSD_NCS, medPSD_NCS, bw_NCS,p25_NCS, p75_NCS, IQR_NCS, TP_NCS, p100_200_NCS, p200_400_NCS, p400_800_NCS, spectrum_slope2_NCS, r_square2_NCS];
+CS_sp=[meanPSD_CS, stdPSD_CS, medPSD_CS, bw_CS,p25_CS, p75_CS, IQR_CS, TP_CS, p100_200_CS, p200_400_CS, p400_800_CS, spectrum_slope2_CS, r_square2_CS];
+
+position1_sp=1:size(NCS_sp,2);
+position2_sp=position1_sp+0.15;
+
+figure;
+p1=boxplot(NCS_sp,'Color', NCS_color,'positions', position1_sp,'width',width, 'Labels',{'meanPSD', 'stdPSD', 'medPSD', 'bw', 'p25', 'p75', 'IQR', 'TP', 'p100_200', 'p200_400', 'p400_800', 'spectrum_slope2', 'r_square2'})
+hold on
+p2=boxplot(CS_sp,'Color', CS_color,'positions', position2_sp,'width',width)
+hold off
+title('Boxplots of Spectral Features for NCS and CS');
+
+% -- LPC 
+NCS_lpc=[lpc1_NCS, lpc2_NCS, lpc3_NCS, lpc4_NCS, lpc5_NCS];
+CS_lpc=[lpc1_CS, lpc2_CS, lpc3_CS, lpc4_CS, lpc5_CS];
+
+position1_lpc=1:size(NCS_lpc,2);
+position2_lpc=position1_lpc+0.15;
+
+figure;
+boxplot(NCS_lpc,'Color', NCS_color,'positions', position1_lpc,'width',width, 'Labels',{'LPC1', 'LPC2', 'LPC3', 'LPC4', 'LPC5'});
+hold on
+boxplot(CS_lpc,'Color', CS_color,'positions', position2_lpc,'width',width); 
+hold off
+title('Boxplots of LPCs for NCS and CS')
+
+% figure;
+% boxplot(lpc1, lpc1_label,'Labels',{'lpc1_label_CS', 'lpc1_label_NCS'},'Color', 'b','positions', position1_lpc,'width',0.12); hold on
+% boxplot(lpc1, lpc1_label,'Labels',{'lpc1_label_CS', 'lpc1_label_NCS'},'Color', 'r','positions', position2_lpc,'width',0.12)
+% hold on
+% boxplot(lpc2, lpc2_label,'Labels',{'lpc2_label_CS', 'lpc2_label_NCS'},'Color', 'b','positions', position1_lpc,'width',0.12); hold on
+% boxplot(lpc2, lpc2_label,'Labels',{'lpc2_label_CS', 'lpc2_label_NCS'},'Color', 'r','positions', position2_lpc,'width',0.12)
+% hold on
+% boxplot(lpc3, lpc3_label,'Labels',{'lpc3_label_CS', 'lpc3_label_NCS'},'Color', 'b','positions', position1_lpc(3),'width',0.12); hold on
+% boxplot(lpc3, lpc3_label,'Labels',{'lpc3_label_CS', 'lpc3_label_NCS'},'Color', 'r','positions', position2_lpc(3),'width',0.12)
+% hold on
+% boxplot(lpc4, lpc4_label,'Labels',{'lpc4_label_CS', 'lpc4_label_NCS'},'Color', 'b','positions', position1_lpc(4),'width',0.12); hold on
+% boxplot(lpc4, lpc4_label,'Labels',{'lpc4_label_CS', 'lpc4_label_NCS'},'Color', 'r','positions', position2_lpc(4),'width',0.12)
+% hold on
+% boxplot(lpc5, lpc5_label,'Labels',{'lpc5_label_CS', 'lpc5_label_NCS'},'Color', 'b','positions', position1_lpc(5),'width',0.12); hold on
+% boxplot(lpc5, lpc5_label,'Labels',{'lpc5_label_CS', 'lpc5_label_NCS'},'Color', 'r','positions', position2_lpc(5),'width',0.12)
+% hold on
+% boxplot(lpc6, lpc6_label,'Labels',{'lpc6_label_CS', 'lpc6_label_NCS'},'Color', 'b','positions', position1_lpc(6),'width',0.12); hold on
+% boxplot(lpc6, lpc6_label,'Labels',{'lpc6_label_CS', 'lpc6_label_NCS'},'Color', 'r','positions', position2_lpc(6),'width',0.12)
+% 
+% 
