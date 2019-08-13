@@ -92,7 +92,7 @@ PR_CS_mean=mean(PR_CS);
 
 %% SPECTROGRAM
 signal_n=15; % Signal wanted
-wind_time_spec=1; % Window of 1 second
+wind_time_spec=0.5; % Window of 1 second
 overlap_spec=0.25; % 25% overlap
 start_time=0; end_time=15; % Part of the signal wanted
 [s, f, t] = spectrogram_CS(signal_n, wind_time_spec, overlap_spec, start_time, end_time);
