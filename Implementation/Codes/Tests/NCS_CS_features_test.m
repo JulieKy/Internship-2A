@@ -29,8 +29,8 @@ samples=37;
 end_sample=60; % End of the signal (hypotesis: length of the signal=60s)
 
 % -- Parameters for labelling
-window=3;
-overlap=25/100;
+window=1;
+overlap=0;
 
 % -- Labelling
 [label_final, coef_KAPPA]=labelling(observators,samples, end_sample, window, overlap);
@@ -361,5 +361,5 @@ title('Boxplots of LPCs for NCS and CS')
 % hold on
 % boxplot(lpc6, lpc6_label,'Labels',{'lpc6_label_CS', 'lpc6_label_NCS'},'Color', 'b','positions', position1_lpc(6),'width',0.12); hold on
 % boxplot(lpc6, lpc6_label,'Labels',{'lpc6_label_CS', 'lpc6_label_NCS'},'Color', 'r','positions', position2_lpc(6),'width',0.12)
-% 
-% 
+
+
