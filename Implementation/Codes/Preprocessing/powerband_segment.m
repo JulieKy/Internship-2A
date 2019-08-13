@@ -1,13 +1,12 @@
-function [pxx_mean, band_mean, PR_mean, f, p25_signal, p75_signal]=power_ratio_band(xss, signal_n, fn, window, overlap, label_final, pass_band, band_width, flag_section)
-%POWER RATIO:  Calculate the power ratio of NCS/CS (depending on flag_section) of a signal
-
+function [ output_args ] = powerband_segment( input_args )
+%powerband_segment: Take a signal and return the powerband of all sections
 %% INPUTS AND OUTPUTS
 %  -- Inputs --
 %
 % -- Outputs --
 
-
-%% INITIALISATION
+% A FFFFAAAIIIRRREEE
+%% INITIALISATION 
 
 % -- Variables
 N = length(xss);
@@ -17,12 +16,7 @@ time_axis = (1:N)/fn;
 locs=find(label_final(signal_n,:)==flag_section); % Locations of NCS/CS
 
 if isempty(locs)==1 % There isn't NCS/CS on the signal
-    band_mean=0;
-    pxx_mean=0;
-    PR_mean=0;
-    f=0;
-    p25_signal=0;
-    p75_signal=0;
+   
     
 else % There are NCS/CS on the signal
     
@@ -86,6 +80,8 @@ else % There are NCS/CS on the signal
         PR_mean=PR; % For a signal, mean of power ratios of all NCS/CS sections
     end
 end
+
+
 
 end
 

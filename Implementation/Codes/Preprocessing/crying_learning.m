@@ -30,13 +30,9 @@ path = pwd;
 
 %% POWER RATIO
 
-pxx_NCS=[];
-band_NCS=[];
-PR_NCS=[];
-
-pxx_CS=[];
-band_CS=[];
-PR_CS=[];
+% Initialisation
+pxx_NCS=[]; band_NCS=[]; PR_NCS=[]; p25_NCS=[]; p75_NCS=[];
+pxx_CS=[]; band_CS=[]; PR_CS=[]; p25_CS=[]; p75_CS=[];
 
 % For every signal
 for i = 1:length(names_cell)
@@ -62,33 +58,40 @@ for i = 1:length(names_cell)
     
     % -- NCS power ratio
     flag_section=0; % 0 for NCS
-    [pxx_NCS_signal, band_NCS_signal, PR_NCS_signal, freq]=power_ratio_band(xss, signal_n, fn, window, overlap, label_final, pass_band, band_width, flag_section);
+    [pxx_NCS_signal, band_NCS_signal, PR_NCS_signal, freq, p25_NCS_signal, p75_NCS_signal]=power_ratio_band(xss, signal_n, fn, window, overlap, label_final, pass_band, band_width, flag_section);
     pxx_NCS=[pxx_NCS_signal; pxx_NCS];
     band_NCS=[band_NCS_signal; band_NCS];
     PR_NCS=[PR_NCS_signal; PR_NCS];
     f=freq;
+    p25_NCS=[p25_NCS, p25_NCS_signal];
+    p75_NCS=[p75_NCS, p75_NCS_signal];
     
     % -- CS power ratio
     flag_section=1; % 1 for CS
-    [pxx_CS_signal, band_CS_signal, PR_CS_signal, freq]=power_ratio_band(xss, signal_n, fn, window, overlap, label_final, pass_band, band_width, flag_section);
+    [pxx_CS_signal, band_CS_signal, PR_CS_signal, freq, p25_CS_signal, p75_CS_signal]=power_ratio_band(xss, signal_n, fn, window, overlap, label_final, pass_band, band_width, flag_section);
     if (pxx_CS_signal~=0) % CS present in the signal
         pxx_CS=[pxx_CS_signal; pxx_CS];
         band_CS=[band_CS_signal; band_CS];
         PR_CS=[PR_CS_signal; PR_CS];
+        p25_CS=[p25_CS, p25_CS_signal];
+        p75_CS=[p75_CS, p75_CS_signal];
     end
     
 end
 
 % NCS: average on all signals
-pxx_NCS_mean=mean(pxx_NCS);
-band_NCS_mean=mean(band_NCS);
-PR_NCS_mean=mean(PR_NCS);
+pxx_NCS_mean=mean(pxx_NCS(pxx_NCS~=0));
+band_NCS_mean=mean(band_NCS(band_NCS~=0));
+PR_NCS_mean=mean(PR_NCS(PR_NCS~=0));
+p25_NCS_mean=mean(p25_NCS(p25_NCS~=0));
+p75_NCS_mean=mean(p75_NCS(p75_NCS~=0));
 
 % CS: average on all signals
-pxx_CS_mean=mean(pxx_CS);
-band_CS_mean=mean(band_CS);
-PR_CS_mean=mean(PR_CS);
-
+pxx_CS_mean=mean(pxx_CS(pxx_CS~=0));
+band_CS_mean=mean(band_CS(band_CS~=0));
+PR_CS_mean=mean(PR_CS(PR_CS~=0));
+p25_CS_mean=mean(p25_CS(p25_CS~=0));
+p75_CS_mean=mean(p75_CS(p75_CS~=0));
 
 %% SPECTROGRAM
 signal_n=15; % Signal wanted
@@ -101,10 +104,13 @@ start_time=0; end_time=15; % Part of the signal wanted
 %% NCS&CS FEATURES EXTRACTION
 % [zrc_CS, output_spectral_features_CS, periodogram_pks_features_CS, output_mean_mfcc_CS, output_lpc_CS, output_lsf_CS, zrc_NCS, output_spectral_features_NCS, periodogram_pks_features_NCS, output_mean_mfcc_NCS, output_lpc_NCS, output_lsf_NCS,] = NCS_CS_features_boxplot();
 
+%% THRESHOLD DETERMINATION
+
+
 %% DISPLAY
 
 % Display annoted labels NCS and CS
-signal_n=1;
+signal_n=22;
 % display_NCS_CS_annotations(signal_n,label_final, window, overlap)
 
 %  Display the periodograms of annotated NCS and CS
