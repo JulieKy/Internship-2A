@@ -261,5 +261,7 @@ PR_NCS_mean=mean(PR); % Mean of the power ratio for all NCS section of a sample
 %% DISPLAY annoted labels NCS and CS
 signal_n=22;
 display_NCS_CS_annotations(signal_n,label_final, window, overlap)
+disp('OK')
 
+%% THRESHOLD DETERMINATION
 
