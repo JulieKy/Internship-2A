@@ -64,10 +64,10 @@ for i = 1:lengthTot % loop to have all recording
     xss=xs(1:time_sample*fn,1);
     
     %% Removing crying sections
-       threshold= crying_learning(names_cell);
-    %     % Regarder si appris, si non le faire, si oui lire dans le fichier et
-    %     % remove the CS
-    %     xsc=crying_removing(xss, fn, threshold);
+    % Regarder si appris, si non le faire, si oui lire dans le fichier et remove the CS
+    [threshold,  band]= crying_learning(names_cell);
+    
+    xsc=crying_removing(xss, fn, threshold, band);
     xsc=xss;
     
     %% Filtering BP 100-1000Hz

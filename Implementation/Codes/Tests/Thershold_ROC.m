@@ -1,2 +1,0 @@
-% Deternination thershold
-

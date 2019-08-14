@@ -1,4 +1,4 @@
-function [threshold] = crying_learning(names_cell)
+function [final_threshold, band] = crying_learning(names_cell)
 %CRYING_LEARNING:  Label the crying section, and learn where are the CS by using the Power Ratio Tool
 
 %% INPUTS AND OUTPUTS
@@ -106,6 +106,44 @@ start_time=0; end_time=15; % Part of the signal wanted
 
 %% THRESHOLD DETERMINATION
 
+% -- Powerband 
+
+band=[p25_CS_mean, p75_CS_mean];
+powerband=[];
+
+% For each signal
+for i = 1:length(names_cell)
+    
+    % Reading the signals
+    tempName=names_cell{i};
+    [x,Fs]= audioread([path,'\..\Data\Samples_Belle\',tempName]);
+    disp('READ');
+    disp(tempName);
+    
+    % Get the number of the recording by removing the '.mp3'
+    strMP3 = sprintf('%s',tempName);
+    ind=strfind(strMP3,'.');
+    signal_n = str2num(strMP3(1:ind-1));
+    
+        % -- Resampling to 4000 Hz
+    xs=resample(x,4000,Fs);
+    fn=4000;
+    
+    % -- Shorten to 60s
+    time_sample=60;
+    xss=xs(1:time_sample*fn,1);
+    
+    % Find the band power of each CS and NCS of the signal
+    labels_x= label_final(signal_n, :);
+    powerband_signal = powerband_segment(band, fn, xss, labels_x, window, overlap);
+    powerband=[powerband_signal; powerband];
+end
+
+% -- ROC
+nb_thresholds=500; % Number of thresholds for the ROC
+[fpr, tpr, final_threshold] = threshold_ROC( nb_thresholds, powerband ); % Compute the ROC
+
+
 
 %% DISPLAY
 
@@ -115,8 +153,4 @@ signal_n=22;
 
 %  Display the periodograms of annotated NCS and CS
 display_PR_NCS_CS_interquartiles(f,pxx_NCS, pxx_CS, pxx_NCS_mean, pxx_CS_mean, band_width, pass_band, band_NCS_mean, band_CS_mean);
-
-
-threshold=1;
-
 end

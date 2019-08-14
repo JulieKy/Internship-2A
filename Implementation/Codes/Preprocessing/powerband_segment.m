@@ -1,87 +1,67 @@
-function [ output_args ] = powerband_segment( input_args )
+function [ powerband_x ] = powerband_segment( band, fn, x, labels_x, window, overlap)
 %powerband_segment: Take a signal and return the powerband of all sections
+
 %% INPUTS AND OUTPUTS
 %  -- Inputs --
-%
+% band: ban din which the power will be taken
+% fn: sampling frequency
+% x: input signal
+% labels_x: labels of the signal
+% window: window taken for labelling
+% overlap: overlap taken for labelling
 % -- Outputs --
+% powerband_x: matrix of the powerband of each NCS&CS in the signal [tag_section, powerband]
 
-% A FFFFAAAIIIRRREEE
-%% INITIALISATION 
+%% INITIALISATION
 
 % -- Variables
-N = length(xss);
+N = length(x);
 time_axis = (1:N)/fn;
 
-% -- Finding the location of 'CS' or 'NCS'
-locs=find(label_final(signal_n,:)==flag_section); % Locations of NCS/CS
 
-if isempty(locs)==1 % There isn't NCS/CS on the signal
-   
-    
-else % There are NCS/CS on the signal
+%% LOCATION OF CS & NCS
+% -- Finding the location of 'CS' or 'NCS'
+locs_CS=find(labels_x==1); % Locations of CS
+locs_NCS=find(labels_x==0); % Locations of NCS
+
+% -- Start time of the labels (for each window)
+start_time_NCS=locs_NCS*(window-window*overlap)-1;
+
+% -- Start sample of the labels (for each window)
+start_sample_NCS=start_time_NCS*fn+1;
+label_duration=window*fn; % Number of samples in a window
+
+if isempty(locs_CS)==0 % There is CS on the signal
     
     % -- Start time of the labels (for each window)
-    start_time=locs*(window-window*overlap)-1;
+    start_time_CS=locs_CS*(window-window*overlap)-1;
     
     % -- Start sample of the labels (for each window)
-    start_sample=start_time*fn+1;
-    label_duration=window*fn; % Number of samples in a window
+    start_sample_CS=start_time_CS*fn+1;
     
-    
-    %% PERIODOGRAM
-    
-    pxx_signal=[]; % Stores the periodogram of every NCS/CS of a signal
-    p25_signal=[]; % Stores the first interquartile of every NCS/CS of a signal
-    p75_signal=[]; % Stores the third interquartile of every NCS/CS of a signal
-    
-    % -- For each section (NCS/CS)
-    for n_section=1:length(locs)
-        
-        % Section on the signal (NCS/CS)
-        [section,time_axis_section] = label2signal(xss, n_section, start_sample, label_duration, time_axis);
-        
-        % Welch Periodogram of the section
-        [pxx,f] = Welch_periodogram(section, fn, pass_band); % Welch Periodogram of the section
-        pxx_signal=[pxx, pxx_signal];
-       
-        % Interquartile in frequency of each section
-        p25=percentilefreq(pxx,f,25);
-        p75=percentilefreq(pxx,f,75);
-        p25_signal=[p25, p25_signal];
-        p75_signal=[p75, p75_signal];
-       
-        % Parameters
-        f_interval=length(f)*band_width/(pass_band(end)-pass_band(1)); % Interval of frequencies in the vector f
-        end_band=length(f);
-        band_mean_section=[]; % Means of the periodogram in the frequency bands
-        
-        % For each frequency band
-        for n_band = 1 : length(f)/f_interval
-            start_band=end_band-(floor(f_interval)); % Beginning of the band
-            pxx_band=pxx(start_band:end_band); % Periodogram in the band
-            band_mean_section=[ band_mean_section, mean(pxx_band)]; % Mean of this periodogram
-            end_band=start_band; % End of the band
-        end
-        
-        band_mean_signal(n_section,:)=band_mean_section; % Periodogram means in each frequency bands, for each section NCS/CS of a signal. Matrix shaped like this: (section, frequency bands)
-        PR=band_mean_signal/sum(pxx); % Power ratio in each frequency bands, for each section NCS/CS of a signal
-        
-    end
-    
-    
-    %% OUTPUTS 
-    if length(locs)>1 % More than one section
-        band_mean=mean(band_mean_signal); % For a signal, mean of the means of frequency bands periodogram, for all NCS/CS sections
-        pxx_mean=mean(pxx_signal'); % For a signal, mean of the periodograms of all NCS/CS sections
-        PR_mean=mean(PR); % For a signal, mean of power ratios of all NCS/CS sections
-    else
-        band_mean=band_mean_signal; % For a signal, mean of the means of frequency bands periodogram, for all NCS/CS sections
-        pxx_mean=pxx_signal'; % For a signal, mean of the periodograms of all NCS/CS sections
-        PR_mean=PR; % For a signal, mean of power ratios of all NCS/CS sections
-    end
 end
 
+%% POWERBAND
 
+% -- Powerband NCS
+for i=1:length(locs_NCS)
+    section_n=locs_NCS(i); % Section number
+    section=x(start_sample_NCS(i):start_sample_NCS(i)+label_duration);
+    time_section=time_axis(start_sample_NCS(i):start_sample_NCS(i)+label_duration);
+    p_NCS=bandpower(section, fn, band); % Power band
+    powerband_x(section_n,:)=[0, p_NCS]; % Matrix shape: [tag_section_NCS, p_NCS]
+end
+
+% -- Powerband CS
+if isempty(locs_CS)==0 % There is CS on the signal
+    for j=1:length(locs_CS)
+        section_n=locs_CS(j); % Section number
+        section=x(start_sample_CS(j):start_sample_CS(j)+label_duration);
+        time_section=time_axis(start_sample_CS(j):start_sample_CS(j)+label_duration);
+        p_CS=bandpower(section, fn, band);
+        powerband_x(section_n, :)=[1, p_CS]; % Matrix shape: [tag_section_CS, p_CS]
+    end
+end
 
 end
 

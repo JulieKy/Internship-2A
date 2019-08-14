@@ -49,10 +49,11 @@ else % There are NCS/CS on the signal
         % Welch Periodogram of the section
         [pxx,f] = Welch_periodogram(section, fn, pass_band); % Welch Periodogram of the section
         pxx_signal=[pxx, pxx_signal];
+ 
        
         % Interquartile in frequency of each section
-        p25=percentilefreq(pxx,f,25);
-        p75=percentilefreq(pxx,f,75);
+        p25=percentilefreq(pxx((f~=0)),f(f~=0),25);
+        p75=percentilefreq(pxx((f~=0)),f(f~=0),75);
         p25_signal=[p25, p25_signal];
         p75_signal=[p75, p75_signal];
        
@@ -87,5 +88,4 @@ else % There are NCS/CS on the signal
     end
 end
 
-end
 
