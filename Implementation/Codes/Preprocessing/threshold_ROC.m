@@ -38,7 +38,7 @@ end
 
 %% FINAL THRESHOLD
 dist=sqrt(fpr.^2+(1-tpr).^2); % Distance between top left corner and a point on the curve
-[min_dist argmin_dist]=min(dist); % Minimum distance 
+[min_dist, argmin_dist]=min(dist); % Minimum distance 
 final_threshold=thresholds_test(argmin_dist); % The better threshold
 
 
@@ -49,7 +49,7 @@ hold on
 plot(fpr, fpr, '--');
 plot(fpr(argmin_dist),tpr(argmin_dist), '*');
 hold off
-title('ROC curve')
+title('ROC curve (with 500 thresholds)')
 xlabel('False Positive Ratio')
 ylabel('True Positive Ratio')
 disp('OK thershold ROC');

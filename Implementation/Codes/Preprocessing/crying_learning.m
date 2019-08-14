@@ -1,4 +1,4 @@
-function [final_threshold, band] = crying_learning(names_cell)
+function [final_threshold, band, window, overlap] = crying_learning(names_cell)
 %CRYING_LEARNING:  Label the crying section, and learn where are the CS by using the Power Ratio Tool
 
 %% INPUTS AND OUTPUTS
@@ -136,7 +136,7 @@ for i = 1:length(names_cell)
     % Find the band power of each CS and NCS of the signal
     labels_x= label_final(signal_n, :);
     powerband_signal = powerband_segment(band, fn, xss, labels_x, window, overlap);
-    powerband=[powerband_signal; powerband];
+    powerband=[powerband; powerband_signal];
 end
 
 % -- ROC
