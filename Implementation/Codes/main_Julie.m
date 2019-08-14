@@ -65,9 +65,14 @@ for i = 1:lengthTot % loop to have all recording
     
     %% Removing crying sections
     % Regarder si appris, si non le faire, si oui lire dans le fichier et remove the CS
-    [threshold,  band]= crying_learning(names_cell);
+    [threshold,  band, window_label, overlap_label]= crying_learning(names_cell);
     
-    xsc=crying_removing(xss, fn, threshold, band);
+    % Faux resusltats! 
+    threshold=0.43;
+    band=[302, 412];
+    window_label=1; 
+    overlap_label=0;
+    xsc=crying_removing(xss, fn, threshold, band, window_label, overlap_label);
     xsc=xss;
     
     %% Filtering BP 100-1000Hz
