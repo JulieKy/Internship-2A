@@ -4,7 +4,7 @@ function [ fpr, tpr, final_threshold ] = threshold_ROC( nb_thresholds, powerband
 %% INPUTS AND OUTPUTS
 %  -- Inputs --
 % thresholds_n: Number of thresholds for the ROC
-% powerband: Powerband of all sections of all signal, with the tag_section (0=NCS, 1=CS). Shape of the matrix: [tag_section, powerband].
+% powerband: Powerband of all sections, with the tag_section (0=NCS, 1=CS). Shape of the matrix: [tag_section, powerband].
 % -- Outputs --
 % thershold_final: The better threshold to determine CS and NCS
 
@@ -27,7 +27,7 @@ for i=1:nb_thresholds
    
    % -- True Positive Ratio and the False Positive Ratio
    nb_CS=sum(powerband(:,1)); % Number of true CS
-   nb_NCS=length(powerband(:,1))-nb_CS; % Number of true CS
+   nb_NCS=length(powerband(:,1))-nb_CS; % Number of true NCS
    nb_CS_ok=sum(res==3); % Number of good CS obtained
    nb_NCS_nok=sum(res==2); % Number of bad NCS obtained
    
@@ -41,6 +41,23 @@ dist=sqrt(fpr.^2+(1-tpr).^2); % Distance between top left corner and a point on 
 [min_dist, argmin_dist]=min(dist); % Minimum distance 
 final_threshold=thresholds_test(argmin_dist); % The better threshold
 
+%% ACCURACY 
+% -- Accuracy for all sections
+final_label_obtained=(powerband(:,2)>final_threshold)*2; % 2=CS; 0=NCS
+label_comparison=powerband(:,1)+final_label_obtained; % Comparison of true sections and the sections obtained (3=CS/CS; 1=CS/NCS; 2=NCS/CS; 0=NCS/NCS; )
+
+% -- NCS accuracy
+nb_section_NCS_OK=length(label_comparison(label_comparison==0)); % Number of NCS with a good label obtained 
+nb_section_NCS=length(powerband(:,1)==0); % Total number of NCS
+accuracy_NCS=nb_section_NCS_OK/nb_section_NCS *100; % Percentage of good labelling
+
+% -- CS accuracy
+nb_section_CS_OK=length(label_comparison(label_comparison==3)); % Number of CS with a good label obtained 
+nb_section_CS=length(powerband(:,1)==1); % Total number of CS
+accuracy_CS=nb_section_CS_OK/nb_section_CS *100; % Percentage of good labelling
+
+% -- Total accuracy
+accuracy=accuracy_NCS+accuracy_CS;
 
 %% DISPLAY
 figure, 
