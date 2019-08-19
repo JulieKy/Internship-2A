@@ -1,4 +1,4 @@
-function [xsc] = crying_removing(xss, fn, threshold, band, window_label, overlap_label)
+function [xsc, CS] = crying_removing(xss, fn, threshold, band, window_label, overlap_label)
 %CRYING_REMOVING:  Remove the crying sections thanks to a threshold on powerband
 
 %% INPUTS AND OUTPUTS
@@ -17,17 +17,17 @@ duration_sample=window_label*fn; % Duration of the section in sample
 
 %% POWER BAND OF EACH SECTION
 xss_section=reshape(xss, [duration_sample, nb_section/duration_sample]); % Each section in a column
-power_band=bandpower(xss_section, fn, band);
-cs_section=power_band>threshold; 
+power_band=bandpower(xss_section, fn, band); % Power band of each section
 
-% Mettre des zeros quand cs dans xss
-% refaire le bon reshape pour avoir une ligne
-% XSC=Quand il y a des 0 on supprime
+%% CS and NCS
+CS=power_band>threshold; 
+NCS=1-CS; 
 
-%% CS DETERMINATION
+%% CS REMOVING
+xss_section_NCS=xss_section.*NCS; % Each CS column is filled with 0
+xss_NCS=reshape(xss_section_NCS, [1 size(xss_section_NCS,1)*size(xss_section_NCS,2)]); % Reshape in a single line
+xsc=xss_NCS(xss_NCS~=0); % Signal without CS
 
-%% REMOVING CS
 
-xsc=xss; % Need to be changed!
 end
 
