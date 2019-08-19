@@ -49,11 +49,18 @@ for i = 1:lengthTot % loop to have all recording
     
     close all; % to close previous figures opened in computation of spectral features
     tempName=names_cell{i};
+    
+    tempName='21.mp3';
     % to follow which file is red
-    disp('READ');
+    disp('READ - main_Julie.m');
     disp(tempName);
     
     [x,Fs]= audioread([path,'\..\Data\Samples_Belle\',tempName]); % read current file
+    
+     % Get the number of the recording by removing the '.mp3'
+    strMP3 = sprintf('%s',tempName);
+    ind=strfind(strMP3,'.');
+    signal_n = str2num(strMP3(1:ind-1));
     
     %% Resampling to 4000 Hz
     xs=resample(x,4000,Fs);
@@ -65,15 +72,19 @@ for i = 1:lengthTot % loop to have all recording
     
     %% Removing crying sections
     % Regarder si appris, si non le faire, si oui lire dans le fichier et remove the CS
-    [threshold,  band, window_label, overlap_label]= crying_learning(names_cell);
+    [threshold,  band, label_annotated, window_label, overlap_label]= crying_learning(names_cell);
     
-    % Faux resusltats! 
-    threshold=0.43;
-    band=[302, 412];
-    window_label=1; 
-    overlap_label=0;
-    xsc=crying_removing(xss, fn, threshold, band, window_label, overlap_label);
-    xsc=xss;
+    %     threshold=0.4395;
+    %     band=[302.7, 412];
+    %     window_label=1;
+    %     overlap_label=0;
+    [xsc, label_learning_xss]=crying_removing(xss, fn, threshold, band, window_label, overlap_label);
+    
+    %% Display NCS and CS
+    NCS_color=[0 0.6 0];
+    CS_color=[0.8 0 0];
+    
+    display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_label, overlap_label, label_learning_xss, NCS_color, CS_color)
     
     %% Filtering BP 100-1000Hz
     y = filterbp(xsc,fn);

@@ -10,7 +10,7 @@ function [] = display_NCS_CS_annotations(signal_n,label_final, window, overlap)
 %% Reading the signal
 signal_name=sprintf('%d.mp3',signal_n);
 path=pwd;
-[x1,Fs]= audioread([path,'\..\..\Data\Samples_Belle\',signal_name]); % read current file
+[x1,Fs]= audioread([path,'\..\Data\Samples_Belle\',signal_name]); % read current file
 
 %% Resampling to 4000 Hz
 xs1=resample(x1,4000,Fs);
