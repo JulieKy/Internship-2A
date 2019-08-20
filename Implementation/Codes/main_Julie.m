@@ -45,7 +45,7 @@ excelTempPreprocessing = strcat([pathExcelPreprocessing excelFilePreprocessing],
 
 % Add the headers in the Excel file
 if (init_learning == 0)
-    xlswrite([pathExcelPreprocessing excelFilePreprocessing], [{'Threshold'},  {'p25'}, {'p75'}, {'Window_label'}, {'Overlap_label'}], 'Learning CS Features', 'A1'); 
+    xlswrite([pathExcelPreprocessing excelFilePreprocessing], [{'Threshold'},  {'p25'}, {'p75'}, {'Window_label'}, {'Overlap_label'}], 'Learning CS Features', 'A1');
 end
 
 
@@ -72,6 +72,7 @@ for i = 1:lengthTot % loop to have all recording
     % Name of the sample
     tempName=names_cell{i};
     disp('READ - main_Julie.m');
+    tempName='22.mp3';
     disp(tempName);
     
     % Get the number of the recording by removing the '.mp3'
@@ -99,9 +100,9 @@ for i = 1:lengthTot % loop to have all recording
         xlswrite([pathExcelPreprocessing excelFilePreprocessing], [threshold ; band(1); band(end); window_label; overlap_label]', 'Learning CS Features', 'A2');
         xlswrite([pathExcelPreprocessing excelFilePreprocessing], [label_annotated], 'Annotated Labels', 'A1');
         init_learning=1;
-    end 
+    end
     
-    % -- Removing the CS    
+    % -- Removing the CS
     % Reading data from the Excel fiel
     outputs_ExcelProcessing=xlsread([pathExcelPreprocessing excelFilePreprocessing],'Learning CS Features','A2:E2');
     threshold=outputs_ExcelProcessing(1); band(1)=outputs_ExcelProcessing(2); band(2)=outputs_ExcelProcessing(3); window_label=outputs_ExcelProcessing(4); overlap_label=outputs_ExcelProcessing(5);
@@ -110,6 +111,14 @@ for i = 1:lengthTot % loop to have all recording
     % Removing the data
     [xsc, label_learning_xss]=crying_removing(xss, fn, threshold, band, window_label, overlap_label);
     
+    % -- Display NCS and CS
+% CS and NCS color
+NCS_color=[0 0.6 0];
+CS_color=[0.8 0 0];
+
+% Display xss, annotated labels, learnt labels and xsc
+display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_label, overlap_label, label_learning_xss, NCS_color, CS_color);
+
     
     %% -- Filtering BP 100-1000Hz
     y = filterbp(xsc,fn);
@@ -145,13 +154,6 @@ end
 
 %% ****** DISPLAY ******
 
-%% -- Display NCS and CS
-% CS and NCS color
-NCS_color=[0 0.6 0];
-CS_color=[0.8 0 0];
-
-% Display xss, annotated labels, learnt labels and xsc
-display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_label, overlap_label, label_learning_xss, NCS_color, CS_color);
 
 %% -- FFT Representation
 

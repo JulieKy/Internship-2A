@@ -3,9 +3,13 @@ function [final_threshold, band, label_final, window, overlap] = crying_learning
 
 %% INPUTS AND OUTPUTS
 %  -- Inputs --
-% names_cell:
+% names_cell: Name of the samples 
 % -- Outputs --
-
+% final_threshold: Threshold used for distinguish CS and NCS
+% band: Frequency band used to compare the power ratio of CS and NCS
+% label_final: Annotated labels of the signals
+% window: Window used for labelling (annotations)
+% overlap: Overlap used for labelling (annotations)
 
 %% INITIALISATION
 % -- Data
@@ -20,7 +24,6 @@ overlap=0;
 % -- Parameters for the power ratio
 pass_band=[0:2000];
 band_width=100;
-
 
 path = pwd;
 
@@ -139,8 +142,10 @@ for i = 1:length(names_cell)
 end
 
 % -- ROC
-nb_thresholds=1000; % Number of thresholds for the ROC
-[fpr, tpr, final_threshold] = threshold_ROC( nb_thresholds, powerband ); % Compute the ROC
+nb_thresholds=500; % Number of thresholds for the ROC
+label_annotated=powerband(:,1);
+powerband=powerband(:,2);
+[fpr, tpr, final_threshold] = threshold_ROC( nb_thresholds, label_annotated, powerband); % Compute the ROC
 
 
 
