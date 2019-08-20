@@ -1,6 +1,18 @@
-function [ output_args ] = display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window, overlap, label_learning, NCS_color, CS_color)
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+function [] = display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window, overlap, label_learning, NCS_color, CS_color)
+%display_CS_NCS_final: Display the rough signal, the one with the actual labels, the one with the predicted labels and finally the signal without CS.
+
+%% INPUTS AND OUTPUTS
+%  -- Inputs --
+% xss: Signal without treatment on CS/NCS
+% xsc: Signal after treatment en CS
+% fn: Sampling frequency
+% signal_n: Number of the signal
+% label_annotated: Annotated labels of the signal bank
+% window: Window used for labelling
+% overlap: Overlap used for labelling
+% label_learning: Predicted labels
+% NCS_color: Color of NCS
+% CS_color: Color of CS
 
 %% INITIALISATION
 % Signal with CS and NCS

@@ -4,9 +4,9 @@
 Combining signal processing and biomedical, the project focuses on the breathing sound analysis of premature newborns with respiratory deficiency. In connection with a medical team, the work consisted first in signal preprocessing to remove the noises (crying, heartbeat, machine noises, ...) by relying on labeled signals. Then, the extraction of signal characteristics was necessary to learn more about Surfactant Replacement Therapy. 
 
 ## Vocabulary
-**CS:** Crying sections 
+**CS:** Crying segments 
 
-**NCS:** Non-crying sections
+**NCS:** Non-crying segments
 
 **RDS:** Respiratory Distress Syndrome
 
@@ -33,6 +33,10 @@ Combining signal processing and biomedical, the project focuses on the breathing
 
 ``` NCS_CS_features_boxplot.m```: Extract some features of CS and NCS, return them and do their boxplots.
 
+```powerband_segment.m```: Take a signal and return the powerband of all segments.
+
+```threshold_ROC.m```: Based on powerband. Compute the ROC to find the good threshold which will distinguish the CSs from NCSs.
+
 ``` crying_removing.m```: Remove the CS in all the signals
 ##### Filtering 
 ```filterbp.m ```: Filter signals using the ButterWorth Filter. 
@@ -54,6 +58,8 @@ Combining signal processing and biomedical, the project focuses on the breathing
 
 #### Display
 ```display_NCS_CS_annotations.m```: Displays the annotated labels CS and NCS of a signal. 
+
+```display_CS_NCS_final.m```: Display the rough signal, the one with the actual labels, the one with the predicted labels and finally the signal without CS.
 
 ```display_PR_NCS_CS_interquartiles.m```: Displays the periodograms of annotated NCS and CS. 
 

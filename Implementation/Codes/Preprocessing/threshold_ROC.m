@@ -1,5 +1,5 @@
 function [ fpr, tpr, final_threshold ] = threshold_ROC( nb_thresholds, label_annotated, powerband)
-%threshold_ROC: Based on powerband. Compute the ROC.
+%threshold_ROC: Based on powerband. Compute the ROC to find the good threshold which will distinguish the CSs from NCSs.
 
 %% INPUTS AND OUTPUTS
 %  -- Inputs --

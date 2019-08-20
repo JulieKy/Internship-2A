@@ -5,6 +5,8 @@ function [] = display_NCS_CS_annotations(signal_n,label_final, window, overlap)
 %  -- Inputs --
 % signal_n: Number of the signal
 % label_final: Annotated labels of the signal bank
+% window: Window used for labelling
+% overlap: Overlap used for labelling
 
 
 %% Reading the signal
