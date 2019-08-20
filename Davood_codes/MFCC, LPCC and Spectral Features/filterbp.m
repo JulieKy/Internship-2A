@@ -4,9 +4,9 @@ function [y] = filterbp(x,Fs)
 % Fs = sampling frequency
 % output = band pass filtered signal with cut off frequencies of 0.5hz, and
 % 350 hz
-
-y = dobp1Filter2(x, Fs,fcl,fch);%calling band pass filtering function
-audiowrite('filtered_signal.wav',y,Fs); %writing the filtered signal to an audio file
+[B_low,A_low] = butter(6,2*[100 1000]./Fs,'bandpass');
+y = filtfilt(B_low,A_low,x);
+audiowrite('filtered_signal.wav',y,Fs); % writing the filtered signal to an audio file
 
 end
 

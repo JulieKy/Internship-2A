@@ -18,7 +18,7 @@ samples=37;
 end_sample=60; % End of the signal (hypotesis: length of the signal=60s)
 
 % -- Parameters for labelling
-window=1;
+window=3;
 overlap=0;
 
 % -- Parameters for the power ratio

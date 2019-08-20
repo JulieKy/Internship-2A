@@ -16,7 +16,7 @@ start_sample=start_time*fn+1; % Start sample of each section
 duration_sample=window_label*fn; % Duration of the section in sample
 
 %% POWER BAND OF EACH SECTION
-xss_section=reshape(xss, [duration_sample, nb_section/duration_sample]); % Each section in a column
+xss_section=reshape(xss, [duration_sample, length(xss)/duration_sample]); % Each section in a column
 power_band=bandpower(xss_section, fn, band); % Power band of each section
 
 %% CS and NCS
