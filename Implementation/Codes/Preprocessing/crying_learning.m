@@ -18,25 +18,33 @@ samples=37;
 end_sample=60; % End of the signal (hypotesis: length of the signal=60s)
 
 % -- Parameters for labelling
-window=3;
-overlap=0;
+window_labelling=1;
+overlap_labelling=0;
+
+% -- Parameters for training
+window_training=3;
 
 % -- Parameters for the power ratio
 pass_band=[0:2000];
 band_width=100;
 
+% -- Path
 path = pwd;
 
+% -- Initialisation training segments 
+CS_pure=[]; NCS_pure=[]; CS_epsi=[]; NCS_epsi=[];
+
 %% LABELLING
-[label_final, coef_KAPPA]=labelling(observators,samples, end_sample, window, overlap);
+[label_final, coef_KAPPA]=labelling(observators,samples, end_sample, window_labelling, overlap_labelling);
 
 
-%% POWER RATIO
+%% TRAINING
 
 % Initialisation
 pxx_NCS=[]; band_NCS=[]; PR_NCS=[]; p25_NCS=[]; p75_NCS=[];
 pxx_CS=[]; band_CS=[]; PR_CS=[]; p25_CS=[]; p75_CS=[];
 
+%% -- Reading files and first preprocessing
 % For every signal
 for i = 1:length(names_cell)
     
@@ -59,28 +67,23 @@ for i = 1:length(names_cell)
     time_sample=60;
     xss=xs(1:time_sample*fn,1);
     
-    % -- NCS power ratio
-    flag_section=0; % 0 for NCS
-    [pxx_NCS_signal, band_NCS_signal, PR_NCS_signal, freq, p25_NCS_signal, p75_NCS_signal]=power_ratio_band(xss, signal_n, fn, window, overlap, label_final, pass_band, band_width, flag_section);
-    pxx_NCS=[pxx_NCS_signal; pxx_NCS];
-    band_NCS=[band_NCS_signal; band_NCS];
-    PR_NCS=[PR_NCS_signal; PR_NCS];
-    f=freq;
-    p25_NCS=[p25_NCS, p25_NCS_signal];
-    p75_NCS=[p75_NCS, p75_NCS_signal];
+    %% -- Finding pure CS and NCS
+    label_final_xss=label_final(signal_n, :);
+    epsilon=0;
+    [CS_pure_xss, NCS_pure_xss, CS_epsi_xss, NCS_epsi_xss] = CS_NCS_pure_window(xss, fn, signal_n, label_final_xss, window_training, epsilon, window_labelling);
+    CS_pure=[CS_pure_xss; CS_pure];
+    NCS_pure=[NCS_pure_xss; NCS_pure];
+    CS_epsi=[CS_epsi_xss; CS_epsi];
+    NCS_epsi=[NCS_epsi_xss; NCS_epsi];
+end 
+
+    %% -- Power ratio
+    % CS power ratio
+    [pxx_CS, band_CS, PR_CS, freq, p25_CS, p75_CS]=power_ratio_band2(pass_band, fn, CS_pure);
     
-    % -- CS power ratio
-    flag_section=1; % 1 for CS
-    [pxx_CS_signal, band_CS_signal, PR_CS_signal, freq, p25_CS_signal, p75_CS_signal]=power_ratio_band(xss, signal_n, fn, window, overlap, label_final, pass_band, band_width, flag_section);
-    if (pxx_CS_signal~=0) % CS present in the signal
-        pxx_CS=[pxx_CS_signal; pxx_CS];
-        band_CS=[band_CS_signal; band_CS];
-        PR_CS=[PR_CS_signal; PR_CS];
-        p25_CS=[p25_CS, p25_CS_signal];
-        p75_CS=[p75_CS, p75_CS_signal];
-    end
+    % NCS power ratio
+    [pxx_NCS, band_NCS, PR_NCS, freq, p25_NCS, p75_NCS]=power_ratio_band2(pass_band, fn, NCS_pure);
     
-end
 
 % NCS: average on all signals
 pxx_NCS_mean=mean(pxx_NCS(pxx_NCS~=0));

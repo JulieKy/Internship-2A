@@ -72,7 +72,6 @@ for i = 1:lengthTot % loop to have all recording
     % Name of the sample
     tempName=names_cell{i};
     disp('READ - main_Julie.m');
-    tempName='22.mp3';
     disp(tempName);
     
     % Get the number of the recording by removing the '.mp3'

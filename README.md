@@ -23,7 +23,7 @@ Combining signal processing and biomedical, the project focuses on the breathing
 
 ``` labelling.m``` : Labels the recordings using Audacity text files, thank to a moving average amd give the Fleiss'es KAPPA coefficients.
 
-``` Fleiss.m``` : ompute the Fleiss'es kappa.
+``` Fleiss.m``` : Compute the Fleiss'es kappa.
 
 ``` label2signal.m```: With the placement of the CS/NCS in the label_final matrix returned by LABELLING.m, this function gives the corresponding piece of signal.
 
