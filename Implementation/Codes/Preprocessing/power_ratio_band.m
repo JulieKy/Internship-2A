@@ -3,7 +3,13 @@ function [pxx_mean, band_mean, PR_mean, f, p25_signal, p75_signal]=power_ratio_b
 
 %% INPUTS AND OUTPUTS
 %  -- Inputs --
-%
+% xss: Signal without treatment on CS/NCS
+% signal_n: Number of the signal
+% fn: Sampling frequency
+% window: Window used for labelling
+% overlap: Overlap used for labelling
+% label_final: Annotated labels of the signal bank
+% flag_section: 1=CS; 0=NCS
 % -- Outputs --
 
 

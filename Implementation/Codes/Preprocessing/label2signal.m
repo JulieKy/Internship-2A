@@ -8,7 +8,7 @@ function [xss_section,time_axis_section] = label2signal(xss, n_section, start_sa
 % n_section: Section number
 % start_sample: Start sample of the labels (for each window)
 % label_duration: Number of samples in a window
-% time_axis: Time qxis of the xss
+% time_axis: Time axis of the xss
 
 % -- Outputs --
 % section: Segment on the signal
