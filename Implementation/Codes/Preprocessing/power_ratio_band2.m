@@ -1,4 +1,4 @@
-function [pxx_mean, band_mean, PR_mean, f, p25_section, p75_section]=power_ratio_band2( pass_band, fn, pure_sections)
+function [pxx_mean, band_mean, PR_mean, f, p25_section, p75_section]=power_ratio_band2( pass_band, fn, pure_sections, band_width)
 %POWER RATIO:  Calculate the power ratio of NCS/CS (depending on flag_section) of a signal
 
 %% INPUTS AND OUTPUTS
@@ -46,7 +46,7 @@ for s=1: size(pure_sections,1)
         end_band=start_band; % End of the band
     end
     
-    band_mean_signal(n_section,:)=band_mean_section; % Periodogram means in each frequency bands, for each section NCS/CS of a signal. Matrix shaped like this: (section, frequency bands)
+    band_mean_signal(s,:)=band_mean_section; % Periodogram means in each frequency bands, for each section NCS/CS of a signal. Matrix shaped like this: (section, frequency bands)
     PR=band_mean_signal/sum(pxx); % Power ratio in each frequency bands, for each section NCS/CS of a signal
     
 end

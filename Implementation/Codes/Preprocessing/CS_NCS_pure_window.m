@@ -85,7 +85,7 @@ while segment_sample(end)<length(label_final_xss)-window_duration
       
       %% NON-PURE SEGMENT
     else
-        j=0
+        j=0;
         while segment_label(end-j)==1
             j=j+1;
         end 
