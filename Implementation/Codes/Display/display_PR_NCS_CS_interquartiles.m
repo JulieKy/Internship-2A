@@ -1,4 +1,4 @@
-function [] = display_PR_NCS_CS_interquartiles(f,pxx_NCS, pxx_CS, pxx_NCS_mean, pxx_CS_mean, band_width, pass_band, band_NCS_mean, band_CS_mean)
+function [] = display_PR_NCS_CS_interquartiles(f,pxx_NCS, pxx_CS, pxx_NCS_mean, pxx_CS_mean, band_width, pass_band, band_NCS_mean, band_CS_mean, CS_color, NCS_color)
 %DISPLAY_PR_NCS_CS_INTERQUARTILES: Display the periodograms of annotated NCS and CS
 
 %% INPUTS AND OUTPUTS
@@ -57,20 +57,44 @@ function [] = display_PR_NCS_CS_interquartiles(f,pxx_NCS, pxx_CS, pxx_NCS_mean, 
 % legend('Periodogram', 'Frequency bands', 'Mean')
 % title('Welch Periodogram mean for CS')
 
+% Line width
+w1=1.5;
+w=0.7;
 
 %% Median with inter-quartile range
-figure,
-plot(f(f~=0) , median(pxx_NCS(:,(f~=0))), 'Color', [1 0 0]); hold on
-plot(f(f~=0) , median(pxx_CS(:,(f~=0))), 'Color', [0 0 1]);
-plot(f(f~=0) , prctile(pxx_NCS(:,(f~=0)),25), 'LineStyle', '--', 'Color', [1 0.4 0.4]); 
-plot(f(f~=0) , prctile(pxx_CS(:,(f~=0)),25), 'LineStyle', '--', 'Color', [0.4 0.4 1]); 
-plot(f(f~=0) , prctile(pxx_NCS(:,(f~=0)),75), 'LineStyle', '--', 'Color', [1 0.4 0.4]); 
-plot(f(f~=0) , prctile(pxx_CS(:,(f~=0)),75), 'LineStyle', '--', 'Color', [0.4 0.4 1]); 
 
-xlabel('Frequency (in Hz)');
-ylabel('Power Spectrum');
+figure,
+p1=plot(f(f~=0) , median(pxx_NCS(:,(f~=0))), 'Color', NCS_color, 'LineWidth', w1); hold on
+p2=plot(f(f~=0) , median(pxx_CS(:,(f~=0))), 'Color', CS_color, 'LineWidth', w1);
+p3=plot(f(f~=0) , prctile(pxx_NCS(:,(f~=0)),25), 'LineStyle', '--', 'LineWidth', w,'Color', NCS_color); 
+p4=plot(f(f~=0) , prctile(pxx_CS(:,(f~=0)),25), 'LineStyle', '--','LineWidth', w, 'Color', CS_color); 
+plot(f(f~=0) , prctile(pxx_NCS(:,(f~=0)),75), 'LineStyle', '--','LineWidth', w, 'Color', NCS_color); 
+plot(f(f~=0) , prctile(pxx_CS(:,(f~=0)),75), 'LineStyle', '--','LineWidth', w, 'Color', CS_color); 
+ 
+
+xlabel('Frequency [Hz]');
+ylabel('Power');
 title('Average Power Spectrum for NCS and CS (labelling: window=1s)', 'FontSize', 14);
-legend('Average power spectrum NCS',  'Average power spectrum CS', 'Interquartile range NCS','Interquartile range CS');
+legend([p1, p3, p2, p4], 'Average power spectrum NCS', 'Interquartile range NCS','Average power spectrum CS', 'Interquartile range CS');
+hold off
+
+%% Logarithmic median with inter-quartile range
+
+pxx_NCS_log=10*log10(pxx_NCS);
+pxx_CS_log=10*log10(pxx_CS);
+
+figure,
+p1=plot(f(f~=0) , median(pxx_NCS_log(:,(f~=0))), 'Color', NCS_color, 'LineWidth', w1); hold on
+p2=plot(f(f~=0) , median(pxx_CS_log(:,(f~=0))), 'Color', CS_color, 'LineWidth', w1);
+p3=plot(f(f~=0) , prctile(pxx_NCS_log(:,(f~=0)),25), 'LineStyle', '--', 'LineWidth', w,'Color', NCS_color); 
+p4=plot(f(f~=0) , prctile(pxx_CS_log(:,(f~=0)),25), 'LineStyle', '--','LineWidth', w, 'Color', CS_color); 
+plot(f(f~=0) , prctile(pxx_NCS_log(:,(f~=0)),75), 'LineStyle', '--','LineWidth', w, 'Color', NCS_color); 
+plot(f(f~=0) , prctile(pxx_CS_log(:,(f~=0)),75), 'LineStyle', '--','LineWidth', w, 'Color', CS_color); 
+
+xlabel('Frequency [Hz]');
+ylabel('Power [dB]');
+title('Logarithmic Average Power Spectrum for NCS and CS', 'FontSize', 14);
+legend([p1, p3, p2, p4], 'Average power spectrum NCS', 'Interquartile range NCS','Average power spectrum CS', 'Interquartile range CS');
 hold off
 
 end
