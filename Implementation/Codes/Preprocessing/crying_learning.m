@@ -1,4 +1,4 @@
-function [final_threshold, band, label_final, window, overlap] = crying_learning(names_cell)
+function [final_threshold, band, label_final, window, overlap] = crying_learning(names_cell, CS_color, NCS_color)
 %CRYING_LEARNING:  Label the crying section, and learn where are the CS by using the Power Ratio Tool
 
 %% INPUTS AND OUTPUTS
@@ -33,7 +33,7 @@ band_width=100;
 path = pwd;
 
 % -- Initialisation training segments
-CS_pure=[]; NCS_pure=[]; CS_epsi=[]; NCS_epsi=[];
+CS=[]; NCS=[]; 
 
 %% LABELLING
 [label_final, coef_KAPPA]=labelling(observators,samples, end_sample, window_labelling, overlap_labelling);
@@ -70,23 +70,23 @@ for i = 1:length(names_cell)
     
     %% -- Finding pure CS and NCS
     label_final_xss=label_final(signal_n, :);
-    epsilon=0;
-    [CS_pure_xss, NCS_pure_xss, CS_epsi_xss, NCS_epsi_xss] = CS_NCS_pure_window(xss, fn, signal_n, label_final_xss, window_training, epsilon, window_labelling);
-    CS_pure=[CS_pure_xss; CS_pure];
-    NCS_pure=[NCS_pure_xss; NCS_pure];
-    CS_epsi=[CS_epsi_xss; CS_epsi];
-    NCS_epsi=[NCS_epsi_xss; NCS_epsi];
-    CS_nb=size(CS_pure, 1);
-    NCS_nb=size(NCS_pure, 1);
+    error=0; %% Allowed error on pure segment
+    [CS_xss, NCS_xss] = CS_NCS_pure_window(xss, fn, signal_n, label_final_xss, window_training, error, window_labelling);
+    CS=[CS_xss; CS];
+    NCS=[NCS_xss; NCS];
+    CS_nb=size(CS, 1)
+    NCS_nb=size(NCS, 1)
 end
 
-%% FINDING THE BEST FREQUENCY RANGE 
+%% FINDING THE BEST FREQUENCY RANGE
 %% -- Power ratio
 % CS power ratio
-[pxx_CS, powerband_CS, PR_CS, f, p25_CS, p75_CS]=power_ratio_band2(pass_band, fn, CS_pure, band_width);
+[pxx_CS, powerband_CS, PR_CS, f, p25_CS, p75_CS]=power_ratio_band2(pass_band, fn, CS, band_width);
 
 % NCS power ratio
-[pxx_NCS, powerband_NCS, PR_NCS, f, p25_NCS, p75_NCS]=power_ratio_band2(pass_band, fn, NCS_pure, band_width);
+[pxx_NCS, powerband_NCS, PR_NCS, f, p25_NCS, p75_NCS]=power_ratio_band2(pass_band, fn, NCS, band_width);
+
+%display_power_spectrum( pxx_CS', pxx_NCS', f );
 
 % NCS: average on all signals
 pxx_NCS_mean=mean(pxx_NCS(pxx_NCS~=0)); % NCS mean periodogram
@@ -102,6 +102,7 @@ PR_CS_mean=mean(PR_CS(PR_CS~=0));
 p25_CS_mean=mean(p25_CS(p25_CS~=0));
 p75_CS_mean=mean(p75_CS(p75_CS~=0));
 
+display_PR_NCS_CS_interquartiles(f,pxx_NCS, pxx_CS, pxx_NCS_mean, pxx_CS_mean, band_width, pass_band, band_NCS_mean, band_CS_mean, CS_color, NCS_color);
 %% OTHER FEATURES (not used now)
 % % -- SPECTROGRAM
 % signal_n=15; % Signal wanted
@@ -116,14 +117,15 @@ p75_CS_mean=mean(p75_CS(p75_CS~=0));
 %% THRESHOLD DETERMINATION
 
 % -- Powerband in the best frequency range
-band=[p25_CS_mean, p75_CS_mean]; %% A CHANGER !!!
+%band=[1550, 1850];
+band=[p25_CS_mean, p75_CS_mean];
 
 % For every pure CS section
-powerband_CS=bandpower(CS_pure', fn, band);
+powerband_CS=bandpower(CS', fn, band);
 label_CS=ones(1,CS_nb);
 
 % For every pure NCS section
-powerband_NCS=bandpower(NCS_pure', fn, band);
+powerband_NCS=bandpower(NCS', fn, band);
 label_NCS=zeros(1,NCS_nb);
 
 % -- ROC
@@ -131,7 +133,6 @@ nb_thresholds=500; % Number of thresholds for the ROC
 label_annotated=[label_CS, label_NCS]';
 powerband=[powerband_CS, powerband_NCS]';
 [fpr, tpr, final_threshold] = threshold_ROC( nb_thresholds, label_annotated, powerband); % Compute the ROC
-
 
 
 %% DISPLAY
@@ -143,39 +144,4 @@ display_NCS_CS_annotations(signal_n,label_final, window, overlap)
 %  Display the periodograms of annotated NCS and CS
 display_PR_NCS_CS_interquartiles(f,pxx_NCS, pxx_CS, pxx_NCS_mean, pxx_CS_mean, band_width, pass_band, band_NCS_mean, band_CS_mean);
 
-
-
-
-
-
-
-
-% 
-% % For each signal
-% for i = 1:length(names_cell)
-%     
-%     % Reading the signals
-%     tempName=names_cell{i};
-%     [x,Fs]= audioread([path,'\..\Data\Samples_Belle\',tempName]);
-%     disp('READ - crying_learning.m THRESHOLD');
-%     disp(tempName);
-%     
-%     % Get the number of the recording by removing the '.mp3'
-%     strMP3 = sprintf('%s',tempName);
-%     ind=strfind(strMP3,'.');
-%     signal_n = str2num(strMP3(1:ind-1));
-%     
-%     % -- Resampling to 4000 Hz
-%     xs=resample(x,4000,Fs);
-%     fn=4000;
-%     
-%     % -- Shorten to 60s
-%     time_sample=60;
-%     xss=xs(1:time_sample*fn,1);
-%     
-%     % Find the band power of each CS and NCS of the signal
-%     labels_x= label_final(signal_n, :);
-%     powerband_signal = powerband_segment(band, fn, xss, labels_x, window_training, overlap_training);
-%     powerband=[powerband; powerband_signal];
-% end
 end

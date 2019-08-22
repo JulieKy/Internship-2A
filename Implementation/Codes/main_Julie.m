@@ -4,6 +4,10 @@
 
 clear all, close all, clc, dbstop if error;
 
+%% -- CS and NCS color
+NCS_color=[0 0.6 0];
+CS_color=[0.8 0 0];
+
 %% -- Path
 addpath(genpath('..\..\')); % Access to sample folder
 path = pwd; % Current path
@@ -95,7 +99,7 @@ for i = 1:lengthTot % loop to have all recording
     %% -- Removing crying sections (CS)
     % -- Learning where are the CS (if not already done)
     if (init_learning == 0) % Need to be done one time (data stored on an Excel file)
-        [threshold,  band, label_annotated, window_label, overlap_label]= crying_learning(names_cell);
+        [threshold,  band, label_annotated, window_label, overlap_label]= crying_learning(names_cell, CS_color, NCS_color);
         xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [threshold ; band(1); band(end); window_label; overlap_label]', 'Learning CS Features', 'A2');
         xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [label_annotated], 'Annotated Labels', 'A1');
         init_learning=1;
@@ -112,9 +116,6 @@ for i = 1:lengthTot % loop to have all recording
     
     
     %% -- Display NCS and CS
-% CS and NCS color
-NCS_color=[0 0.6 0];
-CS_color=[0.8 0 0];
 
 % Display xss, annotated labels, learnt labels and xsc
 display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_label, overlap_label, label_learning_xss, NCS_color, CS_color);

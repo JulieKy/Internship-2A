@@ -58,7 +58,7 @@ for samp=1:samples % Number of samples
             time_end=file_time_e(l); % The ending time of a section
             
             % -- For one window
-            while end_w>time_end
+            while (end_w>time_end && l<length(file_time_e))
                 flag=1; % There are different sections (CS&NCS) in one window
                 label_section=file_label{l}; % The label during a section (colon 3 in the text file)
                 
