@@ -1,6 +1,6 @@
 % MAIN_JULIE: Main script of the project (preprocessing + spectral analysis)
 
-%% ------ INITIALISATION ------ 
+%% ------ INITIALISATION ------
 
 clear all, close all, clc, dbstop if error;
 
@@ -75,6 +75,7 @@ for i = 1:lengthTot % loop to have all recording
     
     % Name of the sample
     tempName=names_cell{i};
+    tempName='22.mp3';
     disp('READ - main_Julie.m');
     disp(tempName);
     
@@ -86,7 +87,7 @@ for i = 1:lengthTot % loop to have all recording
     % Reading the sample
     [x,Fs]= audioread([path,'\..\Data\Samples_Belle\',tempName]); % read current file
     
-    %% ------  PREPROCESSING ------ 
+    %% ------  PREPROCESSING ------
     
     %% -- Resampling to 4000 Hz
     xs=resample(x,4000,Fs);
@@ -97,10 +98,12 @@ for i = 1:lengthTot % loop to have all recording
     xss=xs(1:time_sample*fn,1);
     
     %% -- Removing crying sections (CS)
+    overlap_label=0;
+    
     % -- Learning where are the CS (if not already done)
     if (init_learning == 0) % Need to be done one time (data stored on an Excel file)
-        [threshold,  band, label_annotated, window_label, overlap_label]= crying_learning(names_cell, CS_color, NCS_color);
-        xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [threshold ; band(1); band(end); window_label; overlap_label]', 'Learning CS Features', 'A2');
+        [threshold,  band, label_annotated, window_annotated, window_training]= crying_learning(names_cell, CS_color, NCS_color);
+        xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [threshold ; band(1); band(end); window_annotated; window_training]', 'Learning CS Features', 'A2');
         xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [label_annotated], 'Annotated Labels', 'A1');
         init_learning=1;
     end
@@ -108,48 +111,48 @@ for i = 1:lengthTot % loop to have all recording
     % -- Removing the CS
     % Reading data from the Excel fiel
     outputs_ExcelProcessing=xlsread([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing],'Learning CS Features','A2:E2');
-    threshold=outputs_ExcelProcessing(1); band(1)=outputs_ExcelProcessing(2); band(2)=outputs_ExcelProcessing(3); window_label=outputs_ExcelProcessing(4); overlap_label=outputs_ExcelProcessing(5);
+    threshold=outputs_ExcelProcessing(1); band(1)=outputs_ExcelProcessing(2); band(2)=outputs_ExcelProcessing(3); window_annotated=outputs_ExcelProcessing(4); window_training=outputs_ExcelProcessing(5);
     label_annotated=xlsread([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], 'Annotated Labels');
     
     % Removing the data
-    [xsc, label_learning_xss]=crying_removing(xss, fn, threshold, band, window_label, overlap_label);
+    [xsc, label_learning_xss]=crying_removing(xss, fn, threshold, band, window_training, overlap_label, window_annotated);
     
     
     %% -- Display NCS and CS
-
-% Display xss, annotated labels, learnt labels and xsc
-display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_label, overlap_label, label_learning_xss, NCS_color, CS_color);
-
+    
+    % Display xss, annotated labels, learnt labels and xsc
+    display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_annotated, overlap_label, label_learning_xss, NCS_color, CS_color);
+    
     
     %% -- Filtering BP 100-1000Hz
     y = filterbp(xsc,fn);
     
-    %% ------  SPECTRAL FEATURES ------ 
+    %% ------  SPECTRAL FEATURES ------
     
-        %% -- Computation of features
-        output_temporal_features = temporal_features(xs,fn, tempName); % Temporal features
+    %% -- Computation of features
+    output_temporal_features = temporal_features(xs,fn, tempName); % Temporal features
     [output_spectral_features(i,:),periodogram_pks_features(i,:),pxx(i,:),f(i,:),foct(i,:),spower(i,:),I(i,:),S(i,:)] = spectral_features(y,fn); % See Fae's comment
-        output_mean_mfcc = mfcc_coeffs(y, fn); % MFCCs coefficient
-        [output_lpc, output_lsf] = lpc_lsf_coeff(y, fn); % LPC and LFC coefficient
+    output_mean_mfcc = mfcc_coeffs(y, fn); % MFCCs coefficient
+    [output_lpc, output_lsf] = lpc_lsf_coeff(y, fn); % LPC and LFC coefficient
     
     
     %% -- Write on Excel file all the features
     
-        % Sheet 1
-        xlswrite([pathExcel excelFileSpectralFeatures], [i;output_temporal_features]', 'Temporal Features', ['A',num2str(i+1)]);
-        xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{i}}, 'Temporal Features',['A',num2str(i+1)]);
+    % Sheet 1
+    xlswrite([pathExcel excelFileSpectralFeatures], [i;output_temporal_features]', 'Temporal Features', ['A',num2str(i+1)]);
+    xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{i}}, 'Temporal Features',['A',num2str(i+1)]);
     
-        % Sheet 2
-        xlswrite([pathExcel excelFileSpectralFeatures], [i;output_spectral_features(i,:)']', 'Spectral Features 1', ['A',num2str(i+1)]);
-        xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{i}}, 'Spectral Features 1',['A',num2str(i+1)]);
+    % Sheet 2
+    xlswrite([pathExcel excelFileSpectralFeatures], [i;output_spectral_features(i,:)']', 'Spectral Features 1', ['A',num2str(i+1)]);
+    xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{i}}, 'Spectral Features 1',['A',num2str(i+1)]);
     
-        % Sheet 3
-        xlswrite([pathExcel excelFileSpectralFeatures], [i;periodogram_pks_features(i,:)']', 'Spectral Features 2', ['A',num2str(i+1)]);
-        xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{i}}, 'Spectral Features 2',['A',num2str(i+1)]);
+    % Sheet 3
+    xlswrite([pathExcel excelFileSpectralFeatures], [i;periodogram_pks_features(i,:)']', 'Spectral Features 2', ['A',num2str(i+1)]);
+    xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{i}}, 'Spectral Features 2',['A',num2str(i+1)]);
     
-        % Sheet 4
-        xlswrite([pathExcel excelFileSpectralFeatures], [i;output_mean_mfcc'; output_lpc'; output_lsf']', 'Coefficients', ['A',num2str(i+1)]);
-        xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{i}}, 'Coefficients',['A',num2str(i+1)]);
+    % Sheet 4
+    xlswrite([pathExcel excelFileSpectralFeatures], [i;output_mean_mfcc'; output_lpc'; output_lsf']', 'Coefficients', ['A',num2str(i+1)]);
+    xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{i}}, 'Coefficients',['A',num2str(i+1)]);
 end
 
 

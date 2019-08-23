@@ -102,7 +102,7 @@ for n_section=1:length(CS_locs)
 end
 
 
-legend([p1 p2],'NCS', 'CS')
+%legend([p1 p2],'NCS', 'CS')
 hold off
 str3=sprintf('CS and NCS after Learning on Signal %d',signal_n);
 title(str3)

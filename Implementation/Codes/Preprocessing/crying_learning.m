@@ -1,4 +1,4 @@
-function [final_threshold, band, label_final, window, overlap] = crying_learning(names_cell, CS_color, NCS_color)
+function [final_threshold, band, label_final, window_labelling, window_training] = crying_learning(names_cell, CS_color, NCS_color)
 %CRYING_LEARNING:  Label the crying section, and learn where are the CS by using the Power Ratio Tool
 
 %% INPUTS AND OUTPUTS
@@ -74,8 +74,8 @@ for i = 1:length(names_cell)
     [CS_xss, NCS_xss] = CS_NCS_pure_window(xss, fn, signal_n, label_final_xss, window_training, error, window_labelling);
     CS=[CS_xss; CS];
     NCS=[NCS_xss; NCS];
-    CS_nb=size(CS, 1)
-    NCS_nb=size(NCS, 1)
+    CS_nb=size(CS, 1);
+    NCS_nb=size(NCS, 1);
 end
 
 %% FINDING THE BEST FREQUENCY RANGE
@@ -117,7 +117,7 @@ display_PR_NCS_CS_interquartiles(f,pxx_NCS, pxx_CS, pxx_NCS_mean, pxx_CS_mean, b
 %% THRESHOLD DETERMINATION
 
 % -- Powerband in the best frequency range
-%band=[1550, 1850];
+%band=[200, 500];
 band=[p25_CS_mean, p75_CS_mean];
 
 % For every pure CS section
@@ -139,9 +139,9 @@ powerband=[powerband_CS, powerband_NCS]';
 
 % Display annoted labels NCS and CS
 signal_n=22;
-display_NCS_CS_annotations(signal_n,label_final, window, overlap)
+display_NCS_CS_annotations(signal_n,label_final, window_labelling, overlap_labelling)
 
 %  Display the periodograms of annotated NCS and CS
-display_PR_NCS_CS_interquartiles(f,pxx_NCS, pxx_CS, pxx_NCS_mean, pxx_CS_mean, band_width, pass_band, band_NCS_mean, band_CS_mean);
+display_PR_NCS_CS_interquartiles(f,pxx_NCS, pxx_CS, pxx_NCS_mean, pxx_CS_mean, band_width, pass_band, band_NCS_mean, band_CS_mean, CS_color, NCS_color);
 
 end
