@@ -23,6 +23,12 @@ time_axis_xss = (1:N_xss)/fn;
 N_xsc = length(xsc);
 time_axis_xsc = (1:N_xsc)/fn;
 
+% Taking the labels corresponding to the signal
+label_annotated=label_annotated(signal_n,:);
+label_learning=label_learning(signal_n,:);
+
+
+
 %% DISPLAY
 figure,
 
@@ -39,8 +45,8 @@ subplot(4,1,2)
 plot(time_axis_xss, xss, 'Color', NCS_color); hold on % The entire signal % ATTENTION COULEUR FAUSSE
 
 % Finding the location of 'CS' and 'NCS'
-CS_locs=find(label_annotated(signal_n,:)==1);
-NCS_locs=find(label_annotated(signal_n,:)==0);
+CS_locs=find(label_annotated==1);
+NCS_locs=find(label_annotated==0);
 
 % Start time of the labels (for each window)
 time_CS_start=CS_locs*(window-overlap)-1;

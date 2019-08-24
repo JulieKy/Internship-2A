@@ -1,4 +1,4 @@
-function [final_threshold, band, label_final, window_labelling, window_training] = crying_learning(names_cell, CS_color, NCS_color)
+function [final_threshold, band, label_final, window_labelling, window_training] = crying_learning(X, fn, CS_color, NCS_color)
 %CRYING_LEARNING:  Label the crying section, and learn where are the CS by using the Power Ratio Tool
 
 %% INPUTS AND OUTPUTS
@@ -47,26 +47,8 @@ pxx_CS=[]; band_CS=[]; PR_CS=[]; p25_CS=[]; p75_CS=[];
 
 %% -- Reading files and first preprocessing
 % For every signal
-for i = 1:length(names_cell)
-    
-    % -- Reading the signals
-    tempName=names_cell{i};
-    [x,Fs]= audioread([path,'\..\Data\Samples_Belle\',tempName]);
-    disp('READ - crying_learning.m');
-    disp(tempName);
-    
-    % Get the number of the recording by removing the '.mp3'
-    strMP3 = sprintf('%s',tempName);
-    ind=strfind(strMP3,'.');
-    signal_n = str2num(strMP3(1:ind-1));
-    
-    % -- Resampling to 4000 Hz
-    xs=resample(x,4000,Fs);
-    fn=4000;
-    
-    % -- Shorten to 60s
-    time_sample=60;
-    xss=xs(1:time_sample*fn,1);
+for signal_n = 1:size(X,1)
+    xss=X(signal_n, :);
     
     %% -- Finding pure CS and NCS
     label_final_xss=label_final(signal_n, :);
@@ -102,7 +84,6 @@ PR_CS_mean=mean(PR_CS(PR_CS~=0));
 p25_CS_mean=mean(p25_CS(p25_CS~=0));
 p75_CS_mean=mean(p75_CS(p75_CS~=0));
 
-display_PR_NCS_CS_interquartiles(f,pxx_NCS, pxx_CS, pxx_NCS_mean, pxx_CS_mean, band_width, pass_band, band_NCS_mean, band_CS_mean, CS_color, NCS_color);
 %% OTHER FEATURES (not used now)
 % % -- SPECTROGRAM
 % signal_n=15; % Signal wanted
