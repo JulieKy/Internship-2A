@@ -37,6 +37,7 @@ CS=[]; NCS=[];
 
 %% LABELLING
 [label_final, coef_KAPPA]=labelling(observators,samples, end_sample, window_labelling, overlap_labelling);
+coef_KAPPA_mean=mean(coef_KAPPA)
 
 
 %% TRAINING
@@ -63,10 +64,10 @@ end
 %% FINDING THE BEST FREQUENCY RANGE
 %% -- Power ratio
 % CS power ratio
-[pxx_CS, powerband_CS, PR_CS, f, p25_CS, p75_CS]=power_ratio_band2(pass_band, fn, CS, band_width);
+[pxx_CS, powerband_CS, PR_CS, f, p25_CS, p75_CS]=power_ratio_band(pass_band, fn, CS, band_width);
 
 % NCS power ratio
-[pxx_NCS, powerband_NCS, PR_NCS, f, p25_NCS, p75_NCS]=power_ratio_band2(pass_band, fn, NCS, band_width);
+[pxx_NCS, powerband_NCS, PR_NCS, f, p25_NCS, p75_NCS]=power_ratio_band(pass_band, fn, NCS, band_width);
 
 %display_power_spectrum( pxx_CS', pxx_NCS', f );
 
@@ -85,15 +86,17 @@ p25_CS_mean=mean(p25_CS(p25_CS~=0));
 p75_CS_mean=mean(p75_CS(p75_CS~=0));
 
 %% OTHER FEATURES (not used now)
-% % -- SPECTROGRAM
-% signal_n=15; % Signal wanted
-% wind_time_spec=0.5; % Window of 1 second
-% overlap_spec=0.25; % 25% overlap
-% start_time=0; end_time=15; % Part of the signal wanted
-% [s, f, t] = spectrogram_CS(signal_n, wind_time_spec, overlap_spec, start_time, end_time);
+% -- SPECTROGRAM
+signal_n=15; % Signal number wanted
+xss=X(signal_n, :); % Signal wanted
+label=label_final(signal_n, :); % Label of the signal
+wind_time_spec=0.5; % Window of 1 second
+overlap_spec=0.25; % 25% overlap
+start_time=0; end_time=15; % Part of the signal wanted
+[s, f, t] = spectrogram_CS(xss, label, fn, signal_n, wind_time_spec, overlap_spec, start_time, end_time, window_labelling, overlap_labelling);
 
 % -- NCS&CS FEATURES EXTRACTION
-% [zrc_CS, output_spectral_features_CS, periodogram_pks_features_CS, output_mean_mfcc_CS, output_lpc_CS, output_lsf_CS, zrc_NCS, output_spectral_features_NCS, periodogram_pks_features_NCS, output_mean_mfcc_NCS, output_lpc_NCS, output_lsf_NCS,] = NCS_CS_features_boxplot();
+%[zrc_CS, output_spectral_features_CS, periodogram_pks_features_CS, output_mean_mfcc_CS, output_lpc_CS, output_lsf_CS, zrc_NCS, output_spectral_features_NCS, periodogram_pks_features_NCS, output_mean_mfcc_NCS, output_lpc_NCS, output_lsf_NCS,] = NCS_CS_features_boxplot();
 
 %% THRESHOLD DETERMINATION
 

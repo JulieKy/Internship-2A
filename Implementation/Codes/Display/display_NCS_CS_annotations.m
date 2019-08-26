@@ -12,7 +12,7 @@ function [] = display_NCS_CS_annotations(signal_n,label_final, window, overlap)
 %% Reading the signal
 signal_name=sprintf('%d.mp3',signal_n);
 path=pwd;
-[x1,Fs]= audioread([path,'\..\Data\Samples_Belle\',signal_name]); % read current file
+[x1,Fs]= audioread([path,'\..\Data\Learning_Database\',signal_name]); % read current file
 
 %% Resampling to 4000 Hz
 xs1=resample(x1,4000,Fs);
@@ -59,13 +59,13 @@ label_duration=window*fn; % Number of samples in a window
 
 % Sections NCS on the signal
 for n_section=1:length(NCS_locs)
-    [NCS_section,time_axis_section] = label2signal(xss1, n_section, sample_NCS_start, label_duration, time_axis);
+    [NCS_section,time_axis_section] = label2section(xss1, n_section, sample_NCS_start, label_duration, time_axis);
     p1=plot(time_axis_section, NCS_section, 'Color', NCS_color);
 end
 
 % Sections CS on the signal
 for n_section=1:length(CS_locs)
-    [CS_section,time_axis_section] = label2signal(xss1, n_section, sample_CS_start, label_duration, time_axis);
+    [CS_section,time_axis_section] = label2section(xss1, n_section, sample_CS_start, label_duration, time_axis);
     p2=plot(time_axis_section, CS_section, 'Color', CS_color);
 end
 

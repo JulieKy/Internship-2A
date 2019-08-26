@@ -59,13 +59,13 @@ label_duration=window*fn; % Number of samples in a window
 
 % Sections NCS on the signal
 for n_section=1:length(NCS_locs)
-    [NCS_section,time_axis_section] = label2signal(xss, n_section, sample_NCS_start, label_duration, time_axis_xss);
+    [NCS_section,time_axis_section] = label2section(xss, n_section, sample_NCS_start, label_duration, time_axis_xss);
     p1=plot(time_axis_section, NCS_section, 'Color', NCS_color);
 end
 
 % Sections CS on the signal
 for n_section=1:length(CS_locs)
-    [CS_section,time_axis_section] = label2signal(xss, n_section, sample_CS_start, label_duration, time_axis_xss);
+    [CS_section,time_axis_section] = label2section(xss, n_section, sample_CS_start, label_duration, time_axis_xss);
     p2=plot(time_axis_section, CS_section, 'Color', CS_color);
 end
 
@@ -97,13 +97,13 @@ label_duration=window*fn; % Number of samples in a window
 
 % Sections NCS on the signal
 for n_section=1:length(NCS_locs)
-    [NCS_section,time_axis_section] = label2signal(xss, n_section, sample_NCS_start, label_duration, time_axis_xss);
+    [NCS_section,time_axis_section] = label2section(xss, n_section, sample_NCS_start, label_duration, time_axis_xss);
     p1=plot(time_axis_section, NCS_section, 'Color', NCS_color);
 end
 
 % Sections CS on the signal
 for n_section=1:length(CS_locs)
-    [CS_section,time_axis_section] = label2signal(xss, n_section, sample_CS_start, label_duration, time_axis_xss);
+    [CS_section,time_axis_section] = label2section(xss, n_section, sample_CS_start, label_duration, time_axis_xss);
     p2=plot(time_axis_section, CS_section, 'Color', CS_color);
 end
 

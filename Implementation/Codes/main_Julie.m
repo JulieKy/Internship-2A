@@ -15,31 +15,31 @@ fn=4000; % Sampling frequency
 %% -- Path
 addpath(genpath('..\..\')); % Access to sample folder
 path = pwd; % Current path
-data_dir=[path,'\..\Data\Samples_Belle\'];
+data_dir=[path,'\..\Data\Learning_Database\'];
 pathExcel = strcat(path, '\'); % Path of the Excel spectral features file
 pathExcelPreprocessing = strcat(path, '\'); % Path of the Excel preprocessing file
 
-% %% -- Excel file Spectral Features
-% init = 0; % To generate a new Excel files if necessary
-% excelFileSpectralFeatures = 'Spectral_Features'; % Name of the Excel file to store features
-% 
-% if ~(exist(pathExcel)) % test to create excel file or no
-%     disp('creation Excel Spectral Features folder')
-%     mkdir(pathExcel);
-% end
-% 
-% excelTemp = strcat([pathExcel excelFileSpectralFeatures], '.xls'); % add the .xls to have complete name
-% 
-% % Add the headers in the Excel file
-% if (init == 0)
-%     xlswrite([pathExcel excelFileSpectralFeatures], [{'file'}, {'ZCR'}, {'meanPSD'},{'stdPSD'},{'medPSD'},{'bw'},{'p25'},{'p75'},{'IQR'},{'TP'},{'p100_200'},{'p200_400'},{'p400_800'},{'SL'},{'R2'},{'nb_pks_MAF'}, {'f_higherPk_MAF'}, {'dif_higherPks_MAF'},{'nb_pks_GMM'}, {'f_higherPk_GMM'}, {'dif_higherPks_GMM'}, {'fi.a1'}, {'fi.a2'}, {'fi.a3'}, {'fi.a4'}, {'fi.b1'}, {'fi.b2'}, {'fi.b3'}, {'fi.b4'}, {'fi.c1'}, {'fi.c2'}, {'fi.c3'}, {'fi.c4'}, {'MFCC1'}, {'MFCC2'}, {'MFCC3'}, {'MFCC4'}, {'MFCC5'}, {'MFCC6'}], 'Features 1', 'A1'); % longest segment
-%     xlswrite([pathExcel excelFileSpectralFeatures], [{'file'}, {'ZCR'}], 'Temporal Features', 'A1'); % Sheet 1
-%     xlswrite([pathExcel excelFileSpectralFeatures], [{'file'}, {'meanPSD'},{'stdPSD'},{'medPSD'},{'bw'},{'p25'},{'p75'},{'IQR'},{'TP'},{'p100_200'},{'p200_400'},{'p400_800'},{'SL'},{'R2'}], 'Spectral Features 1', 'A1'); % Sheet 2
-%     xlswrite([pathExcel excelFileSpectralFeatures], [{'file'}, {'nb_pks_MAF'}, {'f_higherPk_MAF'}, {'dif_higherPks_MAF'},{'nb_pks_GMM'}, {'f_higherPk_GMM'}, {'dif_higherPks_GMM'}, {'fi.a1'}, {'fi.a2'}, {'fi.a3'}, {'fi.a4'}, {'fi.b1'}, {'fi.b2'}, {'fi.b3'}, {'fi.b4'}, {'fi.c1'}, {'fi.c2'}, {'fi.c3'}, {'fi.c4'}], 'Spectral Features 2', 'A1'); % Sheet 3
-%     xlswrite([pathExcel excelFileSpectralFeatures], [{'file'}, {'MFCC1'}, {'MFCC2'}, {'MFCC3'}, {'MFCC4'}, {'MFCC5'}, {'MFCC6'}, {'LPC2'}, {'LPC3'}, {'LPC4'}, {'LPC5'}, {'LPC6'}, {'LSF1'}, {'LSF2'}, {'LSF3'}, {'LSF4'}, {'LSF5'}, {'LSF6'} ], 'Coefficients', 'A1'); % Sheet 4
-%     init = 1;
-% end
-% 
+%% -- Excel file Spectral Features
+init = 0; % To generate a new Excel files if necessary
+excelFileSpectralFeatures = 'Spectral_Features'; % Name of the Excel file to store features
+
+if ~(exist(pathExcel)) % test to create excel file or no
+    disp('creation Excel Spectral Features folder')
+    mkdir(pathExcel);
+end
+
+excelTemp = strcat([pathExcel excelFileSpectralFeatures], '.xls'); % add the .xls to have complete name
+
+% Add the headers in the Excel file
+if (init == 0)
+    xlswrite([pathExcel excelFileSpectralFeatures], [{'file'}, {'ZCR'}, {'meanPSD'},{'stdPSD'},{'medPSD'},{'bw'},{'p25'},{'p75'},{'IQR'},{'TP'},{'p100_200'},{'p200_400'},{'p400_800'},{'SL'},{'R2'},{'nb_pks_MAF'}, {'f_higherPk_MAF'}, {'dif_higherPks_MAF'},{'nb_pks_GMM'}, {'f_higherPk_GMM'}, {'dif_higherPks_GMM'}, {'fi.a1'}, {'fi.a2'}, {'fi.a3'}, {'fi.a4'}, {'fi.b1'}, {'fi.b2'}, {'fi.b3'}, {'fi.b4'}, {'fi.c1'}, {'fi.c2'}, {'fi.c3'}, {'fi.c4'}, {'MFCC1'}, {'MFCC2'}, {'MFCC3'}, {'MFCC4'}, {'MFCC5'}, {'MFCC6'}], 'Features 1', 'A1'); % longest segment
+    xlswrite([pathExcel excelFileSpectralFeatures], [{'file'}, {'ZCR'}], 'Temporal Features', 'A1'); % Sheet 1
+    xlswrite([pathExcel excelFileSpectralFeatures], [{'file'}, {'meanPSD'},{'stdPSD'},{'medPSD'},{'bw'},{'p25'},{'p75'},{'IQR'},{'TP'},{'p100_200'},{'p200_400'},{'p400_800'},{'SL'},{'R2'}], 'Spectral Features 1', 'A1'); % Sheet 2
+    xlswrite([pathExcel excelFileSpectralFeatures], [{'file'}, {'nb_pks_MAF'}, {'f_higherPk_MAF'}, {'dif_higherPks_MAF'},{'nb_pks_GMM'}, {'f_higherPk_GMM'}, {'dif_higherPks_GMM'}, {'fi.a1'}, {'fi.a2'}, {'fi.a3'}, {'fi.a4'}, {'fi.b1'}, {'fi.b2'}, {'fi.b3'}, {'fi.b4'}, {'fi.c1'}, {'fi.c2'}, {'fi.c3'}, {'fi.c4'}], 'Spectral Features 2', 'A1'); % Sheet 3
+    xlswrite([pathExcel excelFileSpectralFeatures], [{'file'}, {'MFCC1'}, {'MFCC2'}, {'MFCC3'}, {'MFCC4'}, {'MFCC5'}, {'MFCC6'}, {'LPC2'}, {'LPC3'}, {'LPC4'}, {'LPC5'}, {'LPC6'}, {'LSF1'}, {'LSF2'}, {'LSF3'}, {'LSF4'}, {'LSF5'}, {'LSF6'} ], 'Coefficients', 'A1'); % Sheet 4
+    init = 1;
+end
+
 % %% -- Excel file Preprocessing
  init_learning=0;
 excelFileSpectralFeaturesPreprocessing = 'CS_Features'; % Name of the Excel file to store features
@@ -73,7 +73,7 @@ end
 lengthTot=j;
 
 %% -- STORAGE OF SAMPLES
-X=zeros(lengthTot, time_sample*fn); % All the signals stored in this matrix
+X_learning=zeros(lengthTot, time_sample*fn); % All the signals stored in this matrix from Learning_Database
 
 for i = 1:lengthTot % loop to have all recording
     
@@ -90,7 +90,7 @@ for i = 1:lengthTot % loop to have all recording
     signal_n = str2num(strMP3(1:ind-1));
     
     % Reading the sample
-    [x,Fs]= audioread([path,'\..\Data\Samples_Belle\',tempName]); % read current file
+    [x,Fs]= audioread([path,'\..\Data\Learning_Database\',tempName]); % read current file
     
     % Resampling to 4000 Hz
     xs=resample(x,fn,Fs);
@@ -99,7 +99,7 @@ for i = 1:lengthTot % loop to have all recording
     xss=xs(1:time_sample*fn,1);
     
     % Fill X with all samples
-    X(signal_n, :)=xss;
+    X_learning(signal_n, :)=xss;
 end
 
 %% ------  PREPROCESSING ------
@@ -109,7 +109,7 @@ overlap_label=0;
 
 % -- Learning where are the CS (if not already done)
 if (init_learning == 0) % Need to be done one time (data stored on an Excel file)
-    [threshold,  band, label_annotated, window_annotated, window_training]= crying_learning(X, fn, CS_color, NCS_color);
+    [threshold,  band, label_annotated, window_annotated, window_training]= crying_learning(X_learning, fn, CS_color, NCS_color);
     xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [threshold ; band(1); band(end); window_annotated; window_training]', 'Learning CS Features', 'A2');
     xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [label_annotated], 'Annotated Labels', 'A1');
     init_learning=1;
@@ -122,17 +122,19 @@ threshold=outputs_ExcelProcessing(1); band(1)=outputs_ExcelProcessing(2); band(2
 label_annotated=xlsread([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], 'Annotated Labels');
 
 % Removing the data
-[X_ncs, label_learning]=crying_removing(X, fn, threshold, band, window_training, overlap_label, window_annotated);
+[X_ncs, label_learning]=crying_removing(X_learning, fn, threshold, band, window_training, overlap_label, window_annotated);
 
 
 %% -- Display NCS and CS
-signal_n=1;
-xss=X(signal_n,:);
+signal_n=22;
+xss=X_learning(signal_n,:);
 xsc=X_ncs(signal_n,:);
 
 % Display xss, annotated labels, learnt labels and xsc
 display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_annotated, overlap_label, label_learning, NCS_color, CS_color);
 
+
+%% ICIIII METTRE POUR TOUS LES SIGNAUX
 
 %% -- Filtering BP 100-1000Hz
 y = filterbp(xsc,fn);

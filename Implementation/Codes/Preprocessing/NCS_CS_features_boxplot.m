@@ -21,7 +21,7 @@ addpath(genpath('..\..\')); % to have access to sample folder
 init = 0; % optional, to generate a new Excel File
 excelFile = 'NewFeaturesAnalysis_f'; % name of the Excel file to store features
 path = pwd; % current path
-data_dir=[path,'\..\Data\Samples_Belle\'];
+data_dir=[path,'\..\Data\Learning_Database\'];
 
 
 %% READY TO READ FILES
@@ -70,7 +70,7 @@ for i = 1:lengthTot
     str=sprintf(' -- tempname: %s & signal_n: %d --\n', tempName, signal_n);
     disp(str)
     
-    [x,Fs]= audioread([path,'\..\Data\Samples_Belle\',tempName]); % read current file
+    [x,Fs]= audioread([path,'\..\Data\Learning_Database\',tempName]); % read current file
     
     %% -- Resampling to 4000 Hz
     xs=resample(x,4000,Fs);
@@ -99,7 +99,7 @@ for i = 1:lengthTot
         label_duration=window*fn; % Number of samples in a window
         
         for n_section=1:length(locs)
-            [xss_section,time_axis_section] = label2signal(xss, n_section, start_sample, label_duration, time_axis);
+            [xss_section,time_axis_section] = label2section(xss, n_section, start_sample, label_duration, time_axis);
             
             %% -- Features extraction
             zrc = temporal_features(xss_section,fn, tempName); % Temporal features
@@ -162,7 +162,7 @@ for i = 1:lengthTot
         label_duration=window*fn; % Number of samples in a window
         
         for n_section=1:length(locs)
-            [xss_section,time_axis_section] = label2signal(xss, n_section, start_sample, label_duration, time_axis);
+            [xss_section,time_axis_section] = label2section(xss, n_section, start_sample, label_duration, time_axis);
             
             %% -- Features extraction
             zrc = temporal_features(xss_section,fn, tempName); % Temporal features

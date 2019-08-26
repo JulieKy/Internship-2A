@@ -1,28 +1,27 @@
-function [xss_section,time_axis_section] = label2signal(xss, n_section, start_sample, label_duration, time_axis)
-%label2signal: With the placement of the CS/NCS in the label_final matrix returned by LABELLING.m, this function gives the corresponding piece of signal.
+function [xss_section,time_axis_section] = signal2label(xss, fn, segment_sample, window_training, window_labelling)
+%label2signal: This function gives the corresponding piece of signal(time/amplitude) corresponding to a certain position in the matrix final_label
 
 %% INPUTS AND OUTPUTS
 
 %  -- Inputs --
-% xss: the input signal
-% n_section: Section number
-% start_sample: Start sample of the labels (for each window)
-% label_duration: Number of samples in a window
-% time_axis: Time axis of the xss
+% xss: The input signal
+% segment_sample: The segment described as number representing its location on final_label_xss vector
+% window_training: Window used for the training
+% window_labelling: Window used for labelling
 
 % -- Outputs --
-% section: Segment on the signal
+% xss_section: Amplitude of the signal in this time section
 % time_axis_section: Time of the segment
 
+%% INIIALISATION
+% -- Signal parameters
+N = length(xss);
+time_axis = (1:N)/fn;
 
-% Beginning and end samples of a section
-start_section=start_sample(n_section);
-end_section=start_section+label_duration;
-
-% Edge effects
-if end_section>length(xss) % For the last section, if the window and overlap or not adjusted to xss length
-    end_section=length(xss);
-end
+%% Beginning and end samples of a section
+start_section=segment_sample(1)*window_labelling*fn; % Convert the segment in the vetoc label_final into a section in the vector xss
+section_duration=window_training*fn;
+end_section=start_section+section_duration;
 
 % Section on the signal (NCS/CS)
 xss_section=xss(start_section:end_section);

@@ -57,7 +57,7 @@ while segment_sample(end)<length(label_final_xss)-window_duration
     % -- CS
     if sum(segment_label)==window_duration % Only 1 in the segment => Pure CS
         c_CS_pure=c_CS_pure+1; % Counter
-        [CS_pure_segment, time_axis_CS_pure] = label2signal2(xss, fn, segment_sample, window_training, window_labelling); % Find the signal corresponding to this segment
+        [CS_pure_segment, time_axis_CS_pure] = label2signal(xss, fn, segment_sample, window_training, window_labelling); % Find the signal corresponding to this segment
         CS_pure(c_CS_pure, :)=CS_pure_segment; % Store the pure segment in a matrix
         start_segment=segment_sample(end) +1; % Update the beginning of a new segment
         %p1=plot(time_axis_CS_pure, CS_pure_segment, 'Color', CS_color);
@@ -65,7 +65,7 @@ while segment_sample(end)<length(label_final_xss)-window_duration
         % -- NCS
     elseif sum(segment_label)==0 % Only 0 in the window => Pure NCS
         c_NCS_pure=c_NCS_pure+1; % Counter
-        [NCS_pure_segment, time_axis_NCS_pure] = label2signal2(xss, fn, segment_sample, window_training, window_labelling); % Find the signal corresponding to this segment
+        [NCS_pure_segment, time_axis_NCS_pure] = label2signal(xss, fn, segment_sample, window_training, window_labelling); % Find the signal corresponding to this segment
         NCS_pure(c_NCS_pure, :)=NCS_pure_segment; % Store the pure segment in a matrix
         start_segment=segment_sample(end) +1; % Update the beginning of a new segment
         %p2=plot(time_axis_NCS_pure, NCS_pure_segment, 'Color', NCS_color);
@@ -76,7 +76,7 @@ while segment_sample(end)<length(label_final_xss)-window_duration
     % -- Mainly CS
     elseif purity_CS >= purity_threshold % Mainly pure CS (maximum epsilon error acceptable)
         c_CS_epsi=c_CS_epsi+1; % Counter
-        [CS_epsi_segment, time_axis_CS_epsi] = label2signal2(xss, fn, segment_sample, window_training, window_labelling); % Find the signal corresponding to this segment
+        [CS_epsi_segment, time_axis_CS_epsi] = label2signal(xss, fn, segment_sample, window_training, window_labelling); % Find the signal corresponding to this segment
         CS_epsi(c_CS_epsi, :)=CS_epsi_segment; % Store the pure segment in a matrix
         start_segment=segment_sample(end) +1; % Update the beginning of a new segment
         %p3=plot(time_axis_CS_epsi, CS_epsi_segment, 'Color', CS_epsi_color);
@@ -84,7 +84,7 @@ while segment_sample(end)<length(label_final_xss)-window_duration
         % -- Mainly NCS
     elseif purity_NCS >= purity_threshold % Mainly pure NCS (maximum epsilon error acceptable)
         c_NCS_epsi=c_NCS_epsi+1; % Counter
-        [NCS_epsi_segment, time_axis_NCS_epsi] = label2signal2(xss, fn, segment_sample, window_training, window_labelling); % Find the signal corresponding to this segment
+        [NCS_epsi_segment, time_axis_NCS_epsi] = label2signal(xss, fn, segment_sample, window_training, window_labelling); % Find the signal corresponding to this segment
         NCS_epsi(c_NCS_epsi, :)=NCS_epsi_segment; % Store the pure segment in a matrix
         start_segment=segment_sample(end) +1; % Update the beginning of a new segment
         %p4=plot(time_axis_NCS_epsi, NCS_epsi_segment, 'Color', NCS_epsi_color);
