@@ -15,7 +15,8 @@ fn=4000; % Sampling frequency
 %% -- Path
 addpath(genpath('..\..\')); % Access to sample folder
 path = pwd; % Current path
-data_dir=[path,'\..\Data\Learning_Database\'];
+path_Learning_Database=[path,'\..\Data\Learning_Database\'];
+path_Database=[path,'\..\Data\Database\'];
 pathExcel = strcat(path, '\'); % Path of the Excel spectral features file
 pathExcelPreprocessing = strcat(path, '\'); % Path of the Excel preprocessing file
 
@@ -56,53 +57,11 @@ if (init_learning == 0)
     xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [{'Threshold'},  {'p25'}, {'p75'}, {'Window_label'}, {'Overlap_label'}], 'Learning CS Features', 'A1');
 end
 
+%% READ THE SAMPLES
+X_learning = read_samples(path_Learning_Database, time_sample, fn);
+X = read_samples(path_Database, time_sample, fn);
 
-
-%% -- Samples' names initialisation
-dinfo = dir(data_dir);
-names_cell1 = {dinfo.name};
-
-% Choose a valid file name
-j=0;
-for i=1:size(names_cell1,2)
-    if length(names_cell1{i})>2
-        j=j+1;
-        names_cell{j}=names_cell1{i};
-    end
-end
-lengthTot=j;
-
-%% -- STORAGE OF SAMPLES
-X_learning=zeros(lengthTot, time_sample*fn); % All the signals stored in this matrix from Learning_Database
-
-for i = 1:lengthTot % loop to have all recording
-    
-    close all; % Close previous figures opened in computation
-    
-    % Name of the sample
-    tempName=names_cell{i};
-    disp('READ - main_Julie.m');
-    disp(tempName);
-    
-    % Get the number of the recording by removing the '.mp3'
-    strMP3 = sprintf('%s',tempName);
-    ind=strfind(strMP3,'.');
-    signal_n = str2num(strMP3(1:ind-1));
-    
-    % Reading the sample
-    [x,Fs]= audioread([path,'\..\Data\Learning_Database\',tempName]); % read current file
-    
-    % Resampling to 4000 Hz
-    xs=resample(x,fn,Fs);
-    
-    % Shorten the signals to 60s
-    xss=xs(1:time_sample*fn,1);
-    
-    % Fill X with all samples
-    X_learning(signal_n, :)=xss;
-end
-
-%% ------  PREPROCESSING ------
+%% PREPROCESSING
 
 %% -- Removing crying sections (CS)
 overlap_label=0;
@@ -126,7 +85,7 @@ label_annotated=xlsread([pathExcelPreprocessing excelFileSpectralFeaturesPreproc
 
 
 %% -- Display NCS and CS
-signal_n=22;
+signal_n=22; % Put a sample that is in the Learning_Database (between 1 and 37)
 xss=X_learning(signal_n,:);
 xsc=X_ncs(signal_n,:);
 
@@ -139,7 +98,7 @@ display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_annotated, 
 %% -- Filtering BP 100-1000Hz
 y = filterbp(xsc,fn);
 
-%% ------  SPECTRAL FEATURES ------
+%% SPECTRAL FEATURES
 
 %% -- Computation of features
 output_temporal_features = temporal_features(xs,fn, tempName); % Temporal features

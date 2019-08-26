@@ -57,7 +57,7 @@ min_length=min(length_xsc);
 part1=floor(min_length/2);
 part2=min_length-part1;
 
-% Statistical study of lengths
+% Statistical study of lengths  
 length_xsc_time=length_xsc*60/length(xss);
 mean_length=mean(length_xsc_time); 
 median_length=median(length_xsc_time);
