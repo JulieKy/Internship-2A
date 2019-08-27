@@ -67,12 +67,12 @@ accuracy=(nb_section_CS_OK+nb_section_NCS_OK)/(nb_section_CS+nb_section_NCS)*100
 
 %% DISPLAY
 figure,
-plot(fpr, tpr);
+plot(fpr, tpr, 'Linewidth', 1.5);
 hold on
-plot(fpr, fpr, '--');
-plot(fpr(argmin_dist),tpr(argmin_dist), '*');
+plot(fpr, fpr, '--', 'Color', 'black')
+plot(fpr(argmin_dist),tpr(argmin_dist), '-o', 'MarkerEdgeColor','red','MarkerFaceColor',[1 .4 .4])
 hold off
-title('ROC curve (with 500 thresholds)')
+title('ROC curve')
 xlabel('False Positive Ratio (1-Specificity)')
 ylabel('True Positive Ratio (Sensitivity)')
 disp('OK thershold ROC');
