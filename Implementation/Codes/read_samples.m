@@ -30,14 +30,13 @@ for i = 1:lengthTot % loop to have all recording
     
     % Name of the sample
     tempName=names_cell{i};
-    disp('READ');
+    disp('READ - Database Learning');
     disp(tempName);
     
     % Get the number of the recording by removing the '.mp3'
     strMP3 = sprintf('%s',tempName);
     ind=strfind(strMP3,'.');
     signal_n = str2num(strMP3(1:ind-1));
-    if (signal_n~=34 && signal_n~=48 && signal_n~=49)
     
     % Reading the sample
     sample_path=sprintf('%s\\%s', folder_path, tempName);
@@ -51,7 +50,6 @@ for i = 1:lengthTot % loop to have all recording
     
     % Fill X with all samples
     X(signal_n, :)=xss;
-    end
 end
 
 end

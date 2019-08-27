@@ -59,29 +59,29 @@ end
 
 %% READ THE SAMPLES
 X_learning = read_samples(path_Learning_Database, time_sample, fn);
-X = read_samples(path_Database, time_sample, fn);
+%X = read_samples(path_Database, time_sample, fn);
 
 %% PREPROCESSING
 
 %% -- Removing crying sections (CS)
-overlap_label=0;
 
 % -- Learning where are the CS (if not already done)
 if (init_learning == 0) % Need to be done one time (data stored on an Excel file)
     [threshold,  band, label_annotated, window_annotated, window_training]= crying_learning(X_learning, fn, CS_color, NCS_color);
-    xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [threshold ; band(1); band(end); window_annotated; window_training]', 'Learning CS Features', 'A2');
+%     xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [threshold ; band(1); band(end); window_annotated; window_training]', 'Learning CS Features', 'A2');
     xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [label_annotated], 'Annotated Labels', 'A1');
     init_learning=1;
 end
 
 % -- Removing the CS
+overlap_training=floor(window_training/3);
 % Reading data from the Excel file
 outputs_ExcelProcessing=xlsread([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing],'Learning CS Features','A2:E2');
 threshold=outputs_ExcelProcessing(1); band(1)=outputs_ExcelProcessing(2); band(2)=outputs_ExcelProcessing(3); window_annotated=outputs_ExcelProcessing(4); window_training=outputs_ExcelProcessing(5);
 label_annotated=xlsread([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], 'Annotated Labels');
 
 % Removing the data
-[X_ncs, label_learning]=crying_removing(X_learning, fn, threshold, band, window_training, overlap_label, window_annotated);
+[X_ncs, label_learning]=crying_removing(path_Database,time_sample, fn, threshold, band, window_training, overlap_training, window_annotated);
 
 
 %% -- Display NCS and CS
@@ -89,6 +89,7 @@ signal_n=22; % Put a sample that is in the Learning_Database (between 1 and 37)
 xss=X_learning(signal_n,:);
 xsc=X_ncs(signal_n,:);
 
+overlap_label=0;
 % Display xss, annotated labels, learnt labels and xsc
 display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_annotated, overlap_label, label_learning, NCS_color, CS_color);
 
