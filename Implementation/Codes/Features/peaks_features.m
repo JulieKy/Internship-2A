@@ -27,9 +27,9 @@ argmax_higherPks=[];
 f_higherPks=[];
 if nb_higherPks>0
     for i=0:nb_higherPks-1
-        higherPks=[higherPks, pksOrder(end-i)];
+        higherPks=[higherPks, pksOrder(end-i)]; % Higher peaks
         argmax_higherPks=[argmax_higherPks, order(end-i)];
-        f_higherPks=[f_higherPks, f(locs(argmax_higherPks(i+1)))];
+        f_higherPks=[f_higherPks, f(locs(argmax_higherPks(i+1)))]; % Frequency of peaks
     end
     f_higherPk=f_higherPks(1);
     dif_higherPks=f_higherPks(1)-f_higherPks(end); % 0 if there is only one peak
