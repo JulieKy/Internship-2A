@@ -1,6 +1,5 @@
 clear all;
 
-%% INITIALISATION
 folder_path='C:\Users\julie\OneDrive\Documents\T2\Stage 2A\Stage_2A_Matlab\Implementation\Codes\..\Data\Database\';
 time_sample=60;
 fn=4000;
@@ -9,10 +8,8 @@ band=[296, 407];
 window_training=3;
 overlap_training=1;
 
-% ----
 window=window_training*fn;
 overlap=overlap_training*fn;
-
 
 %% READING FILES IN THE DATABASE
 
@@ -57,38 +54,33 @@ for i=1:lengthTot
     if length(xs)>time_sample*fn
         xss=xs(1:time_sample*fn,1);
     end
-    nb_zeros=sum(xss==0);
     
     
     %% SECTIONS
     % Initialisation
-    N=length(xss); % Signal length
     pos=1;
     section_set=[];
+    N=length(xss); 
     
     % All sections except the last one
     while pos<=(N-window+1)
-        section=x(pos:pos+window-1)';
+        section=xss(pos:pos+window-1);
         pos=pos+window-overlap;
         section_set=[section_set, section];
     end
     
     % Last section
-    last_sec=x(pos:end); % Can have a different size
+    last_sec=xss(pos:end); % Can have a different size
     
     %% POWERBAND
-    power_band=bandpower(section_set, fn, band); % For all sections except the last one
-    power_band_last=bandpower(last_sec, fn, band); % Last section
+    label_section=bandpower(section_set, fn, band); % For all sections except the last one
+    label_section_last=bandpower(last_sec, fn, band); % Last section
     
-    
-    %% LABELS
-    label_section=power_band>threshold;
-    label_section_last=power_band_last>threshold;
     
     %% REMETTRE p AVEC MEME NOMBRE QUE X AVEC OVERLAP
     
     % -- First section
-    first_section=x(1:window-overlap);
+    first_section=xss(1:window-overlap);
     labels(1:length(first_section))=repelem(label_section(1),length(first_section));
     pos=length(first_section)+1;
     
@@ -125,6 +117,7 @@ for i=1:lengthTot
         labels(pos: pos+length(last_sec)-overlap-1) = repelem(label_section_last, length(last_sec)-overlap);
     end
     
+    
     %% CS REMOVING
     NCS=1-labels;
     xsc=xss((xss.*NCS')~=0); % Signal without CS
@@ -140,3 +133,43 @@ for i=1:lengthTot
     
 end
 
+
+%% SHORTEN SAMPLES WITH MINIMUM LENGTH
+% Find the minimum length
+min_length=min(length_xsc);
+part1=floor(min_length/2);
+part2=min_length-part1;
+
+length_time=length_xsc./fn;
+min_ok=10;
+figure,
+hax=axes;
+x_axe=get(hax,'XLim');
+plot(1:length(length_time), length_time, '*'); hold on
+plot(1:length(length_time),ones(1,length(length_time))*10 , '--', 'Color', 'r');
+hold off
+title('Duration of Samples after Cry Removal')
+xlabel('Samples')
+ylabel('Duration [s]')
+
+
+% Statistical study of lengths
+length_xsc_time=length_xsc*60/length(xss);
+mean_length=mean(length_xsc_time);
+median_length=median(length_xsc_time);
+p25_length=prctile(length_xsc_time,25);
+p75_length=prctile(length_xsc_time,75);
+
+
+% Shorten for each signal
+X_ncs_final=zeros(lengthTot, min_length);
+for signal_n=1:size(X_ncs,1)
+    xsc1=X_ncs(signal_n, 1:length_xsc(signal_n)); % Signal with only NCS
+    if length(xsc1)>min_length
+        mid=floor(length(xsc1)/2);
+        xsc_shorten=xsc1(mid-part1:mid+part2-1);
+    else
+        xsc_shorten=xsc1;
+    end
+    X_ncs_final(signal_n, :)=xsc_shorten;
+end
