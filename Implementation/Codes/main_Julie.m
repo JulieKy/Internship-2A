@@ -58,8 +58,8 @@ if (init_learning == 0)
 end
 
 %% READ THE SAMPLES
-X_learning = read_samples(path_Learning_Database, time_sample, fn);
-%X = read_samples(path_Database, time_sample, fn);
+[X_learning, length_signals_learning, names_cell_learning] = read_samples(path_Learning_Database, time_sample, fn);
+[X, length_signals, names_cell] = read_samples(path_Database, time_sample, fn);
 
 %% PREPROCESSING
 
@@ -94,37 +94,44 @@ overlap_label=0;
 display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_annotated, overlap_label, label_learning, NCS_color, CS_color);
 
 
-%% ICIIII METTRE POUR TOUS LES SIGNAUX
+% For every signals
+for signal_n=1:size(X_ncs, 1)
+    xss=X(signal_n, 1:length_signals(signal_n));
+    xcs=X_ncs(signal_n, :);
 
-%% -- Filtering BP 100-1000Hz
-y = filterbp(xsc,fn);
+%% -- Filtering BP 100-1200Hz
+y_xss = filterbp(xss,fn);
+y_xsc = filterbp(xsc,fn);
+
 
 %% SPECTRAL FEATURES
 
 %% -- Computation of features
-output_temporal_features = temporal_features(xs,fn, tempName); % Temporal features
-[output_spectral_features(i,:),periodogram_pks_features(i,:),pxx(i,:),f(i,:),foct(i,:),spower(i,:),I(i,:),S(i,:)] = spectral_features(y,fn); % See Fae's comment
-output_mean_mfcc = mfcc_coeffs(y, fn); % MFCCs coefficient
-[output_lpc, output_lsf] = lpc_lsf_coeff(y, fn); % LPC and LFC coefficient
+output_temporal_features = temporal_features(y_xsc,fn); % Temporal features
+[output_spectral_features(signal_n,:),periodogram_pks_features(signal_n,:),pxx(signal_n,:),f(signal_n,:),foct(signal_n,:),spower(signal_n,:),I(signal_n,:),S(signal_n,:)] = spectral_features(y_xsc,fn); % See Fae's comment
+output_mean_mfcc = mfcc_coeffs(y_xss, fn); % MFCCs coefficient
+[output_lpc, output_lsf] = lpc_lsf_coeff(y_xss, fn); % LPC and LFC coefficient
 
 
 %% -- Write on Excel file all the features
 
 % Sheet 1
-xlswrite([pathExcel excelFileSpectralFeatures], [i;output_temporal_features]', 'Temporal Features', ['A',num2str(i+1)]);
-xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{i}}, 'Temporal Features',['A',num2str(i+1)]);
+xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;output_temporal_features]', 'Temporal Features', ['A',num2str(signal_n+1)]);
+xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{signal_n}}, 'Temporal Features',['A',num2str(signal_n+1)]);
 
 % Sheet 2
-xlswrite([pathExcel excelFileSpectralFeatures], [i;output_spectral_features(i,:)']', 'Spectral Features 1', ['A',num2str(i+1)]);
-xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{i}}, 'Spectral Features 1',['A',num2str(i+1)]);
+xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;output_spectral_features(signal_n,:)']', 'Spectral Features 1', ['A',num2str(signal_n+1)]);
+xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{signal_n}}, 'Spectral Features 1',['A',num2str(signal_n+1)]);
 
 % Sheet 3
-xlswrite([pathExcel excelFileSpectralFeatures], [i;periodogram_pks_features(i,:)']', 'Spectral Features 2', ['A',num2str(i+1)]);
-xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{i}}, 'Spectral Features 2',['A',num2str(i+1)]);
+xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;periodogram_pks_features(signal_n,:)']', 'Spectral Features 2', ['A',num2str(signal_n+1)]);
+xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{signal_n}}, 'Spectral Features 2',['A',num2str(signal_n+1)]);
 
 % Sheet 4
-xlswrite([pathExcel excelFileSpectralFeatures], [i;output_mean_mfcc'; output_lpc'; output_lsf']', 'Coefficients', ['A',num2str(i+1)]);
-xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{i}}, 'Coefficients',['A',num2str(i+1)]);
+xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;output_mean_mfcc'; output_lpc'; output_lsf']', 'Coefficients', ['A',num2str(signal_n+1)]);
+xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{signal_n}}, 'Coefficients',['A',num2str(signal_n+1)]);
+
+end 
 
 
 %% ****** DISPLAY ******

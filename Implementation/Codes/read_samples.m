@@ -1,4 +1,4 @@
-function [ X ] = read_samples( folder_path, time_sample, fn )
+function [ X, length_signals, names_cell ] = read_samples( folder_path, time_sample, fn )
 %read_samples: Read the samples of a folder and return all the folder in a matrix. Each line number corresponds to the sample number.
 
 %% INPUTS AND OUTPUTS
@@ -21,7 +21,7 @@ for i=1:size(names_cell1,2)
 end
 lengthTot=j;
 
-%% -- Reading 
+%% -- Reading
 X=zeros(lengthTot, time_sample*fn); % All the signals stored in this matrix
 
 for i = 1:lengthTot % loop to have all recording
@@ -46,7 +46,14 @@ for i = 1:lengthTot % loop to have all recording
     xs=resample(x,fn,Fs);
     
     % Shorten the signals to 60s
-    xss=xs(1:time_sample*fn,1);
+    if length(xs)>time_sample*fn
+        xss=xs(1:time_sample*fn,1);
+        length_signals(signal_n)=length(xss);
+    else
+        length_signals(signal_n)=length(xs);
+        xss=[xs; zeros(time_sample*fn-length(xs), 1)];
+    end
+    
     
     % Fill X with all samples
     X(signal_n, :)=xss;

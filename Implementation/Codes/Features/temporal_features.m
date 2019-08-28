@@ -1,6 +1,6 @@
 % This function computes temporal features
 
-function [output_temporal_features] = temporal_features(x,fn, tempName)
+function [output_temporal_features] = temporal_features(x,fn, signal_n)
 %% INPUT AND OUTPUT
 
 % -- INPUTS
@@ -21,13 +21,8 @@ ZCR=sum(abs(diff(sign(x))/2))/length(x);
 % fig=figure;
 % plot(time_axis, x);
 % 
-% % Get the number of the recording by removing the '.mp3'
-% strMP3 = sprintf('%s',tempName);
-% ind=strfind(strMP3,'.');
-% strNum = strMP3(1:ind-1);
-% 
 % % Title and legend
-% strTitle=sprintf('Recording %s',strNum);
+% strTitle=sprintf('Recording %s',signal_n);
 % title(strTitle,'fontsize',14,'interpreter','latex');
 % xlabel('Time (s)'),ylabel('Amplitude');
 % 

@@ -20,7 +20,11 @@ numberCoeffs = 6;
 %% COMPUTATION OF MFCC COEFFICIENTS
 
 % finding 6 mfcc coefficients for full signal/the input signal
-coeffs = mfcc(y,fn, 'NumCoeffs', numberCoeffs);
+coeffs = mfcc(y',fn, 'NumCoeffs', numberCoeffs);
+
+%% REMOVE THE COEEFICIENT CORRESPONDING TO CSs
+
+
 
 %% RESULT
 
