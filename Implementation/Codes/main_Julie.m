@@ -81,7 +81,7 @@ threshold=outputs_ExcelProcessing(1); band(1)=outputs_ExcelProcessing(2); band(2
 label_annotated=xlsread([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], 'Annotated Labels');
 
 % Removing the data
-[X_ncs, label_learning]=crying_removing(path_Database,time_sample, fn, threshold, band, window_training, overlap_training, window_annotated);
+[X_ncs, label_learning]=crying_removing(path_Database,time_sample, fn, threshold, band, window_training, overlap_training);
 
 
 %% -- Display NCS and CS

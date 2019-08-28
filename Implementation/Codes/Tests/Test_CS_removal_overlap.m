@@ -132,7 +132,7 @@ for i=1:lengthTot
     length_xsc(signal_n)=length(xsc);
     
     %% LABEL TRAINING
-    %label_training(signal_n, :)=repelem(CS, round(window_training/window_annotated)); % Useful in 'display_CS_NCS_final.m'
+    label_training(signal_n, :)=labels; % Useful in 'display_CS_NCS_final.m'
     
 end
 

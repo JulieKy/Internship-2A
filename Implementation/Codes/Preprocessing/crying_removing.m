@@ -1,4 +1,4 @@
-function [X_ncs_final, label_training] = crying_removing(folder_path, time_sample, fn, threshold, band, window_training, overlap_training, window_annotated)
+function [X_ncs_final, label_training] = crying_removing(folder_path, time_sample, fn, threshold, band, window_training, overlap_training)
 %CRYING_REMOVING:  Remove the crying sections thanks to a threshold on powerband
 
 %% INPUTS AND OUTPUTS
@@ -13,6 +13,9 @@ function [X_ncs_final, label_training] = crying_removing(folder_path, time_sampl
 % X_ncs_final: Matrix with non-crying signals
 % label_training: Label found by training (useful in display_CS_NCS_final.m, figure 3)
 
+%% INITIALISATION
+window=window_training*fn;
+overlap=overlap_training*fn;
 
 %% READING FILES IN THE DATABASE
 
@@ -38,8 +41,10 @@ for i=1:lengthTot
     
     % Name of the sample
     tempName=names_cell{i};
+       % tempName='106.mp3';
     disp('READ - Database');
     disp(tempName);
+   
     
     % Get the number of the recording by removing the '.mp3'
     strMP3 = sprintf('%s',tempName);
@@ -56,79 +61,140 @@ for i=1:lengthTot
     % Shorten the signals to 60s if longer
     if length(xs)>time_sample*fn
         xss=xs(1:time_sample*fn,1);
+    else 
+        xss=xs;
+    end
+    N=length(xss);
+    NN(signal_n)=N/fn;
+    
+    %% SECTIONS
+    % Initialisation
+    pos=1;
+    section_set=[];
+    labels=[];
+    
+    % All sections except the last one (overlap between sections)
+    while pos<=(N-window+1)
+        section=xss(pos:pos+window-1);
+        pos=pos+window-overlap;
+        section_set=[section_set, section];
     end
     
-    %% INITIALISATION
-    N=length(xss); % Signal length
-    duration_sample=window_training*fn; % Duration of the section in sample
-    nb_section=floor(N/duration_sample); % Number of sections
-    n_section=1:nb_section; % Section number (ID)
-    start_time=n_section*(window_training-window_training*overlap_training)-1; % Start time of each section
-    start_sample=start_time*fn+1; % Start sample of each section
+    % Last section
+    last_section=xss(pos:end); % Can have a different size
     
-    %% POWER BAND OF EACH SECTION
-    xss_section=reshape(xss,  duration_sample, [length(xss)/duration_sample]); % Each section in a column
-    power_band=bandpower(xss_section, fn, band); % Power band of each section
+    %% LABEL THANKS TO POWERBAND
+    label_section=bandpower(section_set, fn, band)>threshold; % For all sections except the last one
+    label_section_last=bandpower(last_section, fn, band)>threshold; % Last section
     
-    %% CS and NCS
-    CS=power_band>threshold;
-    NCS=1-CS;
+    
+    %% LABELS CORESPONDING TO SIGNAL LENGTH (overlap taken into account)   
+    % -- First section
+    first_section=xss(1:window-overlap);
+    labels(1:length(first_section))=repelem(label_section(1),length(first_section));
+    pos=length(first_section)+1;
+    
+    % -- Other windows
+    for i=2:length(label_section)
+        l1=label_section(i-1);
+        l2=label_section(i);
+        
+        % Overlap with priority to NCS
+        if (l1==0 || l2==0) % 0=priority NCS, 1=priority CS
+            labels(pos: pos+overlap-1)=zeros(1,overlap); % 0: NCS
+        else
+            labels(pos: pos+overlap-1)=ones(1,overlap); % 1: CS
+        end
+        pos=pos+overlap;
+        
+        % Window without overlap
+        labels(pos:pos+window-2*overlap-1)=repelem(l2,window-2*overlap);
+        pos=pos+window-2*overlap;
+    end
+    
+    % -- Last window
+    
+    % Last overlap
+    if (label_section(end)==0 || label_section_last==0)
+        labels(pos: pos+overlap-1)=zeros(1,overlap);
+    else
+        labels(pos: pos+overlap-1)=ones(1,overlap);
+    end
+    pos=pos+overlap;
+    
+    % Last section without overlap
+    if length(last_section)~=1 % If length=1, it means that there is only overlap (already taken into account)
+        labels(pos: pos+length(last_section)-overlap-1) = repelem(label_section_last, length(last_section)-overlap);
+    end
+    
     
     %% CS REMOVING
-    xss_section_NCS=xss_section.*NCS; % Each CS column is filled with 0
-    xss_NCS=reshape(xss_section_NCS, [1 size(xss_section_NCS,1)*size(xss_section_NCS,2)]); % Reshape in a single line
+    NCS=1-labels;
+    xsc=xss((xss.*NCS')~=0); % Signal without CS
     
-    xsc=xss_NCS(xss_NCS~=0); % Signal without CS
     
     %% STORAGE
-    X_ncs(signal_n, 1:length(xsc))=xsc; % If CS were removed, X_ncs contains 0.
+    % Signals without CSs
+    X_ncs(signal_n, 1:length(xsc))=xsc; % If CSs were removed, X_ncs contains 0.
     
-    %% MINIMUM LENGTH
+    % Labels used in display_CS_NCS_final
+    if (signal_n<=37)
+        label_training(signal_n, :)=labels;
+    end
+    
+    %% LENGTH
     length_xsc(signal_n)=length(xsc);
-    
-    %% LABEL TRAINING
-    label_training(signal_n, :)=repelem(CS, round(window_training/window_annotated)); % Useful in 'display_CS_NCS_final.m'
-    
 end
 
-%% SHORTEN SAMPLES WITH MINIMUM LENGTH
-% Find the minimum length
-min_length=min(length_xsc);
-part1=floor(min_length/2);
-part2=min_length-part1;
 
-length_time=length_xsc./fn;
-min_ok=10;
-figure, 
-hax=axes;
-x_axe=get(hax,'XLim');
-plot(1:length(length_time), length_time, '*'); hold on
-plot(1:length(length_time),ones(1,length(length_time))*10 , '--', 'Color', 'r'); 
-hold off
-title('Duration of Samples after Cry Removal')
-xlabel('Samples')
-ylabel('Duration [s]')
+%% SHORTEN SAMPLES WITH MAX(MINIMUM LENGTH;10s)
+length_acceptable=10*fn;
 
-
-% Statistical study of lengths
+% Statistical study on lengths
 length_xsc_time=length_xsc*60/length(xss);
 mean_length=mean(length_xsc_time);
 median_length=median(length_xsc_time);
 p25_length=prctile(length_xsc_time,25);
 p75_length=prctile(length_xsc_time,75);
 
+% Find the minimum length
+min_length=min(length_xsc);
+if min_length<length_acceptable
+    X_ncs(length_xsc<length_acceptable, :)=zeros(sum(length_xsc<length_acceptable), size(X_ncs,2));
+    min_length=min(length_xsc(length_xsc>=length_acceptable));
+end
+
+part1=floor(min_length/2);
+part2=min_length-part1;
 
 % Shorten for each signal
 X_ncs_final=zeros(lengthTot, min_length);
 for signal_n=1:size(X_ncs,1)
-    xsc1=X_ncs(signal_n, 1:length_xsc(signal_n)); % Signal with only NCS
-    if length(xsc1)>min_length
-        mid=floor(length(xsc1)/2);
-        xsc_shorten=xsc1(mid-part1:mid+part2-1);
+    if length_xsc(signal_n)>=length_acceptable
+        xsc1=X_ncs(signal_n, 1:length_xsc(signal_n)); % Signal with only NCS
+        if length(xsc1)>min_length
+            mid=floor(length(xsc1)/2);
+            xsc_shorten=xsc1(mid-part1:mid+part2-1);
+        else
+            xsc_shorten=xsc1;
+        end
     else
-        xsc_shorten=xsc1;
+        xsc_shorten=zeros(1, min_length);
     end
     X_ncs_final(signal_n, :)=xsc_shorten;
 end
+
+% Display
+length_time=length_xsc./fn;
+figure,
+hax=axes;
+x_axe=get(hax,'XLim');
+plot(1:length(length_time), length_time, '*'); hold on
+%plot(1:length(length_time),ones(1,length(length_time))*10 , '--', 'Color', 'r');
+line([1,length(length_time)],[length_acceptable/fn,length_acceptable/fn], 'Color',[0.8 0 0], 'LineWidth', 2);
+hold off
+title('Duration of Samples after Cry Removal (CS priority)')
+xlabel('Samples')
+ylabel('Duration [s]')
 
 end

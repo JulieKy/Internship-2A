@@ -1,4 +1,4 @@
-clear all;
+clear all; close all; 
 
 folder_path='C:\Users\julie\OneDrive\Documents\T2\Stage 2A\Stage_2A_Matlab\Implementation\Codes\..\Data\Database\';
 time_sample=60;
@@ -35,8 +35,10 @@ for i=1:lengthTot
     
     % Name of the sample
     tempName=names_cell{i};
+       % tempName='106.mp3';
     disp('READ - Database');
     disp(tempName);
+   
     
     % Get the number of the recording by removing the '.mp3'
     strMP3 = sprintf('%s',tempName);
@@ -53,16 +55,19 @@ for i=1:lengthTot
     % Shorten the signals to 60s if longer
     if length(xs)>time_sample*fn
         xss=xs(1:time_sample*fn,1);
+    else 
+        xss=xs;
     end
-    
+    N=length(xss);
+    NN(signal_n)=N/fn;
     
     %% SECTIONS
     % Initialisation
     pos=1;
     section_set=[];
-    N=length(xss); 
+    labels=[];
     
-    % All sections except the last one
+    % All sections except the last one (overlap between sections)
     while pos<=(N-window+1)
         section=xss(pos:pos+window-1);
         pos=pos+window-overlap;
@@ -70,15 +75,14 @@ for i=1:lengthTot
     end
     
     % Last section
-    last_sec=xss(pos:end); % Can have a different size
+    last_section=xss(pos:end); % Can have a different size
     
-    %% POWERBAND
-    label_section=bandpower(section_set, fn, band); % For all sections except the last one
-    label_section_last=bandpower(last_sec, fn, band); % Last section
+    %% LABEL THANKS TO POWERBAND
+    label_section=bandpower(section_set, fn, band)>threshold; % For all sections except the last one
+    label_section_last=bandpower(last_section, fn, band)>threshold; % Last section
     
     
-    %% REMETTRE p AVEC MEME NOMBRE QUE X AVEC OVERLAP
-    
+    %% LABELS CORESPONDING TO SIGNAL LENGTH (overlap taken into account)   
     % -- First section
     first_section=xss(1:window-overlap);
     labels(1:length(first_section))=repelem(label_section(1),length(first_section));
@@ -89,11 +93,11 @@ for i=1:lengthTot
         l1=label_section(i-1);
         l2=label_section(i);
         
-        % Overlap with priority to CS
-        if (l1==1 || l2==1)
-            labels(pos: pos+overlap-1)=ones(1,overlap);
+        % Overlap with priority to NCS
+        if (l1==0 || l2==0) % 0=priority NCS, 1=priority CS
+            labels(pos: pos+overlap-1)=zeros(1,overlap); % 0: NCS
         else
-            labels(pos: pos+overlap-1)=zeros(1,overlap);
+            labels(pos: pos+overlap-1)=ones(1,overlap); % 1: CS
         end
         pos=pos+overlap;
         
@@ -105,16 +109,16 @@ for i=1:lengthTot
     % -- Last window
     
     % Last overlap
-    if (label_section(end)==1 || label_section_last==1)
-        labels(pos: pos+overlap-1)=ones(1,overlap);
-    else
+    if (label_section(end)==0 || label_section_last==0)
         labels(pos: pos+overlap-1)=zeros(1,overlap);
+    else
+        labels(pos: pos+overlap-1)=ones(1,overlap);
     end
     pos=pos+overlap;
     
     % Last section without overlap
-    if length(last_sec)~=1 % If length=1, it means that there is only overlap (already taken into account)
-        labels(pos: pos+length(last_sec)-overlap-1) = repelem(label_section_last, length(last_sec)-overlap);
+    if length(last_section)~=1 % If length=1, it means that there is only overlap (already taken into account)
+        labels(pos: pos+length(last_section)-overlap-1) = repelem(label_section_last, length(last_section)-overlap);
     end
     
     
@@ -122,24 +126,59 @@ for i=1:lengthTot
     NCS=1-labels;
     xsc=xss((xss.*NCS')~=0); % Signal without CS
     
+    
     %% STORAGE
-    X_ncs(signal_n, 1:length(xsc))=xsc; % If CS were removed, X_ncs contains 0.
+    % Signals without CSs
+    X_ncs(signal_n, 1:length(xsc))=xsc; % If CSs were removed, X_ncs contains 0.
+    
+    % Labels used in display_CS_NCS_final
+    if (signal_n<=37)
+        label_training(signal_n, :)=labels;
+    end
     
     %% LENGTH
     length_xsc(signal_n)=length(xsc);
-    
-    %% LABEL TRAINING
-    %label_training(signal_n, :)=repelem(CS, round(window_training/window_annotated)); % Useful in 'display_CS_NCS_final.m'
-    
 end
 
 
-%% SHORTEN SAMPLES WITH MINIMUM LENGTH
+%% SHORTEN SAMPLES WITH MAX(MINIMUM LENGTH;10s)
+length_acceptable=10*fn;
+
+% Statistical study on lengths
+length_xsc_time=length_xsc*60/length(xss);
+mean_length=mean(length_xsc_time);
+median_length=median(length_xsc_time);
+p25_length=prctile(length_xsc_time,25);
+p75_length=prctile(length_xsc_time,75);
+
 % Find the minimum length
 min_length=min(length_xsc);
+if min_length<length_acceptable
+    X_ncs(length_xsc<length_acceptable, :)=zeros(sum(length_xsc<length_acceptable), size(X_ncs,2));
+    min_length=min(length_xsc(length_xsc>=length_acceptable));
+end
+
 part1=floor(min_length/2);
 part2=min_length-part1;
 
+% Shorten for each signal
+X_ncs_final=zeros(lengthTot, min_length);
+for signal_n=1:size(X_ncs,1)
+    if length_xsc(signal_n)>=length_acceptable
+        xsc1=X_ncs(signal_n, 1:length_xsc(signal_n)); % Signal with only NCS
+        if length(xsc1)>min_length
+            mid=floor(length(xsc1)/2);
+            xsc_shorten=xsc1(mid-part1:mid+part2-1);
+        else
+            xsc_shorten=xsc1;
+        end
+    else
+        xsc_shorten=zeros(1, min_length);
+    end
+    X_ncs_final(signal_n, :)=xsc_shorten;
+end
+
+% Display
 length_time=length_xsc./fn;
 min_ok=10;
 figure,
@@ -151,25 +190,3 @@ hold off
 title('Duration of Samples after Cry Removal')
 xlabel('Samples')
 ylabel('Duration [s]')
-
-
-% Statistical study of lengths
-length_xsc_time=length_xsc*60/length(xss);
-mean_length=mean(length_xsc_time);
-median_length=median(length_xsc_time);
-p25_length=prctile(length_xsc_time,25);
-p75_length=prctile(length_xsc_time,75);
-
-
-% Shorten for each signal
-X_ncs_final=zeros(lengthTot, min_length);
-for signal_n=1:size(X_ncs,1)
-    xsc1=X_ncs(signal_n, 1:length_xsc(signal_n)); % Signal with only NCS
-    if length(xsc1)>min_length
-        mid=floor(length(xsc1)/2);
-        xsc_shorten=xsc1(mid-part1:mid+part2-1);
-    else
-        xsc_shorten=xsc1;
-    end
-    X_ncs_final(signal_n, :)=xsc_shorten;
-end

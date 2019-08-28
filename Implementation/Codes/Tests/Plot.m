@@ -78,13 +78,14 @@
 
 figure, 
 hax=axes;
-x_axe=get(hax,'XLim');
+h_axe=get(hax,'XLim');
 length_short=length_time(length_time<min_ok);
 length_ok=length_time(length_time>=min_ok);
 plot(length_short, '*', 'Color',[0.8 0 0]); hold on
 plot(length_ok, '*', 'Color',[0 0.6 0]);
 plot(1:length(length_time), length_time, '*'); hold on
-plot(1:length(length_time),ones(1,length(length_time))*10 , '--', 'Color', 'r'); 
+%plot(1:length(length_time),ones(1,length(length_time))*10 , '--', 'Color', 'r');
+line([1,length(length_time)],[10,10], 'Color',[0.8 0 0], 'LineWidth', 2);
 plot(10, 11, '-o', 'MarkerEdgeColor','red','MarkerFaceColor',[1 .6 .6])
 text(10,11,'\leftarrow sin(\pi)')
 hold off

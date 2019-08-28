@@ -81,31 +81,38 @@ ylabel('Amplitude');
 subplot(4,1,3)
 plot(time_axis_xss, xss, 'Color', NCS_color); hold on % The entire signal % ATTENTION COULEUR FAUSSE
 
-
 % Finding the location of 'CS' and 'NCS'
 CS_locs=find(label_learning==1);
 NCS_locs=find(label_learning==0);
 
-% Start time of the labels (for each window)
-time_CS_start=CS_locs*(window-overlap)-1;
-time_NCS_start=NCS_locs*(window-overlap)-1;
+time_axis_section_NCS=time_axis_xss(NCS_locs);
+NCS_section=xss(NCS_locs);
+p1=plot(time_axis_section_NCS, NCS_section, 'Color', NCS_color);
 
-% Start sample of the labels (for each window)
-sample_CS_start=time_CS_start*fn+1;
-sample_NCS_start=time_NCS_start*fn+1;
-label_duration=window*fn; % Number of samples in a window
+time_axis_section_CS=time_axis_xss(CS_locs);
+CS_section=xss(CS_locs);
+p2=plot(time_axis_section_CS, CS_section, 'Color', CS_color);
 
-% Sections NCS on the signal
-for n_section=1:length(NCS_locs)
-    [NCS_section,time_axis_section] = label2section(xss, n_section, sample_NCS_start, label_duration, time_axis_xss);
-    p1=plot(time_axis_section, NCS_section, 'Color', NCS_color);
-end
-
-% Sections CS on the signal
-for n_section=1:length(CS_locs)
-    [CS_section,time_axis_section] = label2section(xss, n_section, sample_CS_start, label_duration, time_axis_xss);
-    p2=plot(time_axis_section, CS_section, 'Color', CS_color);
-end
+% % Start time of the labels (for each window)
+% time_CS_start=CS_locs*(window-overlap)-1;
+% time_NCS_start=NCS_locs*(window-overlap)-1;
+% 
+% % Start sample of the labels (for each window)
+% sample_CS_start=time_CS_start*fn+1;
+% sample_NCS_start=time_NCS_start*fn+1;
+% label_duration=window*fn; % Number of samples in a window
+% 
+% % Sections NCS on the signal
+% for n_section=1:length(NCS_locs)
+%     [NCS_section,time_axis_section] = label2section(xss, n_section, sample_NCS_start, label_duration, time_axis_xss);
+%     p1=plot(time_axis_section, NCS_section, 'Color', NCS_color);
+% end
+% 
+% % Sections CS on the signal
+% for n_section=1:length(CS_locs)
+%     [CS_section,time_axis_section] = label2section(xss, n_section, sample_CS_start, label_duration, time_axis_xss);
+%     p2=plot(time_axis_section, CS_section, 'Color', CS_color);
+% end
 
 
 %legend([p1 p2],'NCS', 'CS')
