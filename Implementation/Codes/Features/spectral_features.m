@@ -1,6 +1,6 @@
-% This function computes spectral features 
-%
 function [output_spectral_features, periodogram_pks_features, pxx,f,foct,spower,I,S] = spectral_features(x,fn) % See Fae's comments
+% spectral_features: This function computes spectral features.
+
 %% INPUT AND OUTPUT
 % -- Inputs --
 % x 'audio signal'
@@ -37,7 +37,7 @@ xdata2 = f; % used for linear regression
 ydata2 = power; % used for linear regression
 
 
-%% PERIODOGRAM PEAKS FEATURES with MAF and GMM (Julie)
+%% PERIODOGRAM PEAKS FEATURES with MAF and GMM 
 
 %% Moving Average Filter (MAF)
 % -- Peaks features
@@ -77,17 +77,13 @@ nb_higherPks_GMM=2;
 [nb_pks_GMM,  f_higherPk_GMM, dif_higherPks_GMM] = peaks_features(fi_tot,f, nb_higherPks_GMM, 'periodogram_GMM', 0);
 
 periodogram_pks_features=[nb_pks_MAF;  f_higherPk_MAF; dif_higherPks_MAF; nb_pks_GMM;  f_higherPk_GMM; dif_higherPks_GMM; GMM_parameters'];
-% periodogram_pks_features=[nb_pks_MAF; dif_higherPks_MAF; nb_pks_GMM; dif_higherPks_GMM ];
 
 %% PERIODOGRAM ANALYSIS (Notes by Fae)
-% Note that in the Peruvian paper it mentions: "the slope of the linear regression line, fit to
-% spectrum P in logarithmic axes. The power spectrum, when plotted in dB as
-% 20*log (P/Pmin)". Let's assume that Pmin is the power at 1000Hz, then the
-% 'relative' power in db is: (however I tink there was a mistake in the article and it should be 10*log10(p/pmin))
+% Note that in the Peruvian paper it mentions: "the slope of the linear regression line, fit to spectrum P in logarithmic axes. The power spectrum, when plotted in dB as 20*log (P/Pmin)". Let's assume that Pmin is the power at 1000Hz, then the 'relative' power in db is: (however I tink there was a mistake in the article and it should be 10*log10(p/pmin))
 spower=10*log10(pxx/pxx(end));
 
-%% spectrum parameters
-% some statistical spectral parameters:
+%% Spectrum parameters
+% -- Some statistical spectral parameters
 meanPSD=meanfreq(pxx,f); %  The mean frequency of a power spectrum
 stdPSD=sqrt(sum(pxx.*((f-meanPSD).^2))/sum(pxx));%  The std of a power spectrum
 medPSD=medfreq(pxx,f); %  The median frequency of a power spectrum
@@ -95,20 +91,23 @@ bw = powerbw(pxx,f); % 3db bandwidth of power spectrum
 p25=percentilefreq(pxx,f,25); % 25 percentile (1st quartile) of spectral power
 p75=percentilefreq(pxx,f,75); % 75 percentile (3rd quartile) of spectral power
 IQR=p75-p25; % Interquartile range of spectrum
- % power ratios of various frequency (Hz) bands 
- TP=bandpower(pxx,f,[100 f(end)],'psd');% total power for 100-1000Hz
+
+% -- Power ratios of various frequency (Hz) bands 
+TP=bandpower(pxx,f,[100 f(end)],'psd');% total power for 100-1000Hz
 p100_200 = bandpower(pxx,f,[100 200],'psd')/TP;
 p200_400 = bandpower(pxx,f,[200 400],'psd')/TP;
 p400_800 = bandpower(pxx,f,[400 800],'psd')/TP;
 
 %% Slope of the regression line (SL) in db/octave (Notes by Fae)
-% for octave we need should convert the frequency like this (taking the base as mean frequency):  
+% For octave we need to convert the frequency like this (taking the base as mean frequency):  
 foct=log2(f/meanPSD);
-% To fit a linear reg line:
+
+% To fit a linear regression line:
 mdl = fitlm(foct(foct>0),spower(foct>0));
 I=mdl.Coefficients{1,1};% Intercept
 S=mdl.Coefficients{2,1};% slope
-limOct=log2(1000/meanPSD);
+limOct=log2(1000/meanPSD
+
 % figure,
 % plot(foct,spower,'k*:'),xlim([0,limOct]),title('Spectrum Slope'),xlabel('Hz with oct divisions'),ylabel('dB')
 % hold on
@@ -123,9 +122,7 @@ r_square2=mdl.Rsquared.Adjusted;
 
 
 %% RESULT
-
-%combined final output
-
+% Combined final output
 output_spectral_features = [meanPSD;stdPSD;medPSD;bw;p25;p75;IQR;TP;p100_200;p200_400;p400_800;spectrum_slope2;r_square2];
 
 end

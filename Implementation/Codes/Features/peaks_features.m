@@ -1,4 +1,6 @@
 function [nb_pks,  f_higherPk, dif_higherPks] = peaks_features(y, f, nb_higherPks_method, tag, t)
+%peaks_features: Computes fetaures related to peaks
+
 %% INPUT AND OUTPUT
 % -- Inputs --
 % y: periodogram or spectrogram
