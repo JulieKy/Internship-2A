@@ -106,7 +106,7 @@ foct=log2(f/meanPSD);
 mdl = fitlm(foct(foct>0),spower(foct>0));
 I=mdl.Coefficients{1,1};% Intercept
 S=mdl.Coefficients{2,1};% slope
-limOct=log2(1000/meanPSD
+limOct=log2(1000/meanPSD);
 
 % figure,
 % plot(foct,spower,'k*:'),xlim([0,limOct]),title('Spectrum Slope'),xlabel('Hz with oct divisions'),ylabel('dB')
