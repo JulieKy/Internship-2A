@@ -15,7 +15,7 @@ fn=4000; % Sampling frequency
 %% -- Path
 addpath(genpath('..\..\')); % Access to sample folder
 path = pwd; % Current path
-path_Learning_Database=[path,'\..\Data\Learning_Database\'];
+path_Learning_Database=[path,'\..\Data\Learning_Database_New\'];
 path_Database=[path,'\..\Data\Database\'];
 pathExcel = strcat(path, '\'); % Path of the Excel spectral features file
 pathExcelPreprocessing = strcat(path, '\'); % Path of the Excel preprocessing file

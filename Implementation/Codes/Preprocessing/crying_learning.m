@@ -14,7 +14,7 @@ function [final_threshold, band, label_final, window_labelling, window_training]
 %% INITIALISATION
 % -- Data
 observators=3;
-samples=37;
+samples=35;
 end_sample=60; % End of the signal (hypotesis: length of the signal=60s)
 
 % -- Parameters for labelling

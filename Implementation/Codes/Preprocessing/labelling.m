@@ -29,7 +29,7 @@ for samp=1:samples % Number of samples
         % The files are named as follows: a_b.txt with a=observator and b=sample
         
         % -- Openning the file
-        file_name=sprintf('..\\Data\\Labels\\%d_%d.txt', obs, samp);
+        file_name=sprintf('..\\Data\\Labels_New\\%d_%d.txt', obs, samp);
         fid=fopen(file_name);
         
         % -- Extract the data
