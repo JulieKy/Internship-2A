@@ -81,7 +81,7 @@ threshold=outputs_ExcelProcessing(1); band(1)=outputs_ExcelProcessing(2); band(2
 label_annotated=xlsread([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], 'Annotated Labels');
 
 % Removing the data
-[X_ncs, label_learning]=crying_removing(path_Database,time_sample, fn, threshold, band, window_training, overlap_training);
+[X_ncs, label_learning, length_labels_training]=crying_removing(path_Database,time_sample, fn, threshold, band, window_training, overlap_training);
 
 
 %% -- Display NCS and CS
@@ -109,7 +109,7 @@ y_xsc = filterbp(xsc,fn);
 %% -- Computation of features
 output_temporal_features = temporal_features(y_xsc,fn); % Temporal features
 [output_spectral_features(signal_n,:),periodogram_pks_features(signal_n,:),pxx(signal_n,:),f(signal_n,:),foct(signal_n,:),spower(signal_n,:),I(signal_n,:),S(signal_n,:)] = spectral_features(y_xsc,fn); % See Fae's comment
-output_mean_mfcc = mfcc_coeffs(y_xss, fn); % MFCCs coefficient
+output_mean_mfcc = mfcc_coeffs(y_xss, fn, label_training, length_labels_training, signal_n); % MFCCs coefficient
 [output_lpc, output_lsf] = lpc_lsf_coeff(y_xss, fn); % LPC and LFC coefficient
 
 

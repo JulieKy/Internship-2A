@@ -1,4 +1,4 @@
-function [X_ncs_final, label_training] = crying_removing(folder_path, time_sample, fn, threshold, band, window_training, overlap_training)
+function [X_ncs_final, label_training, length_labels] = crying_removing(folder_path, time_sample, fn, threshold, band, window_training, overlap_training)
 %CRYING_REMOVING:  Remove the crying sections thanks to a threshold on powerband
 
 %% INPUTS AND OUTPUTS
@@ -138,7 +138,9 @@ for i=1:lengthTot
     X_ncs(signal_n, 1:length(xsc))=xsc; % If CSs were removed, X_ncs contains 0.
     
     % Labels used in display_CS_NCS_final
-    if (signal_n<=37)
+    length_labels(signal_n)=length(labels); 
+    if length(labels)<time_sample*fn
+        labels=[labels, ones(1,time_sample*fn-length(labels))*2]; % 2 padding
         label_training(signal_n, :)=labels;
     end
     
