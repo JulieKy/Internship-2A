@@ -141,8 +141,8 @@ for i=1:lengthTot
     length_labels(signal_n)=length(labels); 
     if length(labels)<time_sample*fn
         labels=[labels, ones(1,time_sample*fn-length(labels))*2]; % 2 padding
-        label_training(signal_n, :)=labels;
     end
+    label_training(signal_n, :)=labels;
     
     %% LENGTH
     length_xsc(signal_n)=length(xsc);
