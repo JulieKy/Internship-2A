@@ -23,17 +23,17 @@ numberCoeffs = 6;
 coeffs = mfcc(y',fn, 'NumCoeffs', numberCoeffs);
 
 %% REMOVE THE COEEFICIENT CORRESPONDING TO CSs
-labels_withPadding=label_training(signal_n, :);
-length_label=length_labels_training(signal_n); 
-labels=labels_withPadding(1:length_label);
-NCS=1-labels;
-for i=1:numberCoeffs
-    coeff=coeffs(:,i)
-    coeffs_NCS(:, i)=coeff((coeff.*NCS)~=0);
-end 
+% labels_withPadding=label_training(signal_n, :);
+% length_label=length_labels_training(signal_n); 
+% labels=labels_withPadding(1:length_label);
+% NCS=1-labels;
+% for i=1:numberCoeffs
+%     coeff=coeffs(:,i)
+%     coeffs_NCS(:, i)=coeff((coeff.*NCS)~=0);
+% end 
 
 
 %% RESULT
 
 % output of the average first 6 MFCC (coeff 1-2-3-4-5-6) 
- output_mean_mfcc = mean(coeffs_NCS(:,1:numberCoeffs));
+ output_mean_mfcc = mean(coeffs(:,1:numberCoeffs));

@@ -42,7 +42,7 @@ if (init == 0)
 end
 
 % %% -- Excel file Preprocessing
- init_learning=0;
+init_learning=0;
 excelFileSpectralFeaturesPreprocessing = 'CS_Features'; % Name of the Excel file to store features
 
 if ~(exist(pathExcelPreprocessing)) % test to create excel file or no
@@ -68,7 +68,7 @@ end
 % -- Learning where are the CS (if not already done)
 if (init_learning == 0) % Need to be done one time (data stored on an Excel file)
     [threshold,  band, label_annotated, window_annotated, window_training]= crying_learning(X_learning, fn, CS_color, NCS_color);
-%     xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [threshold ; band(1); band(end); window_annotated; window_training]', 'Learning CS Features', 'A2');
+    %     xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [threshold ; band(1); band(end); window_annotated; window_training]', 'Learning CS Features', 'A2');
     xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [label_annotated], 'Annotated Labels', 'A1');
     init_learning=1;
 end
@@ -81,7 +81,7 @@ threshold=outputs_ExcelProcessing(1); band(1)=outputs_ExcelProcessing(2); band(2
 label_annotated=xlsread([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], 'Annotated Labels');
 
 % Removing the data
-[X_ncs, label_learning, length_labels_training]=crying_removing(path_Database,time_sample, fn, threshold, band, window_training, overlap_training);
+[X_ncs, label_training, length_labels_training]=crying_removing(path_Database,time_sample, fn, threshold, band, window_training, overlap_training);
 
 
 %% -- Display NCS and CS
@@ -91,47 +91,49 @@ xsc=X_ncs(signal_n,:);
 
 overlap_label=0;
 % Display xss, annotated labels, learnt labels and xsc
-display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_annotated, overlap_label, label_learning, NCS_color, CS_color);
+display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_annotated, overlap_label, label_training, NCS_color, CS_color);
 
 
 % For every signals
 for signal_n=1:size(X_ncs, 1)
     xss=X(signal_n, 1:length_signals(signal_n));
     xcs=X_ncs(signal_n, :);
-
-%% -- Filtering BP 100-1200Hz
-y_xss = filterbp(xss,fn);
-y_xsc = filterbp(xsc,fn);
-
-
-%% SPECTRAL FEATURES
-
-%% -- Computation of features
-output_temporal_features = temporal_features(y_xsc,fn); % Temporal features
-[output_spectral_features(signal_n,:),periodogram_pks_features(signal_n,:),pxx(signal_n,:),f(signal_n,:),foct(signal_n,:),spower(signal_n,:),I(signal_n,:),S(signal_n,:)] = spectral_features(y_xsc,fn); % See Fae's comment
-output_mean_mfcc = mfcc_coeffs(y_xss, fn, label_training, length_labels_training, signal_n); % MFCCs coefficient
-[output_lpc, output_lsf] = lpc_lsf_coeff(y_xss, fn); % LPC and LFC coefficient
-
-
-%% -- Write on Excel file all the features
-
-% Sheet 1
-xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;output_temporal_features(signal_n)]', 'Temporal Features', ['A',num2str(signal_n+1)]);
-xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{signal_n}}, 'Temporal Features',['A',num2str(signal_n+1)]);
-
-% Sheet 2
-xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;output_spectral_features(signal_n,:)']', 'Spectral Features 1', ['A',num2str(signal_n+1)]);
-xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{signal_n}}, 'Spectral Features 1',['A',num2str(signal_n+1)]);
-
-% Sheet 3
-xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;periodogram_pks_features(signal_n,:)']', 'Spectral Features 2', ['A',num2str(signal_n+1)]);
-xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{signal_n}}, 'Spectral Features 2',['A',num2str(signal_n+1)]);
-
-% Sheet 4
-xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;output_mean_mfcc'; output_lpc'; output_lsf']', 'Coefficients', ['A',num2str(signal_n+1)]);
-xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{signal_n}}, 'Coefficients',['A',num2str(signal_n+1)]);
-
-end 
+    
+    %% -- Filtering BP 100-1200Hz
+    y_xss = filterbp(xss,fn);
+    y_xsc = filterbp(xsc,fn);
+    
+    XSS(signal_n,:)=y_xss;
+    XSC(signal_n,:)=y_xsc;
+    
+    %% SPECTRAL FEATURES
+    
+    %% -- Computation of features
+    output_temporal_features = temporal_features(y_xsc,fn); % Temporal features
+    [output_spectral_features(signal_n,:),periodogram_pks_features(signal_n,:),pxx(signal_n,:),f(signal_n,:),foct(signal_n,:),spower(signal_n,:),I(signal_n,:),S(signal_n,:)] = spectral_features(y_xsc,fn); % See Fae's comment
+    output_mean_mfcc = mfcc_coeffs(y_xss, fn, label_training, length_labels_training, signal_n); % MFCCs coefficient
+    [output_lpc, output_lsf] = lpc_lsf_coeff(y_xss, fn); % LPC and LFC coefficient
+    
+    
+    %% -- Write on Excel file all the features
+    
+    % Sheet 1
+    xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;output_temporal_features]', 'Temporal Features', ['A',num2str(signal_n+1)]);
+    xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{signal_n}}, 'Temporal Features',['A',num2str(signal_n+1)]);
+    
+    % Sheet 2
+    xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;output_spectral_features(signal_n,:)']', 'Spectral Features 1', ['A',num2str(signal_n+1)]);
+    xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{signal_n}}, 'Spectral Features 1',['A',num2str(signal_n+1)]);
+    
+    % Sheet 3
+    xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;periodogram_pks_features(signal_n,:)']', 'Spectral Features 2', ['A',num2str(signal_n+1)]);
+    xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{signal_n}}, 'Spectral Features 2',['A',num2str(signal_n+1)]);
+    
+    % Sheet 4
+    xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;output_mean_mfcc'; output_lpc'; output_lsf']', 'Coefficients', ['A',num2str(signal_n+1)]);
+    xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{signal_n}}, 'Coefficients',['A',num2str(signal_n+1)]);
+    
+end
 
 
 %% ****** DISPLAY ******
