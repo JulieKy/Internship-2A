@@ -116,7 +116,7 @@ output_mean_mfcc = mfcc_coeffs(y_xss, fn); % MFCCs coefficient
 %% -- Write on Excel file all the features
 
 % Sheet 1
-xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;output_temporal_features]', 'Temporal Features', ['A',num2str(signal_n+1)]);
+xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;output_temporal_features(signal_n)]', 'Temporal Features', ['A',num2str(signal_n+1)]);
 xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{signal_n}}, 'Temporal Features',['A',num2str(signal_n+1)]);
 
 % Sheet 2
@@ -142,7 +142,7 @@ NCS_color=[0 0.6 0];
 CS_color=[0.8 0 0];
 
 % Display xss, annotated labels, learnt labels and xsc
-display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_label, overlap_label, label_learning_xss, NCS_color, CS_color);
+display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_annotated, window_annotated, label_learning_xss, NCS_color, CS_color);
 
 
 %% -- FFT Representation
