@@ -99,41 +99,53 @@ for signal_n=1:size(X_ncs, 1)
     xss=X(signal_n, 1:length_signals(signal_n));
     xsc=X_ncs(signal_n, :);
     
-    str=sprintf('Features signal %d', signal_n);
-    disp(str)
-    
-    %% -- Filtering BP 100-1200Hz
-    y_xss = filterbp(xss,fn);
-    y_xsc = filterbp(xsc,fn);
-       
-    
-    %% SPECTRAL FEATURES
-    
-    %% -- Computation of features
-    output_temporal_features = temporal_features(y_xsc,fn); % Temporal features
-    [output_spectral_features(signal_n,:),periodogram_pks_features(signal_n,:),pxx(signal_n,:),f(signal_n,:),foct(signal_n,:),spower(signal_n,:),I(signal_n,:),S(signal_n,:)] = spectral_features(y_xsc,fn); % See Fae's comment
-    output_mean_mfcc = mfcc_coeffs(y_xss, fn, label_training, length_labels_training, signal_n); % MFCCs coefficient
-    [output_lpc, output_lsf] = lpc_lsf_coeff(y_xss, fn); % LPC and LFC coefficient
-    
-    
-    %% -- Write on Excel file all the features
-    
-    % Sheet 1
-    xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;output_temporal_features]', 'Temporal Features', ['A',num2str(signal_n+1)]);
-    xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{signal_n}}, 'Temporal Features',['A',num2str(signal_n+1)]);
-    
-    % Sheet 2
-    xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;output_spectral_features(signal_n,:)']', 'Spectral Features 1', ['A',num2str(signal_n+1)]);
-    xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{signal_n}}, 'Spectral Features 1',['A',num2str(signal_n+1)]);
-    
-    % Sheet 3
-    xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;periodogram_pks_features(signal_n,:)']', 'Spectral Features 2', ['A',num2str(signal_n+1)]);
-    xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{signal_n}}, 'Spectral Features 2',['A',num2str(signal_n+1)]);
-    
-    % Sheet 4
-    xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;output_mean_mfcc'; output_lpc'; output_lsf']', 'Coefficients', ['A',num2str(signal_n+1)]);
-    xlswrite([pathExcel excelFileSpectralFeatures],{names_cell{signal_n}}, 'Coefficients',['A',num2str(signal_n+1)]);
-    
+    if xsc==zeros(1, length(xsc))
+        str=sprintf('Signal %d with too much cry: unusable', signal_n);
+        disp(str)
+        output_temporal_features=0;
+        output_spectral_features(signal_n,:)=zeros(1, 13);
+        periodogram_pks_features(signal_n,:)=zeros(1, 18);
+        output_mean_mfcc=zeros(1, 6);
+        output_lpc_lsf=zeros(1, 11);
+        
+        
+    else
+        str=sprintf('Features signal %d', signal_n);
+        disp(str)
+        
+        %% -- Filtering BP 100-1200Hz
+        y_xss = filterbp(xss,fn);
+        y_xsc = filterbp(xsc,fn);
+        
+        
+        %% SPECTRAL FEATURES
+        
+        %% -- Computation of features
+        output_temporal_features = temporal_features(y_xsc,fn); % Temporal features
+        [output_spectral_features(signal_n,:),periodogram_pks_features(signal_n,:),pxx(signal_n,:),f(signal_n,:),foct(signal_n,:),spower(signal_n,:),I(signal_n,:),S(signal_n,:)] = spectral_features(y_xsc,fn); % See Fae's comment
+        output_mean_mfcc = mfcc_coeffs(y_xss, fn, label_training, length_labels_training, signal_n); % MFCCs coefficient
+        [output_lpc, output_lsf] = lpc_lsf_coeff(y_xss, fn); output_lpc_lsf=[output_lpc, output_lsf]; % LPC and LFC coefficient
+        
+    end
+        %% -- Write on Excel file all the features
+        signal_name=sprintf('%d.mp3', signal_n);
+        
+        % Sheet 1
+        xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;output_temporal_features]', 'Temporal Features', ['A',num2str(signal_n+1)]);
+        xlswrite([pathExcel excelFileSpectralFeatures],{signal_name}, 'Temporal Features',['A',num2str(signal_n+1)]);
+        
+        % Sheet 2
+        xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;output_spectral_features(signal_n,:)']', 'Spectral Features 1', ['A',num2str(signal_n+1)]);
+        xlswrite([pathExcel excelFileSpectralFeatures],{signal_name}, 'Spectral Features 1',['A',num2str(signal_n+1)]);
+        
+        % Sheet 3
+        xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;periodogram_pks_features(signal_n,:)']', 'Spectral Features 2', ['A',num2str(signal_n+1)]);
+        xlswrite([pathExcel excelFileSpectralFeatures],{signal_name}, 'Spectral Features 2',['A',num2str(signal_n+1)]);
+        
+        % Sheet 4
+        xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;output_mean_mfcc'; output_lpc_lsf']', 'Coefficients', ['A',num2str(signal_n+1)]);
+        xlswrite([pathExcel excelFileSpectralFeatures],{signal_name}, 'Coefficients',['A',num2str(signal_n+1)]);
+        
 end
 
 
