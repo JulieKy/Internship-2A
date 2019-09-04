@@ -65,14 +65,13 @@ end
 
 %% -- Removing crying sections (CS)
 
-% % -- Learning where are the CS (if not already done)
-% if (init_learning == 0) % Need to be done one time (data stored on an Excel file)
-%     [threshold,  band, label_annotated, window_annotated, window_training]= crying_learning(X_learning, fn, CS_color, NCS_color);
-%     %     xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [threshold ; band(1); band(end); window_annotated; window_training]', 'Learning CS Features', 'A2');
-%     xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [label_annotated], 'Annotated Labels', 'A1');
-%     init_learning=1;
-% end
-window_training=3; % A ENLEVER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+% -- Learning where are the CS (if not already done)
+if (init_learning == 0) % Need to be done one time (data stored on an Excel file)
+    [threshold,  band, label_annotated, window_annotated, window_training]= crying_learning(X_learning, fn, CS_color, NCS_color);
+    xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [threshold ; band(1); band(end); window_annotated; window_training]', 'Learning CS Features', 'A2');
+    xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [label_annotated], 'Annotated Labels', 'A1');
+    init_learning=1;
+end
 
 % -- Removing the CS
 overlap_training=floor(window_training/3);
@@ -89,7 +88,6 @@ label_annotated=xlsread([pathExcelPreprocessing excelFileSpectralFeaturesPreproc
 signal_n=22; % Put a sample that is in the Learning_Database (between 1 and 37)
 xss=X_learning(signal_n,:);
 xsc=X_ncs(signal_n,:);
-
 overlap_label=0;
 % Display xss, annotated labels, learnt labels and xsc
 display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_annotated, overlap_label, label_training, NCS_color, CS_color);
@@ -97,7 +95,6 @@ display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_annotated, 
 
 % For every signals
 for signal_n=1:size(X_ncs, 1)
-    signal_n=22; % A ENLEVER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     xss=X(signal_n, 1:length_signals(signal_n));
     xsc=X_ncs(signal_n, :);
     
