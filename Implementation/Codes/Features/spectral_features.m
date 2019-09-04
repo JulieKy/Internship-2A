@@ -44,7 +44,10 @@ ydata2 = power; % used for linear regression
 pxx_smooth = smooth(pxx);
 nb_higherPks_MAF=2;
 
-% figure,plot(f,pxx);
+figure,
+plot(f, pxx, 'LineWidth', 1); hold on
+plot(f,pxx_smooth, 'LineWidth', 1.5, 'Color', 'red'); 
+
 
 [nb_pks_MAF,  f_higherPk_MAF, dif_higherPks_MAF] = peaks_features(pxx_smooth,f, nb_higherPks_MAF, 'periodogram_MAF', 0);
 
@@ -58,11 +61,15 @@ nb_higherPks_MAF=2;
  fi4=fi.a4*exp(-((f-fi.b4)./fi.c4).^2);
  fi_tot=fi1+fi2+fi3+fi4;
  
-%  % -- Display figure
-% figure,
-% plot(f,pxx); hold on
-% plot(f,fi1); plot(f,fi2); plot(f,fi3); plot(f,fi4); plot(f,fi_tot); % Gaussian fit
-% xlabel('Frequency (0-1000Hz)','fontsize',11,'interpreter','latex'),ylabel('PSD (dB/Hz)','fontsize',11,'interpreter','latex'), title('Periodogram Welch and Gaussians fitting','fontsize',14,'interpreter','latex'), legend('periodogram','fi1','fi2','fi3','fi4','fi_tot','interpreter','latex');
+% -- Display figure
+figure,
+plot(f,pxx, 'LineWidth', 1); hold on
+plot(f,fi_tot, 'LineWidth', 1.6, 'Color', 'red');
+plot(f,fi1); 
+plot(f,fi2); 
+plot(f,fi3); 
+plot(f,fi4); % Gaussian fit
+
 
  % -- Gaussian parameters
 a=[fi.a1, fi.a2, fi.a3, fi.a4];

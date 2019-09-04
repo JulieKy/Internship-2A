@@ -42,24 +42,24 @@ end
 
 %%  HIGHER PEAKS TIME
 
-%  %%  DISPLAY
-%
-% if strcmp('spectrogram', tag)==0
-%
-%     % Display the periodogram
-%     hold on
-%     plot(f,y,f(locs),pks,'or','MarkerEdgeColor','green');
-%     plot(f_higherPks,higherPks,'r*','MarkerEdgeColor','red'); hold off
-%     xlabel('Frequency (0-1000Hz)'),ylabel('PSD (dB/Hz)');
-%
-%     if strcmp('periodogram_MAF', tag)==1
-%         title('Welch Periodogram with Moving Average Filter (MAF)','fontsize',14,'interpreter','latex'),
-%         legend('pxx', 'pxx\_smooth with MAF','interpreter','latex');
-%     elseif strcmp('periodogram_GMM', tag)==1
-%         title('Welch Periodogram with Gaussian Mixture Model (GMM)','fontsize',14,'interpreter','latex'),
-%         legend('pxx', 'pxx\_smooth with GMM','interpreter','latex');
-%     end
-% end
+ %%  DISPLAY
+
+if strcmp('spectrogram', tag)==0
+
+    % Display the periodogram
+    hold on
+    plot(f_higherPks,higherPks,'or','MarkerEdgeColor',[0 0.6 0], 'MarkerFaceColor',[0 0.6 0], 'LineWidth', 1.5); 
+    plot(f(locs),pks,'or','MarkerEdgeColor',[0 0.6 0], 'LineWidth', 1.5); hold off
+    xlabel('Frequency [Hz]'),ylabel('Power');
+
+    if strcmp('periodogram_MAF', tag)==1
+        title('Welch Periodogram with Moving Average Filter (MAF)'),
+        legend('Periodogram', 'Smoothed Periodogram', 'Higher Peaks', 'Peaks');
+    elseif strcmp('periodogram_GMM', tag)==1
+        title('Welch Periodogram with Gaussian Mixture Model (GMM)'),
+        legend('Periodogram', 'Gaussian Mixture Model','fi 1','fi 2','fi 3','fi 4',  'Higher Peaks', 'Peaks');
+    end
+end
 
 
 end
