@@ -100,7 +100,7 @@ p400_600 = bandpower(pxx,f,[400 600],'psd')/TP;
 p600_800 = bandpower(pxx,f,[600 800],'psd')/TP;
 p800_1000 = bandpower(pxx,f,[800 1000],'psd')/TP;
 p1000_1200 = bandpower(pxx,f,[1000 f(end)],'psd')/TP;
-p=[p1000_1200, p800_1000, p600_800, p400_600, p200_400, p100_200]; 
+p=[p1000_1200, p800_1000, p600_800, p400_600, p200_400, p100_200]*sum(pxx)*TP; 
 
 %% Slope of the regression line (SL) in db/octave (Notes by Fae)
 % For octave we need to convert the frequency like this (taking the base as mean frequency):  
@@ -111,14 +111,6 @@ mdl = fitlm(foct(foct>0),spower(foct>0));
 I=mdl.Coefficients{1,1};% Intercept
 S=mdl.Coefficients{2,1};% slope
 limOct=log2(1000/meanPSD);
-
-% figure,
-% plot(foct,spower,'k*:'),xlim([0,limOct]),title('Spectrum Slope'),xlabel('Hz with oct divisions'),ylabel('dB')
-% hold on
-% plot(foct,I+S*foct)
-% hold off 
-% set(gca,'XTick',[0:ceil(limOct)] );
-% set(gca,'XTickLabel', [0 2.^[1:ceil(limOct)]].*round(meanPSD) );
 
 
 spectrum_slope2 =S;
@@ -132,55 +124,93 @@ r_square2=mdl.Rsquared.Adjusted;
 
 %% DISPLAY
 
-% Mean, median and bw
-figure, 
-hax=axes;
-y_axe=1e-4;
-p1=rectangle('Position', [flo, 0, bw, power/bw], 'FaceColor',[.9 .9 .9], 'EdgeColor', [.9 .9 .9]);hold on
-p2=plot(f, pxx, 'LineWidth', 1.5); 
-p3=line([meanPSD,meanPSD],[0, y_axe], 'Color',[.8 0 0], 'LineWidth', 1.7);
-p4=line([medPSD,medPSD],[0, y_axe], 'Color',[0 0.6 0], 'LineWidth', 1.7);
-hold off
-title('\fontsize{14}Spectrum Parameters on Signal 22: Mean, Median, Power Bandwidth');
-legend('Periodogram', 'Mean Frequency', 'Median Frequency')
-xlabel('Frequency [Hz]')
-ylabel('Power')
+% % Mean, median and bw
+% figure, 
+% hax=axes;
+% y_axe=1e-4;
+% p1=rectangle('Position', [flo, 0, bw, power/bw], 'FaceColor',[.9 .9 .9], 'EdgeColor', [.9 .9 .9]);hold on
+% p2=plot(f, pxx, 'LineWidth', 1.5); 
+% p3=line([meanPSD,meanPSD],[0, y_axe], 'Color',[.8 0 0], 'LineWidth', 1.7);
+% p4=line([medPSD,medPSD],[0, y_axe], 'Color',[0 0.6 0], 'LineWidth', 1.7);
+% hold off
+% title('\fontsize{14}Spectrum Parameters on Signal 22: Mean, Median, Power Bandwidth');
+% legend('Periodogram', 'Mean Frequency', 'Median Frequency')
+% xlabel('Frequency [Hz]')
+% ylabel('Power')
+% 
+% % Mean, median and bw in a logarithmic scale
+% figure, 
+% hax=axes;
+% y_axe=1e-4;
+% p1=rectangle('Position', [flo, -80, bw, (max(10*log10(pxx))+3)-min(10*log10(pxx))], 'FaceColor',[.9 .9 .9], 'EdgeColor', [.9 .9 .9]);hold on
+% p2=plot(f, 10*log10(pxx), 'LineWidth', 1.5); 
+% p3=line([meanPSD,meanPSD],[-80, -30], 'Color',[.8 0 0], 'LineWidth', 1.7);
+% p4=line([medPSD,medPSD],[-80, -30], 'Color',[0 0.6 0], 'LineWidth', 1.7);
+% hold off
+% title('\fontsize{14}Spectrum Parameters on Signal 22 with logarithmic scale: Mean, Median, Power Bandwidth');
+% legend('Periodogram', 'Mean Frequency', 'Median Frequency')
+% xlabel('Frequency [Hz]')
+% ylabel('Power')
 
-% Mean, median and bw in a logarithmic scale
-figure, 
-hax=axes;
-y_axe=1e-4;
-p1=rectangle('Position', [flo, -80, bw, (max(10*log10(pxx))+3)-min(10*log10(pxx))], 'FaceColor',[.9 .9 .9], 'EdgeColor', [.9 .9 .9]);hold on
-p2=plot(f, 10*log10(pxx), 'LineWidth', 1.5); 
-p3=line([meanPSD,meanPSD],[-80, -30], 'Color',[.8 0 0], 'LineWidth', 1.7);
-p4=line([medPSD,medPSD],[-80, -30], 'Color',[0 0.6 0], 'LineWidth', 1.7);
-hold off
-title('\fontsize{14}Spectrum Parameters on Signal 22 with logarithmic scale: Mean, Median, Power Bandwidth');
-legend('Periodogram', 'Mean Frequency', 'Median Frequency')
-xlabel('Frequency [Hz]')
-ylabel('Power')
+% % Figure with line
+% figure, 
+% hax=axes;
+% plot(f, pxx,'LineWidth',2);
+% hold on
+% f_interval=200;
+% band_end=1200;
+% 
+% % Display lines
+% for n_band = 1 : 6
+%     band_start=band_end-(floor(f_interval));
+%     band=pxx(band_start:band_end);
+%     line([band_start band_start],get(hax,'YLim'), 'Color',[0 0 0]); % Vertical lines differentiating the frequency bands
+%     line([band_start band_end], [mean(band) mean(band)], 'LineWidth',2, 'Color',[1 0 0]); % Horizontal lines representing the periodogram mean of each frequency band
+%     band_end=band_start;
+% end
+% 
+% hold off
+% legend('Periodogram', 'Frequency bands', 'Mean')
+% title('Welch Periodogram mean for bandwidth of 200Hz')
 
-% Figure with line
-figure, 
+% -----------------
+figure,
 hax=axes;
+
+% Display periodogram
 plot(f, pxx,'LineWidth',2);
 hold on
-f_interval=200;
+pass_band=1:1200; 
+band_width=200;
 band_end=1200;
 
 % Display lines
 for n_band = 1 : 6
-    band_start=band_end-(floor(f_interval));
+    band_start=band_end-band_width;
+    band=pxx( f>=band_start & f<=band_end) 
     line([band_start band_start],get(hax,'YLim'), 'Color',[0 0 0]); % Vertical lines differentiating the frequency bands
-    line([band_start band_end], [p(n_band) p(n_band)], 'LineWidth',2, 'Color',[1 0 0]); % Horizontal lines representing the periodogram mean of each frequency band
+    line([band_start band_end], [mean(band) mean(band)], 'LineWidth',2, 'Color',[1 0 0]); % Horizontal lines representing the periodogram mean of each frequency band
     band_end=band_start;
 end
 
 hold off
 legend('Periodogram', 'Frequency bands', 'Mean')
-title('Welch Periodogram mean for CS')
+title('Welch Periodogram Means for 200Hz Bandwidths ')
+xlabel('Frequency [Hz]')
+ylabel('Power')
 
 
-
+% -------------
+figure,
+plot(foct,spower,'k*:','Color',[.8 0 0]),xlim([0,limOct]),
+hold on
+plot(foct,I+S*foct, 'LineWidth',2)
+hold off 
+set(gca,'XTick',[0:ceil(limOct)] );
+set(gca,'XTickLabel', [0 2.^[1:ceil(limOct)]].*round(meanPSD) );
+title('Spectrum Slope'),
+xlabel('Hz with Octave Divisions'),
+ylabel('dB')
+legend('Power Ratio in log octave scale','Regression line')
 end
 
