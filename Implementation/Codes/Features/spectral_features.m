@@ -187,7 +187,7 @@ band_end=1200;
 % Display lines
 for n_band = 1 : 6
     band_start=band_end-band_width;
-    band=pxx( f>=band_start & f<=band_end) 
+    band=pxx( f>=band_start & f<=band_end);
     line([band_start band_start],get(hax,'YLim'), 'Color',[0 0 0]); % Vertical lines differentiating the frequency bands
     line([band_start band_end], [mean(band) mean(band)], 'LineWidth',2, 'Color',[1 0 0]); % Horizontal lines representing the periodogram mean of each frequency band
     band_end=band_start;
@@ -195,7 +195,7 @@ end
 
 hold off
 legend('Periodogram', 'Frequency bands', 'Mean')
-title('Welch Periodogram Means for 200Hz Bandwidths ')
+title('Power Means in 200Hz Bandwidths (Signal 22) ')
 xlabel('Frequency [Hz]')
 ylabel('Power')
 
@@ -205,10 +205,12 @@ figure,
 plot(foct,spower,'k*:','Color',[.8 0 0]),xlim([0,limOct]),
 hold on
 plot(foct,I+S*foct, 'LineWidth',2)
+str=sprintf('Slope: %d', S);
+text(20,15,str)
 hold off 
 set(gca,'XTick',[0:ceil(limOct)] );
 set(gca,'XTickLabel', [0 2.^[1:ceil(limOct)]].*round(meanPSD) );
-title('Spectrum Slope'),
+title('Spectrum Slope (Signal 22)'),
 xlabel('Hz with Octave Divisions'),
 ylabel('dB')
 legend('Power Ratio in log octave scale','Regression line')
