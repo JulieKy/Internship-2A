@@ -37,7 +37,7 @@ if (init == 0)
     xlswrite([pathExcel excelFileSpectralFeatures], [{'file'}, {'ZCR'}], 'Temporal Features', 'A1'); % Sheet 1
     xlswrite([pathExcel excelFileSpectralFeatures], [{'file'}, {'meanPSD'},{'stdPSD'},{'medPSD'},{'bw'},{'p25'},{'p75'},{'IQR'},{'TP'},{'p100_200'},{'p200_400'},{'p400_600'}, {'p600_800'}, {'p800_1000'}, {'p1000_1200'},{'SL'},{'R2'}], 'Spectral Features 1', 'A1'); % Sheet 2
     xlswrite([pathExcel excelFileSpectralFeatures], [{'file'}, {'nb_pks_MAF'}, {'f_higherPk_MAF'}, {'dif_higherPks_MAF'},{'nb_pks_GMM'}, {'f_higherPk_GMM'}, {'dif_higherPks_GMM'}, {'fi.a1'}, {'fi.a2'}, {'fi.a3'}, {'fi.a4'}, {'fi.b1'}, {'fi.b2'}, {'fi.b3'}, {'fi.b4'}, {'fi.c1'}, {'fi.c2'}, {'fi.c3'}, {'fi.c4'}], 'Spectral Features 2', 'A1'); % Sheet 3
-    xlswrite([pathExcel excelFileSpectralFeatures], [{'file'}, {'MFCC1'}, {'MFCC2'}, {'MFCC3'}, {'MFCC4'}, {'MFCC5'}, {'MFCC6'}, {'LPC2'}, {'LPC3'}, {'LPC4'}, {'LPC5'}, {'LPC6'}, {'LSF1'}, {'LSF2'}, {'LSF3'}, {'LSF4'}, {'LSF5'}, {'LSF6'} ], 'Coefficients', 'A1'); % Sheet 4
+    xlswrite([pathExcel excelFileSpectralFeatures], [{'file'}, {'MFCC1'}, {'MFCC2'}, {'MFCC3'}, {'MFCC4'}, {'MFCC5'}, {'MFCC6'}, {'MFCC7'},{'MFCC8'},{'MFCC9'},{'MFCC10'},{'MFCC11'},{'MFCC12'},{'MFCC13'},{'MFCC14'},{'LPC2'}, {'LPC3'}, {'LPC4'}, {'LPC5'}, {'LPC6'}, {'LSF1'}, {'LSF2'}, {'LSF3'}, {'LSF4'}, {'LSF5'}, {'LSF6'} ], 'Coefficients', 'A1'); % Sheet 4
     init = 1;
 end
 
@@ -90,7 +90,6 @@ signal_n=22; % Put a sample that is in the Learning_Database (between 1 and 37)
 xss=X_learning(signal_n,:);
 xsc=X_ncs(signal_n,:);
 overlap_label=0;
-% Display xss, annotated labels, learnt labels and xsc
 display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_annotated, overlap_label, label_training, NCS_color, CS_color);
 
 
@@ -103,9 +102,9 @@ for signal_n=1:size(X_ncs, 1)
         str=sprintf('Signal %d with too much cry: unusable', signal_n);
         disp(str)
         output_temporal_features=0;
-        output_spectral_features(signal_n,:)=zeros(1, 13);
+        output_spectral_features(signal_n,:)=zeros(1, 16);
         periodogram_pks_features(signal_n,:)=zeros(1, 18);
-        output_mean_mfcc=zeros(1, 6);
+        output_mean_mfcc=zeros(1, 14);
         output_lpc_lsf=zeros(1, 11);
         
         
@@ -142,7 +141,7 @@ for signal_n=1:size(X_ncs, 1)
         xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;periodogram_pks_features(signal_n,:)']', 'Spectral Features 2', ['A',num2str(signal_n+1)]);
         xlswrite([pathExcel excelFileSpectralFeatures],{signal_name}, 'Spectral Features 2',['A',num2str(signal_n+1)]);
         
-        Sheet 4
+        % Sheet 4
         xlswrite([pathExcel excelFileSpectralFeatures], [signal_n;output_mean_mfcc'; output_lpc_lsf']', 'Coefficients', ['A',num2str(signal_n+1)]);
         xlswrite([pathExcel excelFileSpectralFeatures],{signal_name}, 'Coefficients',['A',num2str(signal_n+1)]);
         

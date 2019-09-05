@@ -40,7 +40,7 @@ end
 NCS=1-label_frame_mean;
 
 for j=1:size(coeffs,2)
-    mfcc_ncs(:,j)=coeffs(coeffs(:, j).*NCS'~=0);
+    mfcc_ncs(:,j)=coeffs(coeffs(:, j).*NCS'~=0,j);
 end
 
 %% RESULT
