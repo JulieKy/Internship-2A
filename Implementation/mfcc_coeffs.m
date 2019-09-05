@@ -13,7 +13,7 @@ function [output_mean_mfcc] = mfcc_coeffs(y, fn, label_training, length_labels_t
 
 %% INITIALISATION
 % Number of MFCC coefficients wanted
-numberCoeffs = 6;
+numberCoeffs = 14;
 
 % Default values in mfcc function
 window=round(fn*0.03);

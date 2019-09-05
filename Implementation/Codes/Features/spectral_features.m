@@ -44,10 +44,9 @@ ydata2 = power; % used for linear regression
 pxx_smooth = smooth(pxx);
 nb_higherPks_MAF=2;
 
-figure,
-plot(f, pxx, 'LineWidth', 1); hold on
-plot(f,pxx_smooth, 'LineWidth', 1.5, 'Color', 'red'); 
-
+% figure,
+% plot(f, pxx, 'LineWidth', 1); hold on
+% plot(f,pxx_smooth, 'LineWidth', 1.5, 'Color', 'red'); 
 
 [nb_pks_MAF,  f_higherPk_MAF, dif_higherPks_MAF] = peaks_features(pxx_smooth,f, nb_higherPks_MAF, 'periodogram_MAF', 0);
 
@@ -61,29 +60,29 @@ plot(f,pxx_smooth, 'LineWidth', 1.5, 'Color', 'red');
  fi4=fi.a4*exp(-((f-fi.b4)./fi.c4).^2);
  fi_tot=fi1+fi2+fi3+fi4;
  
-% -- Display figure
-figure,
-plot(f,pxx, 'LineWidth', 1); hold on
-plot(f,fi_tot, 'LineWidth', 1.6, 'Color', 'red');
-plot(f,fi1); 
-plot(f,fi2); 
-plot(f,fi3); 
-plot(f,fi4); % Gaussian fit
-
-
- % -- Gaussian parameters
+% -- Gaussian parameters
 a=[fi.a1, fi.a2, fi.a3, fi.a4];
 b=[fi.b1, fi.b2, fi.b3, fi.b4];
 c=[fi.c1, fi.c2, fi.c3, fi.c4];
 
 GMM_parameters=[a, b, c];
+ 
+% % -- Display figure
+% figure,
+% plot(f,pxx, 'LineWidth', 1); hold on
+% plot(f,fi_tot, 'LineWidth', 1.6, 'Color', 'red');
+% plot(f,fi1); 
+% plot(f,fi2); 
+% plot(f,fi3); 
+% plot(f,fi4); % Gaussian fit
 
 % -- Peaks features
 nb_higherPks_GMM=2;
-% figure,plot(f,pxx);
 [nb_pks_GMM,  f_higherPk_GMM, dif_higherPks_GMM] = peaks_features(fi_tot,f, nb_higherPks_GMM, 'periodogram_GMM', 0);
 
+% -- Results
 periodogram_pks_features=[nb_pks_MAF;  f_higherPk_MAF; dif_higherPks_MAF; nb_pks_GMM;  f_higherPk_GMM; dif_higherPks_GMM; GMM_parameters'];
+
 
 %% PERIODOGRAM ANALYSIS (Notes by Fae)
 % Note that in the Peruvian paper it mentions: "the slope of the linear regression line, fit to spectrum P in logarithmic axes. The power spectrum, when plotted in dB as 20*log (P/Pmin)". Let's assume that Pmin is the power at 1000Hz, then the 'relative' power in db is: (however I tink there was a mistake in the article and it should be 10*log10(p/pmin))
@@ -107,11 +106,9 @@ p400_600 = bandpower(pxx,f,[400 600],'psd')/TP;
 p600_800 = bandpower(pxx,f,[600 800],'psd')/TP;
 p800_1000 = bandpower(pxx,f,[800 1000],'psd')/TP;
 p1000_1200 = bandpower(pxx,f,[1000 f(end)],'psd')/TP;
-p=[p1000_1200, p800_1000, p600_800, p400_600, p200_400, p100_200]*sum(pxx)*TP; 
 
 %% Slope of the regression line (SL) in db/octave (Notes by Fae)
-% For octave we need to convert the frequency like this (taking the base as mean frequency):  
-foct=log2(f/meanPSD);
+foct=log2(f/meanPSD); % For octave we need to convert the frequency like this (taking the base as mean frequency)
 
 % To fit a linear regression line:
 mdl = fitlm(foct(foct>0),spower(foct>0));
@@ -119,19 +116,18 @@ I=mdl.Coefficients{1,1};% Intercept
 S=mdl.Coefficients{2,1};% slope
 limOct=log2(1000/meanPSD);
 
-
 spectrum_slope2 =S;
 r_square2=mdl.Rsquared.Adjusted;
 
 
 %% RESULT
 % Combined final output
-%output_spectral_features = [meanPSD;stdPSD;medPSD;bw;p25;p75;IQR;TP;p100_200;p200_400;p400_800;spectrum_slope2;r_square2];
+output_spectral_features = [meanPSD;stdPSD;medPSD;bw;p25;p75;IQR;TP;p100_200;p200_400;p400_600; p600_800; p800_1000; p1000_1200; spectrum_slope2;r_square2];
 
 
 %% DISPLAY
 
-% % Mean, median and bw
+% % -- Mean, median and bw
 % figure, 
 % hax=axes;
 % y_axe=1e-4;
@@ -145,7 +141,7 @@ r_square2=mdl.Rsquared.Adjusted;
 % xlabel('Frequency [Hz]')
 % ylabel('Power')
 % 
-% % Mean, median and bw in a logarithmic scale
+% % -- Mean, median and bw in a logarithmic scale
 % figure, 
 % hax=axes;
 % y_axe=1e-4;
@@ -159,18 +155,22 @@ r_square2=mdl.Rsquared.Adjusted;
 % xlabel('Frequency [Hz]')
 % ylabel('Power')
 
-% % Figure with line
-% figure, 
+
+% % -- Periodogram means
+% figure,
 % hax=axes;
+% 
+% % Display periodogram
 % plot(f, pxx,'LineWidth',2);
 % hold on
-% f_interval=200;
+% pass_band=1:1200; 
+% band_width=200;
 % band_end=1200;
 % 
 % % Display lines
 % for n_band = 1 : 6
-%     band_start=band_end-(floor(f_interval));
-%     band=pxx(band_start:band_end);
+%     band_start=band_end-band_width;
+%     band=pxx( f>=band_start & f<=band_end);
 %     line([band_start band_start],get(hax,'YLim'), 'Color',[0 0 0]); % Vertical lines differentiating the frequency bands
 %     line([band_start band_end], [mean(band) mean(band)], 'LineWidth',2, 'Color',[1 0 0]); % Horizontal lines representing the periodogram mean of each frequency band
 %     band_end=band_start;
@@ -178,48 +178,24 @@ r_square2=mdl.Rsquared.Adjusted;
 % 
 % hold off
 % legend('Periodogram', 'Frequency bands', 'Mean')
-% title('Welch Periodogram mean for bandwidth of 200Hz')
-
-% -----------------
-figure,
-hax=axes;
-
-% Display periodogram
-plot(f, pxx,'LineWidth',2);
-hold on
-pass_band=1:1200; 
-band_width=200;
-band_end=1200;
-
-% Display lines
-for n_band = 1 : 6
-    band_start=band_end-band_width;
-    band=pxx( f>=band_start & f<=band_end);
-    line([band_start band_start],get(hax,'YLim'), 'Color',[0 0 0]); % Vertical lines differentiating the frequency bands
-    line([band_start band_end], [mean(band) mean(band)], 'LineWidth',2, 'Color',[1 0 0]); % Horizontal lines representing the periodogram mean of each frequency band
-    band_end=band_start;
-end
-
-hold off
-legend('Periodogram', 'Frequency bands', 'Mean')
-title('Power Means in 200Hz Bandwidths (Signal 22) ')
-xlabel('Frequency [Hz]')
-ylabel('Power')
-
-
-% -------------
-figure,
-plot(foct,spower,'k*:','Color',[.8 0 0]),xlim([0,limOct]),
-hold on
-plot(foct,I+S*foct, 'LineWidth',2)
-str=sprintf('Slope: %d', S);
-text(20,15,str)
-hold off 
-set(gca,'XTick',[0:ceil(limOct)] );
-set(gca,'XTickLabel', [0 2.^[1:ceil(limOct)]].*round(meanPSD) );
-title('Spectrum Slope (Signal 22)'),
-xlabel('Hz with Octave Divisions'),
-ylabel('dB')
-legend('Power Ratio in log octave scale','Regression line')
+% title('Power Means in 200Hz Bandwidths (Signal 22) ')
+% xlabel('Frequency [Hz]')
+% ylabel('Power')
+% 
+% 
+% % Spectrum Slope
+% figure,
+% plot(foct,spower,'k*:','Color',[.8 0 0]),xlim([0,limOct]),
+% hold on
+% plot(foct,I+S*foct, 'LineWidth',2)
+% str=sprintf('Slope: %d', S);
+% text(20,15,str)
+% hold off 
+% set(gca,'XTick',[0:ceil(limOct)] );
+% set(gca,'XTickLabel', [0 2.^[1:ceil(limOct)]].*round(meanPSD) );
+% title('Spectrum Slope (Signal 22)'),
+% xlabel('Hz with Octave Divisions'),
+% ylabel('dB')
+% legend('Power Ratio in log octave scale','Regression line')
 end
 
