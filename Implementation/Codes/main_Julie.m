@@ -65,14 +65,14 @@ end
 
 %% -- Removing crying sections (CS)
 
-% % -- Learning where are the CS (if not already done)
-% if (init_learning == 0) % Need to be done one time (data stored on an Excel file)
-%     [threshold,  band, label_annotated, window_annotated, window_training]= crying_learning(X_learning, fn, CS_color, NCS_color);
-%     xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [threshold ; band(1); band(end); window_annotated; window_training]', 'Learning CS Features', 'A2');
-%     xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [label_annotated], 'Annotated Labels', 'A1');
-%     init_learning=1;
-% end
-window_training=3; % ENLEVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+% -- Learning where are the CS (if not already done)
+if (init_learning == 0) % Need to be done one time (data stored on an Excel file)
+    [threshold,  band, label_annotated, window_annotated, window_training]= crying_learning(X_learning, fn, CS_color, NCS_color);
+    xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [threshold ; band(1); band(end); window_annotated; window_training]', 'Learning CS Features', 'A2');
+    xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [label_annotated], 'Annotated Labels', 'A1');
+    init_learning=1;
+end
+% window_training=3; % ENLEVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 % -- Removing the CS
 overlap_training=floor(window_training/3);
