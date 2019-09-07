@@ -96,7 +96,7 @@ start_time=0; end_time=15; % Part of the signal wanted
 [s, f, t] = spectrogram_CS(xss, label, fn, signal_n, wind_time_spec, overlap_spec, start_time, end_time, window_labelling, overlap_labelling);
 
 % -- NCS&CS FEATURES EXTRACTION
-%[zrc_CS, output_spectral_features_CS, periodogram_pks_features_CS, output_mean_mfcc_CS, output_lpc_CS, output_lsf_CS, zrc_NCS, output_spectral_features_NCS, periodogram_pks_features_NCS, output_mean_mfcc_NCS, output_lpc_NCS, output_lsf_NCS,] = NCS_CS_features_boxplot();
+[zrc_CS, output_spectral_features_CS, periodogram_pks_features_CS, output_mean_mfcc_CS, output_lpc_CS, output_lsf_CS, zrc_NCS, output_spectral_features_NCS, periodogram_pks_features_NCS, output_mean_mfcc_NCS, output_lpc_NCS, output_lsf_NCS,] = NCS_CS_features_boxplot(label_final, X, fn);
 
 %% THRESHOLD DETERMINATION
 
