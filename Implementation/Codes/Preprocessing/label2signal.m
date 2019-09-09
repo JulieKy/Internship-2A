@@ -1,4 +1,4 @@
-function [xss_section,time_axis_section] = signal2label(xss, fn, segment_sample, window_training, window_labelling)
+function [xss_section,time_axis_section] = label2signal(xss, fn, segment_sample, window_training, window_labelling)
 %label2signal: This function gives the corresponding piece of signal(time/amplitude) corresponding to a certain position in the matrix final_label
 
 %% INPUTS AND OUTPUTS

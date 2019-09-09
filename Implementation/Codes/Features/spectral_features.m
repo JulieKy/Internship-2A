@@ -126,14 +126,14 @@ output_spectral_features = [meanPSD;stdPSD;medPSD;bw;p25;p75;IQR;TP;p100_200;p20
 
 
 %% DISPLAY
-
+% 
 % % -- Mean, median and bw
 % figure, 
 % hax=axes;
-% y_axe=1e-4;
+% y_axe=max(pxx);
 % p1=rectangle('Position', [flo, 0, bw, power/bw], 'FaceColor',[.9 .9 .9], 'EdgeColor', [.9 .9 .9]);hold on
 % p2=plot(f, pxx, 'LineWidth', 1.5); 
-% p3=line([meanPSD,meanPSD],[0, y_axe], 'Color',[.8 0 0], 'LineWidth', 1.7);
+% p3=line([meanPSD,meanPSD],[0, y_axe], 'Color',[0.01 0.46 0.02], 'LineWidth', 1.7);
 % p4=line([medPSD,medPSD],[0, y_axe], 'Color',[0 0.6 0], 'LineWidth', 1.7);
 % hold off
 % title('\fontsize{14}Spectrum Parameters on Signal 22: Mean, Median, Power Bandwidth');
@@ -141,21 +141,34 @@ output_spectral_features = [meanPSD;stdPSD;medPSD;bw;p25;p75;IQR;TP;p100_200;p20
 % xlabel('Frequency [Hz]')
 % ylabel('Power')
 % 
-% % -- Mean, median and bw in a logarithmic scale
+% % -- Mean, median and bw
 % figure, 
 % hax=axes;
-% y_axe=1e-4;
-% p1=rectangle('Position', [flo, -80, bw, (max(10*log10(pxx))+3)-min(10*log10(pxx))], 'FaceColor',[.9 .9 .9], 'EdgeColor', [.9 .9 .9]);hold on
-% p2=plot(f, 10*log10(pxx), 'LineWidth', 1.5); 
-% p3=line([meanPSD,meanPSD],[-80, -30], 'Color',[.8 0 0], 'LineWidth', 1.7);
-% p4=line([medPSD,medPSD],[-80, -30], 'Color',[0 0.6 0], 'LineWidth', 1.7);
+% y_axe=max(pxx);
+% p1=rectangle('Position', [flo, 0, bw, power/bw], 'FaceColor',[.9 .9 .9], 'EdgeColor', [.9 .9 .9]);hold on
+% p2=plot(f, pxx, 'LineWidth', 1.5); 
+% p3=line([meanPSD,meanPSD],[0, y_axe], 'Color',[0.01 0.46 0.02], 'LineWidth', 1.7);
+% p4=line([medPSD,medPSD],[0, y_axe], 'Color',[0 0.6 0], 'LineWidth', 1.7);
 % hold off
-% title('\fontsize{14}Spectrum Parameters on Signal 22 with logarithmic scale: Mean, Median, Power Bandwidth');
+% title('\fontsize{14}Spectrum Parameters on Signal 22: Mean, Median, Power Bandwidth');
 % legend('Periodogram', 'Mean Frequency', 'Median Frequency')
 % xlabel('Frequency [Hz]')
 % ylabel('Power')
-
-
+% 
+% % -- p25 p75
+% figure, 
+% hax=axes;
+% y_axe=max(pxx);
+% p2=plot(f, pxx, 'LineWidth', 1.5); hold on
+% p3=line([p25,p25],[0, y_axe], 'Color',[0 0.6 0], 'LineWidth', 1.7);
+% p4=line([p75,p75],[0, y_axe], 'Color',[0.01 0.46 0.02], 'LineWidth', 1.7);
+% hold off
+% title('\fontsize{14}Spectrum Parameters on Signal 22: p25, p75, IQR');
+% legend('Periodogram', 'First Quartile Frequency', 'Third Quartile Frequency')
+% xlabel('Frequency [Hz]')
+% ylabel('Power')
+% 
+% 
 % % -- Periodogram means
 % figure,
 % hax=axes;

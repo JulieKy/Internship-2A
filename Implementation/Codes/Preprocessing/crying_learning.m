@@ -37,7 +37,7 @@ CS=[]; NCS=[];
 
 %% LABELLING
 [label_final, coef_KAPPA]=labelling(observators,samples, end_sample, window_labelling, overlap_labelling);
-coef_KAPPA_mean=mean(coef_KAPPA)
+coef_KAPPA_mean=mean(coef_KAPPA);
 
 
 %% TRAINING
@@ -101,7 +101,6 @@ start_time=0; end_time=15; % Part of the signal wanted
 %% THRESHOLD DETERMINATION
 
 % -- Powerband in the best frequency range
-%band=[200, 500];
 band=[p25_CS_mean, p75_CS_mean];
 
 % For every pure CS section
@@ -119,13 +118,13 @@ powerband=[powerband_CS, powerband_NCS]';
 [fpr, tpr, final_threshold] = threshold_ROC( nb_thresholds, label_annotated, powerband); % Compute the ROC
 
 
-%% DISPLAY
-
-% Display annoted labels NCS and CS
-signal_n=22;
-display_NCS_CS_annotations(signal_n,label_final, window_labelling, overlap_labelling)
-
-%  Display the periodograms of annotated NCS and CS
-display_PR_NCS_CS_interquartiles(f,pxx_NCS, pxx_CS, pxx_NCS_mean, pxx_CS_mean, band_width, pass_band, band_NCS_mean, band_CS_mean, CS_color, NCS_color);
+% %% DISPLAY
+% 
+% % Display annoted labels NCS and CS
+% signal_n=22;
+% display_NCS_CS_annotations(signal_n,label_final, window_labelling, overlap_labelling)
+% 
+% %  Display the periodograms of annotated NCS and CS
+% display_PR_NCS_CS_interquartiles(f,pxx_NCS, pxx_CS, pxx_NCS_mean, pxx_CS_mean, band_width, pass_band, band_NCS_mean, band_CS_mean, CS_color, NCS_color);
 
 end

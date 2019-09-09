@@ -1,5 +1,5 @@
 function [ X, length_signals, names_cell ] = read_samples( folder_path, time_sample, fn )
-%read_samples: Read the samples of a folder and return all the folder in a matrix. Each line number corresponds to the sample number.
+%read_samples: Read the samples of a folder and return them all in a matrix. Each line corresponds to a sample.
 
 %% INPUTS AND OUTPUTS
 % --- Inputs ---

@@ -1,6 +1,5 @@
 function [] = display_power_spectrum( P1, P2, ff )
-%UNTITLED7 Summary of this function goes here
-%   Detailed explanation goes here
+% display_power_spectrum: Display power spectrum with its deviation (p25 and p75)
 
 errtyp=1; 
 

@@ -65,14 +65,13 @@ end
 
 %% -- Removing crying sections (CS)
 
-% % -- Learning where are the CS (if not already done)
-% if (init_learning == 0) % Need to be done one time (data stored on an Excel file)
-%     [threshold,  band, label_annotated, window_annotated, window_training]= crying_learning(X_learning, fn, CS_color, NCS_color);
-%     xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [threshold ; band(1); band(end); window_annotated; window_training]', 'Learning CS Features', 'A2');
-%     xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [label_annotated], 'Annotated Labels', 'A1');
-%     init_learning=1;
-% end
-window_training=3; % ENLEVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+% -- Learning where are the CS (if not already done)
+if (init_learning == 0) % Need to be done one time (data stored on an Excel file)
+    [threshold,  band, label_annotated, window_annotated, window_training]= crying_learning(X_learning, fn, CS_color, NCS_color);
+    xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [threshold ; band(1); band(end); window_annotated; window_training]', 'Learning CS Features', 'A2');
+    xlswrite([pathExcelPreprocessing excelFileSpectralFeaturesPreprocessing], [label_annotated], 'Annotated Labels', 'A1');
+    init_learning=1;
+end
 
 % -- Removing the CS
 overlap_training=floor(window_training/3);
@@ -86,11 +85,11 @@ label_annotated=xlsread([pathExcelPreprocessing excelFileSpectralFeaturesPreproc
 
 
 %% -- Display NCS and CS
-signal_n=22; % Put a sample that is in the Learning_Database (between 1 and 37)
-xss=X_learning(signal_n,:);
-xsc=X_ncs(signal_n,:);
-overlap_label=0;
-display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_annotated, overlap_label, label_training, NCS_color, CS_color);
+% signal_n=22; % Put a sample that is in the Learning_Database (between 1 and 37)
+% xss=X_learning(signal_n,:);
+% xsc=X_ncs(signal_n,:);
+% overlap_label=0;
+% display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_annotated, overlap_label, label_training, NCS_color, CS_color);
 
 
 % For every signals
@@ -98,6 +97,7 @@ for signal_n=1:size(X_ncs, 1)
     xss=X(signal_n, 1:length_signals(signal_n));
     xsc=X_ncs(signal_n, :);
     
+    % If the signal after CS removal is too short it will not be taken into account (ie all the features =0)
     if xsc==zeros(1, length(xsc))
         str=sprintf('Signal %d with too much cry: unusable', signal_n);
         disp(str)
@@ -109,7 +109,7 @@ for signal_n=1:size(X_ncs, 1)
         
         
     else
-        str=sprintf('Features signal %d', signal_n);
+        str=sprintf('Features extraction on signal %d', signal_n);
         disp(str)
         
         %% -- Filtering BP 100-1200Hz
@@ -150,33 +150,33 @@ end
 
 %% ****** DISPLAY ******
 
-%% -- Display NCS and CS
-% CS and NCS color
-NCS_color=[0 0.6 0];
-CS_color=[0.8 0 0];
-
-% Display xss, annotated labels, learnt labels and xsc
-display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_annotated, window_annotated, label_learning_xss, NCS_color, CS_color);
-
-
-%% -- FFT Representation
-
-% Median with inter-quartile range
-figure(),
-plot(mean(f(find(f(:,2) ~= 0),:)) , median(pxx(find(f(:,2) ~= 0),:))); % average fft
-hold on
-plot(mean(f(find(f(:,2) ~= 0),:)) , prctile(pxx(find(f(:,2) ~= 0),:),25), 'LineStyle', '--', 'Color', 'r'); % std
-plot(mean(f(find(f(:,2) ~= 0),:)) , prctile(pxx(find(f(:,2) ~= 0),:),75), 'LineStyle', '--', 'Color', 'r'); % std
-xlabel('Frequency (in Hz)');
-ylabel('Power Spectrum');
-title('Average Power Spectrum (All groups)');
-legend('Average power spectrum', 'Interquartile range');
-hold off
-
-% Mean plot
-figure(),
-plot(mean(f(find(f(:,2) ~= 0),:)) , mean(pxx(find(f(:,2) ~= 0),:)));
-xlabel('Frequency (in Hz)');
-ylabel('Power Spectrum');
-title('Average Power Spectrum (all)');
-legend('Average Power Spectrum');
+% %% -- Display NCS and CS
+% % CS and NCS color
+% NCS_color=[0 0.6 0];
+% CS_color=[0.8 0 0];
+% 
+% % Display xss, annotated labels, learnt labels and xsc
+% display_CS_NCS_final(xss, xsc, fn, signal_n, label_annotated, window_annotated, window_annotated, label_learning_xss, NCS_color, CS_color);
+% 
+% 
+% %% -- FFT Representation
+% 
+% % Median with inter-quartile range
+% figure(),
+% plot(mean(f(find(f(:,2) ~= 0),:)) , median(pxx(find(f(:,2) ~= 0),:))); % average fft
+% hold on
+% plot(mean(f(find(f(:,2) ~= 0),:)) , prctile(pxx(find(f(:,2) ~= 0),:),25), 'LineStyle', '--', 'Color', 'r'); % std
+% plot(mean(f(find(f(:,2) ~= 0),:)) , prctile(pxx(find(f(:,2) ~= 0),:),75), 'LineStyle', '--', 'Color', 'r'); % std
+% xlabel('Frequency (in Hz)');
+% ylabel('Power Spectrum');
+% title('Average Power Spectrum (All groups)');
+% legend('Average power spectrum', 'Interquartile range');
+% hold off
+% 
+% % Mean plot
+% figure(),
+% plot(mean(f(find(f(:,2) ~= 0),:)) , mean(pxx(find(f(:,2) ~= 0),:)));
+% xlabel('Frequency (in Hz)');
+% ylabel('Power Spectrum');
+% title('Average Power Spectrum (all)');
+% legend('Average Power Spectrum');
